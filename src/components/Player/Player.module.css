@@ -1,0 +1,115 @@
+.player {
+	position: fixed;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	bottom: 0;
+	left: 0;
+	width: 100vw;
+	height: 90px;
+	background-color: #181818;
+	color: white;
+	padding: 15px 12px;
+	z-index: 1000;
+}
+
+.trackInfo {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.trackImage {
+	cursor: pointer;
+}
+
+.trackTitle {
+	font-size: 14px;
+	font-weight: 400;
+	color: var(--white);
+}
+
+.trackArtist {
+	font-size: 12px;
+	font-weight: 400;
+	color: var(--gray-light);
+}
+
+.trackTitle:hover,
+.trackArtist:hover {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.addToFavorites {
+	cursor: pointer;
+	width: 16px;
+}
+
+.progressContainer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+}
+
+.controls {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+}
+
+.playPause {
+	cursor: pointer;
+}
+
+.previousTrack,
+.nextTrack {
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+}
+
+.progressBarContainer {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	gap: 8px;
+}
+
+.progressBar {
+	width: 100%;
+	height: 4px;
+	background-color: rgba(178, 178, 178, 0.5);
+	border-radius: 2px;
+	cursor: pointer;
+}
+
+.currentTime,
+.totalTime {
+	font-size: 12px;
+	font-weight: 400;
+	color: rgba(167, 167, 167, 1);
+}
+
+.options {
+	display: flex;
+	align-items: center;
+	justify-content: end;
+	gap: 8px;
+}
+
+.volumeIcon img {
+	cursor: pointer;
+	width: 16px;
+	height: 16px;
+}
+
+.volumeControl {
+	cursor: pointer;
+	width: 72px;
+	height: 4px;
+	background-color: rgba(178, 178, 178, 0.5);
+	border-radius: 2px;
+	cursor: pointer;
+}
