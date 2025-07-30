@@ -1,6 +1,6 @@
 import { it, describe, expect, vi } from 'vitest';
 import axios from "axios";
-import getNewReleases from "./playlists";
+import playlists from './playlists';
 
 vi.mock("axios");
 const mockedAxios = vi.mocked(axios);
@@ -21,7 +21,7 @@ describe("getNewReleases", () => {
 		vi.spyOn(axios, 'get').mockResolvedValueOnce(mockResponse);
 
 		const token = "test_token";
-		const result = await getNewReleases(token);
+		const result = await playlists.getNewReleases(token);
 
 		expect(mockedAxios.get).toHaveBeenCalledWith("https://api.spotify.com/v1/browse/new-releases", {
 			headers: { Authorization: `Bearer ${token}` },
@@ -36,6 +36,6 @@ describe("getNewReleases", () => {
 
 		const token = "test_token";
 
-		await expect(getNewReleases(token)).rejects.toThrow(errorMessage);
+		await expect(playlists.getNewReleases(token)).rejects.toThrow(errorMessage);
 	});
 });
