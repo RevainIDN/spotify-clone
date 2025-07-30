@@ -5,6 +5,7 @@ import Sidebar from './components/Sidebar/Sidebar';
 import Player from './components/Player/Player';
 import Home from './pages/Home/Home';
 import Search from './pages/Search/Search';
+import Section from './pages/Section/Section';
 
 function App() {
   const { token, isLoading, isError } = useSpotifyToken();
@@ -18,6 +19,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Home token={token} />} />
         <Route path='/search' element={<Search />} />
+        <Route path='/section/:id' element={<Section />} />
       </Routes>
       <Player />
     </div>

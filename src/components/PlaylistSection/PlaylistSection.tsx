@@ -1,8 +1,10 @@
 import playlistSection from './PlaylistSection.module.css';
 import { type SimplifiedMappedPlaylistItem } from '../../types/playlists/generalTypes';
+import { useNavigate } from 'react-router-dom';
 
 interface PlaylistSectionProps {
 	title: string;
+	sectionKey: string;
 	items: SimplifiedMappedPlaylistItem[];
 }
 
@@ -18,12 +20,13 @@ function PlaylistItem({ album }: { album: SimplifiedMappedPlaylistItem }) {
 	);
 }
 
-export default function PlaylistSection({ title, items }: PlaylistSectionProps) {
+export default function PlaylistSection({ title, sectionKey, items }: PlaylistSectionProps) {
+	const navigate = useNavigate();
 	return (
 		<div className={playlistSection.playlistSection}>
 			<div className={playlistSection.header}>
 				<h1 className={playlistSection.title}>{title}</h1>
-				<button className={playlistSection.showAll}>Show all</button>
+				<button onClick={() => navigate(`/section/${sectionKey}`, { state: { title, items } })} className={playlistSection.showAll}>Show all</button>
 			</div>
 			<ul className={playlistSection.playlists}>
 				{items.slice(0, 5).map(album => (

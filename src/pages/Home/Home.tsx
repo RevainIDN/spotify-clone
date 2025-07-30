@@ -18,6 +18,7 @@ export default function Home({ token }: HomeProps) {
 			) : (
 				<PlaylistSection
 					title="New Releases"
+					sectionKey='new-releases'
 					items={newReleases.data?.albums.items || []}
 				/>
 			)}
@@ -26,6 +27,7 @@ export default function Home({ token }: HomeProps) {
 			) : (
 				<PlaylistSection
 					title="Pop"
+					sectionKey='pop'
 					items={
 						popPlaylists.data
 							? popPlaylists.data.playlists.items
@@ -40,6 +42,7 @@ export default function Home({ token }: HomeProps) {
 			) : (
 				<PlaylistSection
 					title="Rock"
+					sectionKey='rock'
 					items={
 						rockPlaylists.data
 							? rockPlaylists.data.playlists.items
@@ -54,6 +57,7 @@ export default function Home({ token }: HomeProps) {
 			) : (
 				<PlaylistSection
 					title="Relax"
+					sectionKey='relax'
 					items={
 						relaxPlaylists.data
 							? relaxPlaylists.data.playlists.items
