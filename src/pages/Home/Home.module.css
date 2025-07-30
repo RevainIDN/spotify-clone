@@ -1,0 +1,16 @@
+.home {
+	width: 100%;
+	height: 100vh;
+	padding: 60px 32px 80px 32px;
+	background-color: #191414;
+	overflow-y: auto;
+}
+
+.skeletonLoader {
+	width: 100%;
+	height: 320px;
+	background-color: transparent;
+	border: 2px #3b3a3a solid;
+	border-radius: 6px;
+	margin-bottom: 40px;
+}
