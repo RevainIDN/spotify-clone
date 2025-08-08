@@ -1,25 +1,43 @@
 import './styles/App.css'
 import { Routes, Route } from 'react-router-dom';
-import { useSpotifyToken } from './hooks/useSpotifyToken';
+import { useEffect } from 'react';
+import { useSpotifyAuth } from './hooks/useSpotifyAuth';
+import { useSpotifyPlayer } from './hooks/useSpotifyPlayer';
+
+import { useDispatch } from 'react-redux';
+import { type AppDispatch } from './store';
+import { setAccessToken } from './store/authSlice';
+
 import Sidebar from './components/Sidebar/Sidebar';
 import Player from './components/Player/Player';
 import Home from './pages/Home/Home';
 import Search from './pages/Search/Search';
 import Section from './pages/Section/Section';
+import Playlist from './pages/Playlist/Playlist';
 
 function App() {
-  const { token, isLoading, isError } = useSpotifyToken();
+  const dispatch = useDispatch<AppDispatch>();
+  const { token: authToken, loading } = useSpotifyAuth();
+  useSpotifyPlayer(authToken);
 
-  if (isLoading) return <p>Загрузка токена Spotify...</p>;
-  if (isError || !token) return <p>Ошибка загрузки токена. Проверь консоль.</p>;
+  useEffect(() => {
+    if (authToken) {
+      dispatch(setAccessToken(authToken));
+    }
+  }, [authToken, dispatch]);
+
+  if (loading) return <p>Загрузка...</p>;
+  if (!authToken) return <p>Ошибка загрузки токена. Проверь консоль.</p>;
 
   return (
     <div className="spotify-clone">
       <Sidebar />
       <Routes>
-        <Route path='/' element={<Home token={token} />} />
+        <Route path='/' element={<Home token={authToken} />} />
+        <Route path='/callback' element={<p>Авторизация прошла успешно! Теперь ты можешь закрыть эту вкладку.</p>} />
         <Route path='/search' element={<Search />} />
         <Route path='/section/:id' element={<Section />} />
+        <Route path='/playlist/:id' element={<Playlist />} />
       </Routes>
       <Player />
     </div>
