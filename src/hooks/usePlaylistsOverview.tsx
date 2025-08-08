@@ -1,5 +1,5 @@
 import { useQueries } from "@tanstack/react-query";
-import playlists from "../services/Playlists/playlists";
+import playlists from "../services/Selections/selections";
 
 export const usePlaylistsOverview = (accessToken: string | null) => {
     const results = useQueries({

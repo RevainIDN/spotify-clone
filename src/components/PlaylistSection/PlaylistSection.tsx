@@ -9,8 +9,21 @@ interface PlaylistSectionProps {
 }
 
 function PlaylistItem({ album }: { album: SimplifiedMappedPlaylistItem }) {
+	const navigate = useNavigate();
+
+	const handleClick = () => {
+		switch (album.type) {
+			case 'playlist':
+				navigate(`/playlist/${album.id}`);
+				break;
+			case 'album':
+				navigate(`/album/${album.id}`);
+				break;
+		}
+	};
+
 	return (
-		<li className={playlistSection.playlistItem}>
+		<li onClick={handleClick} className={playlistSection.playlistItem}>
 			<img className={playlistSection.playlistImage} src={album.images[0]?.url} alt={album.name} />
 			<span className={playlistSection.playlistTitle}>{album.name}</span>
 			<span className={playlistSection.playlistDescription}>

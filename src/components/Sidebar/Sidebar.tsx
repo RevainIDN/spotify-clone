@@ -11,7 +11,7 @@ export default function Sidebar() {
 
 	return (
 		<div className={sidebar.sidebar}>
-			<Link to={'/'} className={sidebar.logoLink}>
+			<Link to={'/'} className={sidebar.logoLink} onClick={() => dispatch(setNavigation('home'))}>
 				<img className={sidebar.logo} src="/Sidebar/logo.svg" alt="logo" />
 			</Link>
 			<div className={sidebar.menu}>

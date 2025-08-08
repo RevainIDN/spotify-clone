@@ -2,7 +2,7 @@ import home from './Home.module.css'
 import PlaylistSection from '../../components/PlaylistSection/PlaylistSection';
 import { usePlaylistsOverview } from '../../hooks/usePlaylistsOverview';
 import { type SimplifiedMappedPlaylistItem } from '../../types/playlists/generalTypes';
-import { mapPlaylistToSimplified } from '../../services/Playlists/playlists';
+import { mapPlaylistToSimplified } from '../../services/Selections/selections';
 
 interface HomeProps {
 	token: string | null;

@@ -5,7 +5,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #121212;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,10 +15,17 @@
   --white: #ffffff;
   --gray-light: #b3b3b3;
   --gray-dark: #a7a7a7;
+
+  --active-track: #1ED760;
 }
 
 .spotify-clone {
   display: flex;
+}
+
+.spotify-clone .loader {
+  justify-content: center;
+  align-items: center;
 }
 
 @font-face {
