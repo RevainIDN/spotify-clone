@@ -1,0 +1,51 @@
+.progressBarContainer {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	gap: 8px;
+}
+
+.progressBar {
+	position: relative;
+	width: 100%;
+	height: 4px;
+	background-color: rgba(178, 178, 178, 0.5);
+	border-radius: 2px;
+	cursor: pointer;
+}
+
+.currentTime,
+.totalTime {
+	font-size: 12px;
+	font-weight: 400;
+	color: rgba(167, 167, 167, 1);
+}
+
+.currentProgress {
+	position: relative;
+	width: 50%;
+	height: 100%;
+	background-color: var(--white);
+	border-radius: 2px;
+}
+
+.currentProgress::before {
+	display: none;
+	content: '';
+	position: absolute;
+	top: 50%;
+	right: -7px;
+	transform: translateY(-50%);
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background-color: var(--white);
+}
+
+.progressBar:hover .currentProgress {
+	background-color: #1ED760;
+}
+
+.progressBar:hover .currentProgress::before {
+	display: block;
+}

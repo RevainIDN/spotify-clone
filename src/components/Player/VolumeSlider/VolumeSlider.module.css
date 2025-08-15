@@ -1,0 +1,37 @@
+.volumeControl {
+	cursor: pointer;
+	width: 100px;
+	height: 4px;
+	background-color: rgba(178, 178, 178, 0.5);
+	border-radius: 2px;
+	cursor: pointer;
+}
+
+.currentVolume {
+	position: relative;
+	width: 50%;
+	height: 100%;
+	background-color: var(--white);
+	border-radius: 2px;
+}
+
+.currentVolume::before {
+	display: none;
+	content: '';
+	position: absolute;
+	top: 50%;
+	right: -7px;
+	transform: translateY(-50%);
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background-color: var(--white);
+}
+
+.volumeControl:hover .currentVolume {
+	background-color: #1ED760;
+}
+
+.volumeControl:hover .currentVolume::before {
+	display: block;
+}
