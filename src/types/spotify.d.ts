@@ -27,6 +27,7 @@ declare global {
 			togglePlay(): Promise<void>;
 			seek(position_ms: number): Promise<void>;
 			getCurrentState(): Promise<PlaybackState | null>;
+			setVolume(volume: number): Promise<void>;
 		}
 
 		interface PlaybackState {
