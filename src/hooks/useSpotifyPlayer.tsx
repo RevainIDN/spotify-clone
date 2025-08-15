@@ -1,6 +1,7 @@
+import axios from 'axios';
 import { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { setDeviceId, setPlayer, setIsReady } from '../store/playerSlice';
+import { setCurrentTrack, setCurrentTrackUri, setIsPlaying, setDeviceId, setPlayer, setIsReady } from '../store/playerSlice';
 import { refreshSpotifyAccessToken } from '../services/authSpotify';
 
 export const useSpotifyPlayer = (token: string) => {
@@ -31,14 +32,27 @@ export const useSpotifyPlayer = (token: string) => {
 				const player = new window.Spotify.Player({
 					name: 'React Spotify Clone Player',
 					getOAuthToken: (cb) => cb(token),
-					volume: 0.2,
+					volume: 0.1,
 				});
 
-				player.addListener('ready', ({ device_id }) => {
+				player.addListener('ready', async ({ device_id }) => {
 					console.log('Player готов с device_id:', device_id);
 					dispatch(setDeviceId(device_id));
 					dispatch(setPlayer(player));
 					dispatch(setIsReady(true));
+
+					try {
+						await axios.put(
+							'https://api.spotify.com/v1/me/player',
+							{ device_ids: [device_id], play: false },
+							{
+								headers: { Authorization: `Bearer ${token}` }
+							}
+						);
+						console.log('Устройство активировано для воспроизведения');
+					} catch (error) {
+						console.error('Ошибка активации устройства:', error);
+					}
 				});
 
 				player.addListener('not_ready', ({ device_id }) => {
@@ -78,6 +92,23 @@ export const useSpotifyPlayer = (token: string) => {
 				});
 
 				player.addListener('player_state_changed', (state) => {
+					if (state?.track_window?.current_track) {
+						const item = state.track_window.current_track;
+						const currentTrack = {
+							track: item.uri,
+							name: item.name,
+							artists: item.artists.map((a: { name: string }) => a.name),
+							albumImage: item.album.images[0]?.url,
+						};
+
+						localStorage.setItem('lastTrack', JSON.stringify(currentTrack));
+
+						dispatch(setCurrentTrack(currentTrack));
+						dispatch(setCurrentTrackUri(currentTrack.track));
+						dispatch(setIsPlaying(!state.paused));
+					} else {
+						dispatch(setIsPlaying(false));
+					}
 					console.log('Состояние плеера изменено:', state);
 				});
 
