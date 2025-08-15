@@ -1,0 +1,66 @@
+.background {
+	background-size: cover;
+	background-position: center;
+	position: absolute;
+	width: 100%;
+	height: 400px;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: -2;
+	background-color: #fff;
+	filter: blur(150px);
+}
+
+.header {
+	display: flex;
+	gap: 20px;
+	margin-bottom: 60px;
+	z-index: 3;
+}
+
+.cover {
+	width: 200px;
+	height: 200px;
+}
+
+.delimiter {
+	width: 4px;
+	height: 4px;
+	margin: 6px;
+	background-color: var(--gray-light);
+	border-radius: 50%;
+}
+
+.playlistInfo {
+	display: flex;
+	flex-direction: column;
+	justify-content: end;
+}
+
+.type {
+	font-weight: 400;
+	color: var(--gray-light)
+}
+
+.name {
+	font-size: 3rem;
+	color: var(--white);
+}
+
+.aboutInfo {
+	display: flex;
+	align-items: center;
+	color: var(--gray-light);
+	font-weight: 400;
+}
+
+.artist {
+	color: var(--white);
+}
+
+.artist:hover {
+	cursor: pointer;
+	text-decoration: underline;
+}
