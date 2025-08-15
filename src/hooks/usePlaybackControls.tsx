@@ -6,12 +6,12 @@ import { type AppDispatch, type RootState } from '../store';
 import { setCurrentTrackUri, setIsPlaying } from '../store/playerSlice';
 
 interface UseSpotifyPlayerControlsProps {
-	playlistData?: Playlist;
+	collectionData?: Playlist;
 	isShuffled: boolean;
 }
 
 export const usePlaybackControls = ({
-	playlistData,
+	collectionData,
 	isShuffled
 }: UseSpotifyPlayerControlsProps) => {
 	const dispatch = useDispatch<AppDispatch>();
@@ -20,12 +20,12 @@ export const usePlaybackControls = ({
 	const { deviceId, player } = useSelector((state: RootState) => state.player);
 
 	const playPlaylist = async () => {
-		if (!deviceId || !token || !playlistData || !player) {
+		if (!deviceId || !token || !collectionData || !player) {
 			console.warn('Нет deviceId, token или данных плейлиста');
 			return;
 		}
 
-		const uris = playlistData.tracks.items
+		const uris = collectionData.tracks.items
 			.filter(t => t.track && t.track.uri && t.track.available_markets.length > 0)
 			.map(t => t.track.uri);
 
@@ -90,6 +90,12 @@ export const usePlaybackControls = ({
 			return;
 		}
 
+		await axios.put(
+			`https://api.spotify.com/v1/me/player/shuffle?state=false&device_id=${deviceId}`,
+			{},
+			{ headers: { Authorization: `Bearer ${token}` } }
+		);
+
 		try {
 			const state = await player.getCurrentState();
 			const currentUri = state?.track_window.current_track.uri;
@@ -103,7 +109,7 @@ export const usePlaybackControls = ({
 					dispatch(setIsPlaying(false));
 				}
 			} else {
-				const uris = playlistData?.tracks.items
+				const uris = collectionData?.tracks.items
 					.filter(t => t.track && t.track.uri && t.track.available_markets.length > 0)
 					.map(t => t.track.uri);
 
