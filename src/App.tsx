@@ -14,6 +14,7 @@ import Home from './pages/Home/Home';
 import Search from './pages/Search/Search';
 import Section from './pages/Section/Section';
 import Playlist from './pages/Playlist/Playlist';
+import Album from './pages/Album/Album';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -38,6 +39,7 @@ function App() {
         <Route path='/search' element={<Search />} />
         <Route path='/section/:id' element={<Section />} />
         <Route path='/playlist/:id' element={<Playlist />} />
+        <Route path='/album/:id' element={<Album />} />
       </Routes>
       <Player />
     </div>
