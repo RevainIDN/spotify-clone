@@ -1,4 +1,4 @@
-import { type Track } from "./generalTypes";
+import { type Track, type Image, type TracksBase } from "./generalTypes";
 
 export interface Playlist {
 	collaborative: boolean;
@@ -12,11 +12,7 @@ export interface Playlist {
 	};
 	href: string;
 	id: string;
-	images: Array<{
-		url: string;
-		height: number | null;
-		width: number | null;
-	}>;
+	images: Image[];
 	name: string;
 	owner: {
 		display_name: string;
@@ -31,15 +27,7 @@ export interface Playlist {
 	primary_color?: string | null;
 	public: boolean;
 	snapshot_id: string;
-	tracks: {
-		href: string;
-		limit: number;
-		next: string | null;
-		offset: number;
-		previous: string | null;
-		total: number;
-		items: PlaylistTrack[];
-	};
+	tracks: TracksBase<PlaylistTrack>;
 	type: string;
 	uri: string;
 }
