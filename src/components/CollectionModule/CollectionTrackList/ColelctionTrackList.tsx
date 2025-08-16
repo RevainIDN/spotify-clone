@@ -1,5 +1,6 @@
 import trackListStyles from './ColelctionTrackList.module.css'
-import { type Playlist } from '../../../types/playlists/playlistTypes'
+import { type Collection } from '../../../utils/typeGuard';
+import { normalizeTracks } from '../../../utils/normalize';
 
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -11,7 +12,7 @@ import { formatDuration } from '../../../utils/formatDuration';
 
 
 interface ColelctionTrackListProps {
-	collectionData: Playlist;
+	collectionData: Collection;
 	isShuffled: boolean;
 	filterValue: string;
 	sortType: string;
@@ -29,15 +30,15 @@ export default function ColelctionTrackList({ collectionData, isShuffled, filter
 		isShuffled
 	});
 
+	// Нормализация треков
+	const tracks = collectionData ? normalizeTracks(collectionData) : []
+
 	// Фильтрация треков
-	const filteredValues = (collectionData?.tracks.items || []).filter(track => {
+	const filteredValues = tracks.filter(track => {
 		if (
 			!track.track ||
-			!track.track.album?.images?.[2] ||
 			!track.track.name ||
 			!track.track.artists?.length ||
-			!track.track.album.name ||
-			!track.added_at ||
 			!track.track.duration_ms
 		) {
 			return false;
@@ -63,7 +64,9 @@ export default function ColelctionTrackList({ collectionData, isShuffled, filter
 			case 'Album':
 				return a.track.album.name.localeCompare(b.track.album.name) * direction;
 			case 'Date added':
-				return (new Date(a.added_at).getTime() - new Date(b.added_at).getTime()) * direction;
+				const aTime = a.added_at ? new Date(a.added_at).getTime() : 0
+				const bTime = b.added_at ? new Date(b.added_at).getTime() : 0
+				return (aTime - bTime) * direction
 			case 'Duration':
 				return (a.track.duration_ms - b.track.duration_ms) * direction;
 			case 'Custom order':
@@ -75,20 +78,20 @@ export default function ColelctionTrackList({ collectionData, isShuffled, filter
 	return (
 		<table className={trackListStyles.tracks}>
 			<colgroup>
-				<col style={sortViewMode === 'List' ? { width: '5%' } : { width: '5%' }} />
-				<col style={sortViewMode === 'List' ? { width: '35%' } : { width: '30%' }} />
-				{sortViewMode === 'Compact' && <col style={{ width: '25%' }} />}
-				<col style={sortViewMode === 'List' ? { width: '35%' } : { width: '25%' }} />
-				<col style={sortViewMode === 'List' ? { width: '20%' } : { width: '15%' }} />
-				<col style={sortViewMode === 'List' ? { width: '5%' } : { width: '5%' }} />
+				<col style={collectionData.type === 'playlist' ? { width: '5%' } : { width: '4%' }} />
+				<col style={collectionData.type === 'playlist' ? { width: '35%' } : { width: '90%' }} />
+				{collectionData.type === 'playlist' ? (sortViewMode === 'Compact' && <col style={{ width: '20%' }} />) : null}
+				{collectionData.type === 'playlist' ? <col style={sortViewMode === 'List' ? { width: '35%' } : { width: '25%' }} /> : null}
+				{collectionData.type === 'playlist' ? <col style={sortViewMode === 'List' ? { width: '20%' } : { width: '15%' }} /> : null}
+				<col style={{ width: '5%' }} />
 			</colgroup>
 			<thead className={trackListStyles.tableHead}>
 				<tr>
 					<th>#</th>
 					<th>TITLE</th>
-					{sortViewMode === 'Compact' && <th>ARTIST</th>}
-					<th>ALBUM</th>
-					<th>DATE ADDED</th>
+					{collectionData.type === 'playlist' && sortViewMode === 'Compact' && <th>ARTIST</th>}
+					{collectionData.type === 'playlist' && <th>ALBUM</th>}
+					{collectionData.type === 'playlist' && <th>DATE ADDED</th>}
 					<th>TIME</th>
 				</tr>
 			</thead>
@@ -145,11 +148,17 @@ export default function ColelctionTrackList({ collectionData, isShuffled, filter
 						)}
 						{sortViewMode === 'List' && (
 							<th className={trackListStyles.trackImg}>
-								<img
-									className={trackListStyles.trackCover}
-									src={track.track.album.images[2].url}
-									alt={track.track.name}
-								/>
+								{collectionData.type === 'playlist' ? (
+									<img
+										className={trackListStyles.trackCover}
+										src={
+											track.track.album?.images?.[2]?.url ?? track.track.album?.images?.[0]?.url ?? '/default-cover.png'
+										}
+										alt={track.track.name}
+									/>
+								) : (
+									null
+								)}
 								<div className={trackListStyles.trackInfo}>
 									<span className={
 										currentTrackUri === track.track.uri
@@ -171,7 +180,7 @@ export default function ColelctionTrackList({ collectionData, isShuffled, filter
 								</div>
 							</th>
 						)}
-						{sortViewMode === 'Compact' && (
+						{collectionData.type === 'playlist' && sortViewMode === 'Compact' && (
 							<th className={trackListStyles.trackInfoCompact}>
 								<ul className={trackListStyles.trackArtistList}>
 									{track.track.artists.map((artist, index) => (
@@ -183,8 +192,8 @@ export default function ColelctionTrackList({ collectionData, isShuffled, filter
 								</ul>
 							</th>
 						)}
-						<th className={trackListStyles.trackAlbum}><span>{track.track.album.name}</span></th>
-						<th className={trackListStyles.trackDate}><span>{formatDate(track.added_at)}</span></th>
+						{collectionData.type === 'playlist' && <th className={trackListStyles.trackAlbum}><span>{track.track.album?.name ?? 'Unknown Album'}</span></th>}
+						{collectionData.type === 'playlist' && <th className={trackListStyles.trackDate}><span>{track.added_at ? formatDate(track.added_at) : '-'}</span></th>}
 						<th className={trackListStyles.trackDuration}><span>{formatDuration(track.track.duration_ms)}</span></th>
 					</tr>
 				))}

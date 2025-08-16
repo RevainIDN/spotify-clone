@@ -1,5 +1,7 @@
 import controlsStyles from './CollectionControls.module.css'
-import { type Playlist } from '../../../types/playlists/playlistTypes';
+import { type Playlist } from '../../../types/collection/playlistTypes';
+import { type Album } from '../../../types/collection/albumTypes';
+import { normalizeTracks } from '../../../utils/normalize';
 
 import { useState } from 'react';
 import { usePlaybackControls } from '../../../hooks/usePlaybackControls';
@@ -7,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { type RootState } from '../../../store';
 
 interface CollectionControlsProps {
-	collectionData: Playlist;
+	collectionData: Playlist | Album;
 	isShuffled: boolean;
 	setIsShuffled: React.Dispatch<React.SetStateAction<boolean>>;
 	filterValue: string;
@@ -38,10 +40,7 @@ export default function CollectionControls(
 	const [hoveredOption, setHoveredOption] = useState<string | null>(null);
 	const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
-	const { playPlaylist } = usePlaybackControls({
-		collectionData,
-		isShuffled
-	});
+	const { playCollection } = usePlaybackControls({ collectionData, isShuffled });
 
 	// Обработка изменения сортировки
 	const handleSortChange = (value: string) => {
@@ -69,12 +68,13 @@ export default function CollectionControls(
 	];
 
 	// Найти текущий трек
-	const existingTrack = collectionData.tracks.items.find(track => track.track.uri === currentTrackUri);
+	const tracks = normalizeTracks(collectionData);
+	const existingTrack = tracks.find(t => t.track.uri === currentTrackUri);
 
 	return (
 		<div className={controlsStyles.options}>
 			<div className={controlsStyles.trackOptions}>
-				<button className={controlsStyles.playBtn} onClick={playPlaylist}><img src={isPlaying && existingTrack ? "/Options/pause.svg" : "/Options/play.svg"} alt="Play" /></button>
+				<button className={controlsStyles.playBtn} onClick={playCollection}><img src={isPlaying && existingTrack ? "/Options/pause.svg" : "/Options/play.svg"} alt="Play" /></button>
 				<button
 					className={controlsStyles.mixBtn}
 					onClick={() => { setIsShuffled(prev => !prev) }}

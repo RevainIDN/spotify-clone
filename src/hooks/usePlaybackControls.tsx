@@ -1,12 +1,14 @@
 import axios from 'axios';
-import { type Playlist } from '../types/playlists/playlistTypes';
+import { type Playlist } from '../types/collection/playlistTypes';
+import { type Album } from '../types/collection/albumTypes';
+import { normalizeTracks } from '../utils/normalize';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { type AppDispatch, type RootState } from '../store';
 import { setCurrentTrackUri, setIsPlaying } from '../store/playerSlice';
 
 interface UseSpotifyPlayerControlsProps {
-	collectionData?: Playlist;
+	collectionData?: Playlist | Album;
 	isShuffled: boolean;
 }
 
@@ -19,13 +21,14 @@ export const usePlaybackControls = ({
 	const token = useSelector((state: RootState) => state.auth.accessToken)
 	const { deviceId, player } = useSelector((state: RootState) => state.player);
 
-	const playPlaylist = async () => {
+	const playCollection = async () => {
 		if (!deviceId || !token || !collectionData || !player) {
 			console.warn('Нет deviceId, token или данных плейлиста');
 			return;
 		}
 
-		const uris = collectionData.tracks.items
+		const tracks = normalizeTracks(collectionData);
+		const uris = tracks
 			.filter(t => t.track && t.track.uri && t.track.available_markets.length > 0)
 			.map(t => t.track.uri);
 
@@ -109,7 +112,8 @@ export const usePlaybackControls = ({
 					dispatch(setIsPlaying(false));
 				}
 			} else {
-				const uris = collectionData?.tracks.items
+				const tracks = collectionData ? normalizeTracks(collectionData) : [];
+				const uris = tracks
 					.filter(t => t.track && t.track.uri && t.track.available_markets.length > 0)
 					.map(t => t.track.uri);
 
@@ -139,5 +143,5 @@ export const usePlaybackControls = ({
 		}
 	};
 
-	return { playPlaylist, playTrack };
+	return { playCollection, playTrack };
 };
