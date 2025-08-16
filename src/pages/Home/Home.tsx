@@ -1,7 +1,7 @@
 import home from './Home.module.css'
 import PlaylistSection from '../../components/PlaylistSection/PlaylistSection';
 import { usePlaylistsOverview } from '../../hooks/usePlaylistsOverview';
-import { type SimplifiedMappedPlaylistItem } from '../../types/playlists/generalTypes';
+import { type SimplifiedMappedPlaylistItem } from '../../types/collection/generalTypes';
 import { mapPlaylistToSimplified } from '../../services/Selections/selections';
 
 import Loader from '../../components/common/Loader';

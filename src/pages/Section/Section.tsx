@@ -1,6 +1,6 @@
 import section from './Section.module.css'
 import { useLocation } from 'react-router-dom';
-import { type SimplifiedMappedPlaylistItem } from '../../types/playlists/generalTypes';
+import { type SimplifiedMappedPlaylistItem } from '../../types/collection/generalTypes';
 
 export default function Section() {
 	const { state } = useLocation();

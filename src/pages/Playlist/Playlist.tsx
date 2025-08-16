@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { type RootState } from '../../store';
 
 import { getPlaylist } from '../../services/Catalog/playlists';
-import { type Playlist } from '../../types/playlists/playlistTypes';
+import { type Playlist } from '../../types/collection/playlistTypes';
 
 import CollectionHeader from '../../components/CollectionModule/CollectionHeader/CollectionHeader';
 import CollectionControls from '../../components/CollectionModule/CollectionControls/CollectionControls';
@@ -15,7 +15,7 @@ import ColelctionTrackList from '../../components/CollectionModule/CollectionTra
 import Loader from '../../components/common/Loader';
 
 export default function Playlist() {
-	// Состояния плеера
+	// Данные плейлиста
 	const [playlistData, setPlaylistData] = useState<Playlist>();
 	const [isShuffled, setIsShuffled] = useState<boolean>(false);
 

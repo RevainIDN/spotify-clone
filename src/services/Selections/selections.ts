@@ -1,6 +1,6 @@
 import axios from "axios";
-import { type Playlist } from "../../types/playlists/categoriesPlaylistsTypes";
-import { type SimplifiedMappedPlaylistItem } from "../../types/playlists/generalTypes"
+import { type Playlist } from "../../types/collection/categoriesPlaylistsTypes";
+import { type SimplifiedMappedPlaylistItem } from "../../types/collection/generalTypes"
 
 export const mapPlaylistToSimplified = (playlist: Playlist | null): SimplifiedMappedPlaylistItem | null => {
 	if (!playlist) return null;

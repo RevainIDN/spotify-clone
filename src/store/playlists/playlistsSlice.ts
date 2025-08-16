@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { type NewReleasesResponse } from "../../types/playlists/newReleasesTypes";
+import { type NewReleasesResponse } from "../../types/collection/newReleasesTypes";
 
 interface PlaylistState {
 	newReleases: NewReleasesResponse | null;
