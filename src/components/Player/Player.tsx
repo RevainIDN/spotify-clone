@@ -3,6 +3,7 @@ import axios from 'axios'
 
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { type AppDispatch, type RootState } from '../../store'
 import { setIsPlaying, setCurrentTrack, setCurrentTrackUri } from '../../store/playerSlice'
 import { type CurrentTrack } from '../../types/playerTypes'
@@ -11,6 +12,7 @@ import VolumeSlider from './VolumeSlider/VolumeSlider'
 import ProgressBar from './ProgressBar/ProgressBar'
 
 export default function Player() {
+	const navigate = useNavigate();
 	const dispatch = useDispatch<AppDispatch>();
 	const { accessToken } = useSelector((state: RootState) => state.auth);
 	const { player, deviceId, currentTrack, currentTrackUri, isPlaying } = useSelector((state: RootState) => state.player);
@@ -54,7 +56,6 @@ export default function Player() {
 	const playTrack = async () => {
 		if (!player || !currentTrackUri) return;
 		const state = await player.getCurrentState();
-
 		if (state?.paused) {
 			await player.resume();
 		} else {
@@ -63,6 +64,29 @@ export default function Player() {
 
 		dispatch(setIsPlaying(!isPlaying));
 	}
+
+	const handleAlbum = async () => {
+		const state = await player?.getCurrentState();
+		const albumUri = state?.track_window.current_track.album.uri;
+		if (!albumUri) return;
+
+		const albumId = albumUri.split(":").pop();
+		navigate(`/album/${albumId}`);
+	};
+
+	const handleArtist = async (name: string) => {
+		const state = await player?.getCurrentState();
+		const artists = state?.track_window.current_track.artists;
+
+		if (!artists) return;
+
+		const artist = artists.find(a => a.name === name);
+
+		if (artist) {
+			const artistId = artist.uri.split(":").pop();
+			navigate(`/artist/${artistId}`);
+		}
+	};
 
 	const playNext = async () => {
 		if (!player || !currentTrackUri) return;
@@ -101,8 +125,15 @@ export default function Player() {
 			<div className={playerStyles.trackInfo}>
 				<img className={playerStyles.trackImage} src={displayTrack?.albumImage} alt="" />
 				<div className={playerStyles.trackDetails}>
-					<h2 className={playerStyles.trackTitle}>{displayTrack?.name}</h2>
-					<h3 className={playerStyles.trackArtist}>{displayTrack?.artists.join(', ')}</h3>
+					<h2 className={playerStyles.trackTitle} onClick={handleAlbum}>{displayTrack?.name}</h2>
+					<ul className={playerStyles.trackArtistList}>
+						{displayTrack?.artists.map((artist, index) => (
+							<li key={index} className={playerStyles.trackArtist} onClick={() => handleArtist(artist)} >
+								{artist}
+								{index < displayTrack.artists.length - 1 && ', '}
+							</li>
+						))}
+					</ul>
 				</div>
 				<img className={playerStyles.addToFavorites} src="/Player/add-to-favorite.svg" alt="Favorite" />
 			</div>
