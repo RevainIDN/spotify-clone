@@ -63,12 +63,17 @@
 }
 
 .playlistDescription {
+	display: flex;
+	gap: 3px;
+}
+
+.playlistArtist {
 	font-size: 14px;
 	font-weight: 400;
 	color: var(--gray-dark);
 }
 
 .playlistTitle:hover,
-.playlistDescription:hover {
+.playlistArtist:hover {
 	text-decoration: underline;
 }

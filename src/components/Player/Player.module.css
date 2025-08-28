@@ -30,6 +30,11 @@
 	color: var(--white);
 }
 
+.trackArtistList {
+	display: flex;
+	gap: 3px;
+}
+
 .trackArtist {
 	font-size: 12px;
 	font-weight: 400;
