@@ -45,8 +45,12 @@ declare global {
 			album: {
 				images: Array<{ url: string }>;
 				name: string;
+				uri: string;
 			};
-			artists: Array<{ name: string }>;
+			artists: {
+				name: string;
+				uri: string;
+			}[];
 		}
 	}
 }

@@ -4,6 +4,11 @@ export interface SimplifiedMappedPlaylistItem {
 	images: Image[];
 	description?: string;
 	ownerName: string;
+	artists: {
+		id: string;
+		name: string;
+		type: string;
+	}[];
 	type: string;
 }
 
