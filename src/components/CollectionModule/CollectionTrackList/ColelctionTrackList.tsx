@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { type RootState } from '../../../store';
 import { usePlaybackControls } from '../../../hooks/usePlaybackControls';
+import { useNavigate } from 'react-router-dom';
 
 import { formatDate } from '../../../utils/formatDate';
 import { formatDuration } from '../../../utils/formatDuration';
@@ -24,6 +25,7 @@ export default function ColelctionTrackList({ collectionData, isShuffled, filter
 	const { currentTrackUri, isPlaying } = useSelector((state: RootState) => state.player);
 	const [selectedTrackState, setSelectedTrackState] = useState<string | null>(null);
 	const [hoveredTrack, setHoveredTrack] = useState<string | null>(null);
+	const navigate = useNavigate();
 
 	const { playTrack } = usePlaybackControls({
 		collectionData,
@@ -96,107 +98,114 @@ export default function ColelctionTrackList({ collectionData, isShuffled, filter
 				</tr>
 			</thead>
 			<tbody>
-				{sortedValues.map((track, index) => (
-					<tr
-						key={track.track.id}
-						className={`
+				{sortedValues.map((track, index) => {
+					if (!track.track) {
+						return null;
+					}
+
+					return (
+						<tr
+							key={`${track.track.id}-${track.added_at ?? index}`}
+							className={`
     								${selectedTrackState === track.track.id ? trackListStyles.selectedTrack : trackListStyles.track}
     								${track.track.available_markets.length === 0 ? trackListStyles.unavailableTrack : ''}
   									`}
-						onClick={() => {
-							setSelectedTrackState(track.track.id)
-						}}
-						onMouseEnter={() => setHoveredTrack(track.track.id)}
-						onMouseLeave={() => setHoveredTrack(null)}
-					>
-						<th className={trackListStyles.trackNumber} onClick={() => playTrack(track.track.uri, track.track.available_markets)}>
-							{currentTrackUri === track.track.uri && track.track.available_markets.length > 0 ||
-								hoveredTrack === track.track.id && track.track.available_markets.length > 0 ||
-								selectedTrackState === track.track.id && track.track.available_markets.length > 0 ? (
-								<button>
-									<img
-										src={
-											isPlaying && currentTrackUri === track.track.uri
-												? '/Track/pause.svg'
-												: '/Track/play.svg'
-										}
-										alt="play"
-									/>
-								</button>
-							) : (
-								<span className={
-									currentTrackUri === track.track.uri
-										? trackListStyles.trackActive
-										: selectedTrackState === track.track.id
-											? trackListStyles.selectedTrack
-											: ''
-								}>
-									{index + 1}
-								</span>
-							)}
-						</th>
-						{sortViewMode === 'Compact' && (
-							<th className={trackListStyles.trackInfoCompact}><span className={
-								currentTrackUri === track.track.uri
-									? trackListStyles.trackActive
-									: selectedTrackState === track.track.id
-										? trackListStyles.selectedTrackName
-										: trackListStyles.trackNameCompact
-							}>
-								{track.track.name}
-							</span></th>
-						)}
-						{sortViewMode === 'List' && (
-							<th className={trackListStyles.trackImg}>
-								{collectionData.type === 'playlist' ? (
-									<img
-										className={trackListStyles.trackCover}
-										src={
-											track.track.album?.images?.[2]?.url ?? track.track.album?.images?.[0]?.url ?? '/default-cover.png'
-										}
-										alt={track.track.name}
-									/>
+							onClick={() => {
+								setSelectedTrackState(track.track.id)
+							}}
+							onMouseEnter={() => setHoveredTrack(track.track.id)}
+							onMouseLeave={() => setHoveredTrack(null)}
+						>
+							<th className={trackListStyles.trackNumber} onClick={() => playTrack(track.track.uri, track.track.available_markets)}>
+								{currentTrackUri === track.track.uri && track.track.available_markets.length > 0 ||
+									hoveredTrack === track.track.id && track.track.available_markets.length > 0 ||
+									selectedTrackState === track.track.id && track.track.available_markets.length > 0 ? (
+									<button>
+										<img
+											src={
+												isPlaying && currentTrackUri === track.track.uri
+													? '/Track/pause.svg'
+													: '/Track/play.svg'
+											}
+											alt="play"
+										/>
+									</button>
 								) : (
-									null
-								)}
-								<div className={trackListStyles.trackInfo}>
 									<span className={
 										currentTrackUri === track.track.uri
 											? trackListStyles.trackActive
 											: selectedTrackState === track.track.id
-												? trackListStyles.selectedTrackName
-												: trackListStyles.trackName
+												? trackListStyles.selectedTrack
+												: ''
 									}>
-										{track.track.name}
+										{index + 1}
 									</span>
+								)}
+							</th>
+							{sortViewMode === 'Compact' && (
+								<th className={trackListStyles.trackInfoCompact}><span className={
+									currentTrackUri === track.track.uri
+										? trackListStyles.trackActive
+										: selectedTrackState === track.track.id
+											? trackListStyles.selectedTrackName
+											: trackListStyles.trackNameCompact
+								}>
+									{track.track.name}
+								</span></th>
+							)}
+							{sortViewMode === 'List' && (
+								<th className={trackListStyles.trackImg}>
+									{collectionData.type === 'playlist' ? (
+										<img
+											className={trackListStyles.trackCover}
+											src={
+												track.track.album?.images?.[2]?.url ?? track.track.album?.images?.[0]?.url ?? '/default-cover.png'
+											}
+											alt={track.track.name}
+										/>
+									) : (
+										null
+									)}
+									<div className={trackListStyles.trackInfo}>
+										<span className={
+											currentTrackUri === track.track.uri
+												? trackListStyles.trackActive
+												: selectedTrackState === track.track.id
+													? trackListStyles.selectedTrackName
+													: trackListStyles.trackName
+										}>
+											{track.track.name}
+										</span>
+										<ul className={trackListStyles.trackArtistList}>
+											{track.track.artists.map((artist, index) => (
+												<li className={trackListStyles.trackArtist} key={artist.id || index} onClick={() => navigate(`/artist/${artist.id}`)}>
+													{artist.name}
+													{index < track.track.artists.length - 1 && ', '}
+												</li>
+											))}
+										</ul>
+									</div>
+								</th>
+							)}
+							{collectionData.type === 'playlist' && sortViewMode === 'Compact' && (
+								<th className={trackListStyles.trackInfoCompact}>
 									<ul className={trackListStyles.trackArtistList}>
 										{track.track.artists.map((artist, index) => (
-											<li className={trackListStyles.trackArtist} key={artist.id || index}>
+											<li className={trackListStyles.trackArtist} key={artist.id || index} onClick={() => navigate(`/artist/${artist.id}`)}>
 												{artist.name}
 												{index < track.track.artists.length - 1 && ', '}
 											</li>
 										))}
 									</ul>
-								</div>
-							</th>
-						)}
-						{collectionData.type === 'playlist' && sortViewMode === 'Compact' && (
-							<th className={trackListStyles.trackInfoCompact}>
-								<ul className={trackListStyles.trackArtistList}>
-									{track.track.artists.map((artist, index) => (
-										<li className={trackListStyles.trackArtist} key={artist.id || index}>
-											{artist.name}
-											{index < track.track.artists.length - 1 && ', '}
-										</li>
-									))}
-								</ul>
-							</th>
-						)}
-						{collectionData.type === 'playlist' && <th className={trackListStyles.trackAlbum}><span>{track.track.album?.name ?? 'Unknown Album'}</span></th>}
-						{collectionData.type === 'playlist' && <th className={trackListStyles.trackDate}><span>{track.added_at ? formatDate(track.added_at) : '-'}</span></th>}
-						<th className={trackListStyles.trackDuration}><span>{formatDuration(track.track.duration_ms)}</span></th>
-					</tr>
-				))}
+								</th>
+							)}
+							{collectionData.type === 'playlist' && <th className={trackListStyles.trackAlbum} onClick={() => navigate(`/album/${track.track.album?.id}`)}><span>{track.track.album?.name ?? 'Unknown Album'}</span></th>}
+							{collectionData.type === 'playlist' && <th className={trackListStyles.trackDate}><span>{track.added_at ? formatDate(track.added_at) : '-'}</span></th>}
+							<th className={trackListStyles.trackDuration}><span>{formatDuration(track.track.duration_ms)}</span></th>
+						</tr>
+
+					)
+				})}
 			</tbody>
 		</table>
 	)

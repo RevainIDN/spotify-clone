@@ -69,7 +69,7 @@ export default function CollectionControls(
 
 	// Найти текущий трек
 	const tracks = normalizeTracks(collectionData);
-	const existingTrack = tracks.find(t => t.track.uri === currentTrackUri);
+	const existingTrack = tracks.find(t => t.track?.uri === currentTrackUri);
 
 	return (
 		<div className={controlsStyles.options}>
@@ -86,16 +86,18 @@ export default function CollectionControls(
 				<button className={controlsStyles.addBtn}><img src="/Options/add.svg" alt="Add" /></button>
 			</div>
 			<div className={controlsStyles.filters}>
-				<div className={controlsStyles.findInputWrapper}>
-					<input
-						className={controlsStyles.findInput}
-						value={filterValue}
-						onChange={(e) => setFilterValue(e.target.value)}
-						type="text"
-						placeholder='Search in playlist'
-					/>
-					<img className={controlsStyles.findIcon} src="/Options/find.svg" alt="Find" />
-				</div>
+				{collectionData.type === 'playlist' && (
+					<div className={controlsStyles.findInputWrapper}>
+						<input
+							className={controlsStyles.findInput}
+							value={filterValue}
+							onChange={(e) => setFilterValue(e.target.value)}
+							type="text"
+							placeholder='Search in playlist'
+						/>
+						<img className={controlsStyles.findIcon} src="/Options/find.svg" alt="Find" />
+					</div>
+				)}
 				<button
 					className={controlsStyles.typeBtn}
 					onClick={() => setIsDropdownOpen(prev => !prev)}
@@ -105,7 +107,7 @@ export default function CollectionControls(
 				{isDropdownOpen &&
 					<ul className={controlsStyles.dropdownList}>
 
-						{sortValues.map((value) => (
+						{sortValues.filter(value => collectionData.type === 'album' ? value.type === 'View mode' : value.type).map((value) => (
 							<li
 								key={value.title}
 								className={value.type === 'Category' ? controlsStyles.dropdownItemTitle : controlsStyles.dropdownItem}
