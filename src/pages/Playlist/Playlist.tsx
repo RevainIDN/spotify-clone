@@ -3,8 +3,9 @@ import playlist from './Playlist.module.css'
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom'
 
-import { useSelector } from 'react-redux';
-import { type RootState } from '../../store';
+import { useDispatch, useSelector } from 'react-redux';
+import { type AppDispatch, type RootState } from '../../store';
+import { setNavigation } from '../../store/general';
 
 import { getPlaylist } from '../../services/Catalog/playlists';
 import { type Playlist } from '../../types/collection/playlistTypes';
@@ -31,6 +32,8 @@ export default function Playlist() {
 	const token = useSelector((state: RootState) => state.auth.accessToken)
 	const { id } = useParams();
 
+	const dispatch = useDispatch<AppDispatch>();
+
 	// Получение данных плейлиста
 	useEffect(() => {
 		if (!token || !id) {
@@ -48,7 +51,7 @@ export default function Playlist() {
 		};
 
 		fetchData();
-
+		dispatch(setNavigation('playlist'));
 	}, [token, id])
 
 	if (!playlistData) {

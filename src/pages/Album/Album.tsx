@@ -3,8 +3,9 @@ import albumStyles from './Album.module.css'
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useSelector } from 'react-redux';
-import { type RootState } from '../../store';
+import { useDispatch, useSelector } from 'react-redux';
+import { type AppDispatch, type RootState } from '../../store';
+import { setNavigation } from '../../store/general';
 
 import { getAlbum } from '../../services/Catalog/albums';
 import { type Album } from '../../types/collection/albumTypes';
@@ -30,6 +31,8 @@ export default function Album() {
 	const token = useSelector((state: RootState) => state.auth.accessToken);
 	const { id } = useParams();
 
+	const dispatch = useDispatch<AppDispatch>();
+
 	// Получение данных альбома
 	useEffect(() => {
 		if (!token || !id) {
@@ -47,7 +50,7 @@ export default function Album() {
 		};
 
 		fetchData();
-
+		dispatch(setNavigation('album'));
 	}, [token, id])
 
 	if (!albumData) {
