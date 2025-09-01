@@ -1,0 +1,148 @@
+.artistContainer {
+	position: relative;
+	width: 100%;
+	height: 100vh;
+	padding: 60px 32px 100px 32px;
+	background-color: #121212;
+	overflow-y: auto;
+	z-index: 1;
+}
+
+.main {
+	z-index: 3;
+}
+
+.topTracks {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0 10px;
+	z-index: 3;
+}
+
+.tableHead {
+	position: relative;
+}
+
+.tableHead::before {
+	content: '';
+	position: absolute;
+	width: 100%;
+	height: 1px;
+	background-color: #666666;
+	top: 100%;
+	left: 0;
+}
+
+.tableHead tr th:first-child {
+	text-align: center;
+}
+
+.tableHead tr th {
+	font-size: 1rem;
+	font-weight: 400;
+	color: var(--gray-light);
+	text-align: start;
+}
+
+.track {
+	height: 30px;
+}
+
+.track:hover {
+	background-color: #323232;
+}
+
+.track:hover .trackAlbum,
+.track:hover .trackArtist,
+.selectedTrack .trackAlbum,
+.selectedTrack .trackArtist {
+	color: var(--white);
+}
+
+.trackActive {
+	color: var(--active-track);
+}
+
+.selectedTrack {
+	background-color: #646464;
+}
+
+.track th:first-child,
+.selectedTrack th:first-child {
+	border-top-left-radius: 6px;
+	border-bottom-left-radius: 6px;
+}
+
+.track th:last-child,
+.selectedTrack th:last-child {
+	border-top-right-radius: 6px;
+	border-bottom-right-radius: 6px;
+}
+
+.unavailableTrack {
+	opacity: 0.5;
+}
+
+.trackNumber button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+
+.trackImg {
+	display: flex;
+	gap: 12px;
+}
+
+.trackCover {
+	width: 52px;
+	height: 52px;
+}
+
+.trackInfo {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: start;
+	text-align: start;
+	min-width: 0;
+}
+
+.trackName {
+	width: 100%;
+	font-size: 1rem;
+	color: var(--white);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	padding-right: 10px;
+}
+
+.trackArtistList {
+	display: flex;
+	gap: 3px;
+}
+
+.trackArtist {
+	cursor: pointer;
+	font-size: 0.9rem;
+	font-weight: 400;
+	color: var(--gray-light);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-align: start;
+}
+
+.trackArtist:hover {
+	text-decoration: underline;
+	color: var(--white);
+}
+
+.trackDuration {
+	cursor: default;
+	font-weight: 400;
+	text-align: start;
+	color: var(--gray-light);
+}
