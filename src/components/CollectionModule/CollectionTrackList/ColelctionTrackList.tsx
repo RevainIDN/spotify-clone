@@ -7,10 +7,10 @@ import { useSelector } from 'react-redux';
 import { type RootState } from '../../../store';
 import { usePlaybackControls } from '../../../hooks/usePlaybackControls';
 import { useNavigate } from 'react-router-dom';
+import { isArtistTracks } from '../../../utils/typeGuard';
 
 import { formatDate } from '../../../utils/formatDate';
 import { formatDuration } from '../../../utils/formatDuration';
-
 
 interface ColelctionTrackListProps {
 	collectionData: Collection;
@@ -34,6 +34,8 @@ export default function ColelctionTrackList({ collectionData, isShuffled, filter
 
 	// Нормализация треков
 	const tracks = collectionData ? normalizeTracks(collectionData) : []
+
+	const isPlaylist = !isArtistTracks(collectionData) && collectionData.type === 'playlist';
 
 	// Фильтрация треков
 	const filteredValues = tracks.filter(track => {
@@ -80,20 +82,20 @@ export default function ColelctionTrackList({ collectionData, isShuffled, filter
 	return (
 		<table className={trackListStyles.tracks}>
 			<colgroup>
-				<col style={collectionData.type === 'playlist' ? { width: '5%' } : { width: '4%' }} />
-				<col style={collectionData.type === 'playlist' ? { width: '35%' } : { width: '90%' }} />
-				{collectionData.type === 'playlist' ? (sortViewMode === 'Compact' && <col style={{ width: '20%' }} />) : null}
-				{collectionData.type === 'playlist' ? <col style={sortViewMode === 'List' ? { width: '35%' } : { width: '25%' }} /> : null}
-				{collectionData.type === 'playlist' ? <col style={sortViewMode === 'List' ? { width: '20%' } : { width: '15%' }} /> : null}
+				<col style={isPlaylist ? { width: '5%' } : { width: '4%' }} />
+				<col style={isPlaylist ? { width: '35%' } : { width: '90%' }} />
+				{isPlaylist ? (sortViewMode === 'Compact' && <col style={{ width: '20%' }} />) : null}
+				{isPlaylist ? <col style={sortViewMode === 'List' ? { width: '35%' } : { width: '25%' }} /> : null}
+				{isPlaylist ? <col style={sortViewMode === 'List' ? { width: '20%' } : { width: '15%' }} /> : null}
 				<col style={{ width: '5%' }} />
 			</colgroup>
 			<thead className={trackListStyles.tableHead}>
 				<tr>
 					<th>#</th>
 					<th>TITLE</th>
-					{collectionData.type === 'playlist' && sortViewMode === 'Compact' && <th>ARTIST</th>}
-					{collectionData.type === 'playlist' && <th>ALBUM</th>}
-					{collectionData.type === 'playlist' && <th>DATE ADDED</th>}
+					{isPlaylist && sortViewMode === 'Compact' && <th>ARTIST</th>}
+					{isPlaylist && <th>ALBUM</th>}
+					{isPlaylist && <th>DATE ADDED</th>}
 					<th>TIME</th>
 				</tr>
 			</thead>
@@ -155,7 +157,7 @@ export default function ColelctionTrackList({ collectionData, isShuffled, filter
 							)}
 							{sortViewMode === 'List' && (
 								<th className={trackListStyles.trackImg}>
-									{collectionData.type === 'playlist' ? (
+									{isPlaylist ? (
 										<img
 											className={trackListStyles.trackCover}
 											src={
@@ -187,7 +189,7 @@ export default function ColelctionTrackList({ collectionData, isShuffled, filter
 									</div>
 								</th>
 							)}
-							{collectionData.type === 'playlist' && sortViewMode === 'Compact' && (
+							{isPlaylist && sortViewMode === 'Compact' && (
 								<th className={trackListStyles.trackInfoCompact}>
 									<ul className={trackListStyles.trackArtistList}>
 										{track.track.artists.map((artist, index) => (
@@ -199,11 +201,10 @@ export default function ColelctionTrackList({ collectionData, isShuffled, filter
 									</ul>
 								</th>
 							)}
-							{collectionData.type === 'playlist' && <th className={trackListStyles.trackAlbum} onClick={() => navigate(`/album/${track.track.album?.id}`)}><span>{track.track.album?.name ?? 'Unknown Album'}</span></th>}
-							{collectionData.type === 'playlist' && <th className={trackListStyles.trackDate}><span>{track.added_at ? formatDate(track.added_at) : '-'}</span></th>}
+							{isPlaylist && <th className={trackListStyles.trackAlbum} onClick={() => navigate(`/album/${track.track.album?.id}`)}><span>{track.track.album?.name ?? 'Unknown Album'}</span></th>}
+							{isPlaylist && <th className={trackListStyles.trackDate}><span>{track.added_at ? formatDate(track.added_at) : '-'}</span></th>}
 							<th className={trackListStyles.trackDuration}><span>{formatDuration(track.track.duration_ms)}</span></th>
 						</tr>
-
 					)
 				})}
 			</tbody>
