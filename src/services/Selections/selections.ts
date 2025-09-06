@@ -1,6 +1,7 @@
 import axios from "axios";
 import { type Playlist } from "../../types/collection/categoriesPlaylistsTypes";
-import { type SimplifiedMappedPlaylistItem } from "../../types/collection/generalTypes"
+import { type SimplifiedMappedPlaylistItem, type SimplifiedMappedAlbumItem } from "../../types/collection/generalTypes"
+import { type ArtistAlbumItems } from "../../types/collection/artistTypes";
 
 export const mapPlaylistToSimplified = (playlist: Playlist | null): SimplifiedMappedPlaylistItem | null => {
 	if (!playlist) return null;
@@ -10,7 +11,21 @@ export const mapPlaylistToSimplified = (playlist: Playlist | null): SimplifiedMa
 		images: playlist.images,
 		description: playlist.description,
 		ownerName: playlist.owner.display_name,
+		artists: [],
 		type: playlist.type
+	};
+};
+
+export const mapAlbumToSimplified = (album: ArtistAlbumItems | null): SimplifiedMappedAlbumItem | null => {
+	if (!album) return null;
+	return {
+		album_group: album.album_group,
+		album_type: album.album_type,
+		id: album.id,
+		name: album.name,
+		images: album.images,
+		release_date: album.release_date,
+		type: album.type
 	};
 };
 

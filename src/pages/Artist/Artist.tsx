@@ -8,18 +8,21 @@ import { type AppDispatch, type RootState } from '../../store';
 import { setNavigation } from '../../store/general';
 import { formatDuration } from '../../utils/formatDuration';
 
-import { getArtist } from '../../services/Catalog/artists';
-import { getArtistTopTracks } from '../../services/Catalog/artists';
+import { getArtist, getArtistTopTracks, getArtistAlbums } from '../../services/Catalog/artists';
+import { type FullArtist, type ArtistTracks, type ArtistAlbums } from '../../types/collection/artistTypes';
 
-import { type FullArtist, type ArtistTracks } from '../../types/collection/artistTypes';
+import { type SimplifiedMappedAlbumItem } from '../../types/collection/generalTypes';
+import { mapAlbumToSimplified } from '../../services/Selections/selections';
 
 import CollectionHeader from '../../components/CollectionModule/CollectionHeader/CollectionHeader'
 import CollectionControls from '../../components/CollectionModule/CollectionControls/CollectionControls';
+import AlbumsSection from '../../components/AlbumsSection/AlbumsSection';
 import Loader from '../../components/common/Loader';
 
 export default function Artist() {
 	const [artistData, setArtistData] = useState<FullArtist | null>(null);
 	const [topTracks, setTopTracks] = useState<ArtistTracks | null>(null);
+	const [artistMusic, setArtistMusic] = useState<ArtistAlbums | null>(null);
 	const [isShuffled, setIsShuffled] = useState<boolean>(false);
 
 	const { currentTrackUri, isPlaying } = useSelector((state: RootState) => state.player);
@@ -46,8 +49,10 @@ export default function Artist() {
 			try {
 				const data = await getArtist(token, id);
 				const topTracksData = await getArtistTopTracks(token, id);
+				const artistMusic = await getArtistAlbums(token, id);
 				setArtistData(data);
 				setTopTracks(topTracksData);
+				setArtistMusic(artistMusic);
 			} catch (error) {
 				console.error(error);
 			}
@@ -60,7 +65,7 @@ export default function Artist() {
 	if (!artistData || !topTracks) {
 		return <Loader />
 	}
-	console.log(topTracks)
+
 	return (
 		<div className={artistStyles.artistContainer}>
 			<CollectionHeader collectionData={artistData} />
@@ -154,6 +159,19 @@ export default function Artist() {
 						})}
 					</tbody>
 				</table>
+			</div>
+			<div className={artistStyles.artistMusic}>
+				<AlbumsSection
+					title='Music'
+					sectionKey='artist-music'
+					items={
+						artistMusic
+							? artistMusic.items
+								.map(mapAlbumToSimplified)
+								.filter(Boolean) as SimplifiedMappedAlbumItem[]
+							: []
+					}
+				/>
 			</div>
 		</div>
 	)
