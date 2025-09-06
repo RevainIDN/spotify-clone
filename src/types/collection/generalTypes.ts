@@ -12,6 +12,16 @@ export interface SimplifiedMappedPlaylistItem {
 	type: string;
 }
 
+export interface SimplifiedMappedAlbumItem {
+	album_group: string | undefined;
+	album_type: string;
+	id: string;
+	name: string;
+	images: Image[];
+	release_date: string;
+	type: string;
+}
+
 export interface Image {
 	height: number | null;
 	url: string;
