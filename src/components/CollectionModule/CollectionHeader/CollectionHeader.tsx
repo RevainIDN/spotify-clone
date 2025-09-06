@@ -46,9 +46,9 @@ export default function CollectionHeader({ collectionData }: CollectionHeaderPro
 							<span className={headerStyles.artist} onClick={() => navigate(`/user/${collectionData.owner.id}`)}>
 								{collectionData.owner.display_name}
 							</span>
-							<div className={headerStyles.delimiter}></div>
+							<div className='delimiter'></div>
 							<span className={headerStyles.numberSongs}>{collectionData.tracks.items.length} songs</span>
-							<div className={headerStyles.delimiter}></div>
+							<div className='delimiter'></div>
 							<span className={headerStyles.totalTime}>{totalListeningTime()}</span>
 						</div>
 					</div>
@@ -70,9 +70,9 @@ export default function CollectionHeader({ collectionData }: CollectionHeaderPro
 							<span className={headerStyles.artist} onClick={() => navigate(`/artist/${collectionData.artists[0].id}`)}>
 								{collectionData.artists[0].name}
 							</span>
-							<div className={headerStyles.delimiter}></div>
+							<div className='delimiter'></div>
 							<span className={headerStyles.numberSongs}>{collectionData.tracks.items.length} songs</span>
-							<div className={headerStyles.delimiter}></div>
+							<div className='delimiter'></div>
 							<span className={headerStyles.totalTime}>{totalListeningTime()}</span>
 						</div>
 					</div>

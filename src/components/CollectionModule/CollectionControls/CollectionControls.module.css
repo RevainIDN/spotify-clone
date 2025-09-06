@@ -8,6 +8,7 @@
 .trackOptions,
 .filters {
 	display: flex;
+	align-items: center;
 	gap: 20px;
 }
 
@@ -39,6 +40,25 @@
 
 .mixBtn svg:hover {
 	transform: scale(1.05);
+}
+
+.followBtn {
+	border: 1px var(--gray-dark) solid;
+	border-radius: 30px;
+	padding: 0 20px;
+	height: 40px;
+	transition: border 0.1s;
+}
+
+.followBtn:hover {
+	border: 1px var(--white) solid;
+	transform: scale(103%);
+}
+
+.followBtn:active {
+	border: 1px var(--gray-dark) solid;
+	transform: scale(100%);
+	opacity: 0.8;
 }
 
 .findInputWrapper {

@@ -25,14 +25,6 @@
 	height: 200px;
 }
 
-.delimiter {
-	width: 4px;
-	height: 4px;
-	margin: 6px;
-	background-color: var(--gray-light);
-	border-radius: 50%;
-}
-
 .playlistInfo {
 	display: flex;
 	flex-direction: column;
