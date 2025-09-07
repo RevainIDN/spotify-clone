@@ -16,6 +16,7 @@
 	font-size: 24px;
 	font-weight: 700;
 	color: var(--white);
+	margin-left: 16px;
 }
 
 .showAll {
