@@ -40,8 +40,7 @@ const getNewReleases = async (token: string | null) => {
 				Authorization: `Bearer ${token}`
 			},
 			params: {
-				limit: 20,
-				country: 'US'
+				limit: 20
 			}
 		});
 		return response.data;

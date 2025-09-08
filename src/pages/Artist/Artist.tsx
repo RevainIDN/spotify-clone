@@ -16,7 +16,7 @@ import { mapAlbumToSimplified } from '../../services/Selections/selections';
 
 import CollectionHeader from '../../components/CollectionModule/CollectionHeader/CollectionHeader'
 import CollectionControls from '../../components/CollectionModule/CollectionControls/CollectionControls';
-import AlbumsSection from '../../components/AlbumsSection/AlbumsSection';
+import AlbumsSection from '../../components/SectionModule/AlbumsSection/AlbumsSection';
 import Loader from '../../components/common/Loader';
 
 export default function Artist() {

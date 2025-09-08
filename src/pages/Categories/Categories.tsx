@@ -8,8 +8,8 @@ import { getDataCategory } from '../../services/Search/categories';
 import { mapPlaylistToSimplified, mapAlbumToSimplified } from '../../services/Selections/selections';
 import { type SimplifiedMappedPlaylistItem, type SimplifiedMappedAlbumItem } from '../../types/collection/generalTypes';
 
-import PlaylistSection from '../../components/PlaylistSection/PlaylistSection';
-import AlbumsSection from '../../components/AlbumsSection/AlbumsSection';
+import PlaylistSection from '../../components/SectionModule/PlaylistSection/PlaylistSection';
+import AlbumsSection from '../../components/SectionModule/AlbumsSection/AlbumsSection';
 import Loader from '../../components/common/Loader';
 
 export default function Categories() {

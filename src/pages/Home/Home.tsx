@@ -1,5 +1,5 @@
 import home from './Home.module.css'
-import PlaylistSection from '../../components/PlaylistSection/PlaylistSection';
+import PlaylistSection from '../../components/SectionModule/PlaylistSection/PlaylistSection';
 import { usePlaylistsOverview } from '../../hooks/usePlaylistsOverview';
 import { type SimplifiedMappedPlaylistItem } from '../../types/collection/generalTypes';
 import { mapPlaylistToSimplified } from '../../services/Selections/selections';

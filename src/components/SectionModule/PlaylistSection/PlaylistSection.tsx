@@ -1,5 +1,5 @@
 import playlistSection from './PlaylistSection.module.css';
-import { type SimplifiedMappedPlaylistItem } from '../../types/collection/generalTypes';
+import { type SimplifiedMappedPlaylistItem } from '../../../types/collection/generalTypes';
 import { useNavigate } from 'react-router-dom';
 
 interface PlaylistSectionProps {

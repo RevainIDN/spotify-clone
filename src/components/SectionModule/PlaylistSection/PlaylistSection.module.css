@@ -1,0 +1,80 @@
+.playlistSection {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	margin-bottom: 40px;
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 32px;
+}
+
+.title {
+	font-size: 24px;
+	font-weight: 700;
+	color: var(--white);
+	margin-left: 16px;
+}
+
+.showAll {
+	font-size: 14px;
+	font-weight: 400;
+	color: var(--gray-light);
+	cursor: pointer;
+}
+
+.showAll:hover {
+	text-decoration: underline;
+}
+
+.playlists {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 24px;
+}
+
+.playlistItem {
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	padding: 16px;
+}
+
+.playlistItem:hover {
+	background-color: rgba(255, 255, 255, 0.03);
+	border-radius: 8px;
+}
+
+.playlistImage {
+	object-fit: cover;
+	width: 100%;
+	height: 180px;
+	margin-bottom: 16px;
+	border-radius: 4px;
+}
+
+.playlistTitle {
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--white);
+	margin-bottom: 4px;
+}
+
+.playlistDescription {
+	display: flex;
+	gap: 3px;
+}
+
+.playlistArtist {
+	font-size: 14px;
+	font-weight: 400;
+	color: var(--gray-dark);
+}
+
+.playlistTitle:hover,
+.playlistArtist:hover {
+	text-decoration: underline;
+}
