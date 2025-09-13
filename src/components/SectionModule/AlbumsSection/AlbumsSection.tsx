@@ -7,6 +7,7 @@ import { extractYear } from '../../../utils/extractYear';
 interface AlbumsSectionProps {
 	title: string;
 	sectionKey: string;
+	isFiltered?: boolean;
 	items: SimplifiedMappedAlbumItem[];
 }
 
@@ -20,19 +21,8 @@ const filterValues = [
 function AlbumItem({ album }: { album: SimplifiedMappedAlbumItem }) {
 	const navigate = useNavigate();
 
-	const handleClick = () => {
-		switch (album.type) {
-			case 'playlist':
-				navigate(`/playlist/${album.id}`);
-				break;
-			case 'album':
-				navigate(`/album/${album.id}`);
-				break;
-		}
-	};
-
 	return (
-		<li onClick={handleClick} className={albumsSectionStyles.albumItem}>
+		<li onClick={() => { navigate(`/album/${album.id}`) }} className={albumsSectionStyles.albumItem}>
 			<img className={albumsSectionStyles.albumImage} src={album.images[0]?.url} alt={album.name} />
 			<span className={albumsSectionStyles.albumTitle}>{album.name}</span>
 			<ul className={albumsSectionStyles.albumDescription}>
@@ -42,7 +32,7 @@ function AlbumItem({ album }: { album: SimplifiedMappedAlbumItem }) {
 					{album.album_type === 'album' ? 'Album'
 						: album.album_type === 'single' ? 'Single'
 							: album.album_type === 'compilation' ? 'Compilation'
-								: null}
+								: 'Single'}
 				</li>
 			</ul>
 		</li>
@@ -75,7 +65,7 @@ function AlbumFilters({ activeFilter, setActiveFilter, items }: {
 	)
 }
 
-export default function AlbumsSection({ title, sectionKey, items }: AlbumsSectionProps) {
+export default function AlbumsSection({ title, sectionKey, isFiltered, items }: AlbumsSectionProps) {
 	const [activeFilter, setActiveFilter] = useState<string>('all');
 
 	const filteredAlbums = activeFilter === 'all'
@@ -90,7 +80,7 @@ export default function AlbumsSection({ title, sectionKey, items }: AlbumsSectio
 				<h1 className={albumsSectionStyles.title}>{title}</h1>
 				<button onClick={() => navigate(`/section/${sectionKey}`, { state: { title, items } })} className={albumsSectionStyles.showAll}>Show all</button>
 			</div>
-			<AlbumFilters activeFilter={activeFilter} setActiveFilter={setActiveFilter} items={items} />
+			{isFiltered && <AlbumFilters activeFilter={activeFilter} setActiveFilter={setActiveFilter} items={items} />}
 			<ul className={albumsSectionStyles.albums}>
 				{filteredAlbums.slice(0, 5).map(album => (
 					<AlbumItem key={album.id} album={album} />

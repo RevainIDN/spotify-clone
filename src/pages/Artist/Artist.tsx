@@ -164,6 +164,7 @@ export default function Artist() {
 				<AlbumsSection
 					title='Music'
 					sectionKey='artist-music'
+					isFiltered={true}
 					items={
 						artistMusic
 							? artistMusic.items

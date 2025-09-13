@@ -1,9 +1,10 @@
 import home from './Home.module.css'
-import PlaylistSection from '../../components/SectionModule/PlaylistSection/PlaylistSection';
 import { usePlaylistsOverview } from '../../hooks/usePlaylistsOverview';
 import { type SimplifiedMappedPlaylistItem } from '../../types/collection/generalTypes';
 import { mapPlaylistToSimplified } from '../../services/Selections/selections';
 
+import PlaylistSection from '../../components/SectionModule/PlaylistSection/PlaylistSection';
+import AlbumsSection from '../../components/SectionModule/AlbumsSection/AlbumsSection';
 import Loader from '../../components/common/Loader';
 
 interface HomeProps {
@@ -19,9 +20,10 @@ export default function Home({ token }: HomeProps) {
 
 	return (
 		<div className={home.home}>
-			<PlaylistSection
-				title="New Releases"
+			<AlbumsSection
+				title='New Releases'
 				sectionKey='new-releases'
+				isFiltered={false}
 				items={newReleases.data?.albums.items || []}
 			/>
 			<PlaylistSection

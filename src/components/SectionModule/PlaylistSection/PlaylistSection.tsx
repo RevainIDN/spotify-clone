@@ -8,40 +8,20 @@ interface PlaylistSectionProps {
 	items: SimplifiedMappedPlaylistItem[];
 }
 
-function PlaylistItem({ album }: { album: SimplifiedMappedPlaylistItem }) {
+function PlaylistItem({ playlist }: { playlist: SimplifiedMappedPlaylistItem }) {
 	const navigate = useNavigate();
 
-	const handleClick = () => {
-		switch (album.type) {
-			case 'playlist':
-				navigate(`/playlist/${album.id}`);
-				break;
-			case 'album':
-				navigate(`/album/${album.id}`);
-				break;
-		}
-	};
-
-	const handleArtist = async (e: React.MouseEvent, name: string) => {
+	const handleOwner = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		const artist = album.artists.find(a => a.name === name);
-
-		if (artist) {
-			navigate(`/artist/${artist.id}`);
-		}
+		navigate(`/user/${playlist.ownerName}`);
 	};
 
 	return (
-		<li onClick={handleClick} className={playlistSection.playlistItem}>
-			<img className={playlistSection.playlistImage} src={album.images[0]?.url} alt={album.name} />
-			<span className={playlistSection.playlistTitle}>{album.name}</span>
+		<li onClick={() => { navigate(`/playlist/${playlist.id}`) }} className={playlistSection.playlistItem}>
+			<img className={playlistSection.playlistImage} src={playlist.images[0]?.url} alt={playlist.name} />
+			<span className={playlistSection.playlistTitle}>{playlist.name}</span>
 			<ul className={playlistSection.playlistDescription}>
-				{album.type === 'playlist'
-					? <li className={playlistSection.playlistArtist} onClick={(e) => handleArtist(e, album.ownerName)}>{album.ownerName}</li>
-					: album.artists.map((artist, index) => <li className={playlistSection.playlistArtist} key={artist.id} onClick={(e) => handleArtist(e, artist.name)}>
-						{artist.name}
-						{index < album.artists.length - 1 && ', '}
-					</li>)}
+				<li className={playlistSection.playlistArtist} onClick={(e) => handleOwner(e)}>{playlist.ownerName}</li>
 			</ul>
 		</li>
 	);
@@ -57,7 +37,7 @@ export default function PlaylistSection({ title, sectionKey, items }: PlaylistSe
 			</div>
 			<ul className={playlistSection.playlists}>
 				{items.slice(0, 5).map(album => (
-					<PlaylistItem key={album.id} album={album} />
+					<PlaylistItem key={album.id} playlist={album} />
 				))}
 			</ul>
 		</div>

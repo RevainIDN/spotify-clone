@@ -5,26 +5,35 @@ import { type RootState } from '../../store';
 import { useParams } from 'react-router-dom';
 import { getDataCategory } from '../../services/Search/categories';
 
-import { mapPlaylistToSimplified, mapAlbumToSimplified } from '../../services/Selections/selections';
-import { type SimplifiedMappedPlaylistItem, type SimplifiedMappedAlbumItem } from '../../types/collection/generalTypes';
+import { mapPlaylistToSimplified, mapAlbumToSimplified, mapArtistToSimplified } from '../../services/Selections/selections';
+import { type SimplifiedMappedPlaylistItem, type SimplifiedMappedAlbumItem, type SimplifiedMappedArtistItem } from '../../types/collection/generalTypes';
 
 import PlaylistSection from '../../components/SectionModule/PlaylistSection/PlaylistSection';
 import AlbumsSection from '../../components/SectionModule/AlbumsSection/AlbumsSection';
+import ArtistSection from '../../components/SectionModule/ArtistSection/ArtistSection';
 import Loader from '../../components/common/Loader';
 
 export default function Categories() {
 	const [categoryData, setCategoryData] = useState<any>(null);
 
 	const { id } = useParams();
-
 	const token = useSelector((state: RootState) => state.auth.accessToken);
 
 	useEffect(() => {
 		const fetchCategory = async () => {
-			if (!id) return;
-			const data = await getDataCategory(token, id);
-			setCategoryData(data);
+			if (!id || !token) return;
+
+			try {
+				const topData = await getDataCategory(token, id);
+
+				setCategoryData({
+					top: topData
+				});
+			} catch (error) {
+				console.error("Ошибка при загрузке данных категории:", error);
+			}
 		};
+
 		fetchCategory();
 	}, [token, id]);
 
@@ -40,7 +49,7 @@ export default function Categories() {
 				sectionKey='playlists'
 				items={
 					categoryData
-						? categoryData.playlists.items
+						? categoryData.top?.playlists?.items
 							.map(mapPlaylistToSimplified)
 							.filter(Boolean) as SimplifiedMappedPlaylistItem[]
 						: []
@@ -49,11 +58,23 @@ export default function Categories() {
 			<AlbumsSection
 				title='Best Albums'
 				sectionKey='albums'
+				isFiltered={false}
 				items={
 					categoryData
-						? categoryData.albums.items
+						? categoryData.top?.albums?.items
 							.map(mapAlbumToSimplified)
 							.filter(Boolean) as SimplifiedMappedAlbumItem[]
+						: []
+				}
+			/>
+			<ArtistSection
+				title='Top Artists'
+				sectionKey='artists'
+				items={
+					categoryData
+						? categoryData.top?.artists?.items
+							.map(mapArtistToSimplified)
+							.filter(Boolean) as SimplifiedMappedArtistItem[]
 						: []
 				}
 			/>
