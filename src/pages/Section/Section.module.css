@@ -62,3 +62,89 @@
 .playlistArtist:hover {
 	text-decoration: underline;
 }
+
+/* ======================================== */
+
+.albumItem {
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	padding: 16px;
+}
+
+.albumItem:hover {
+	background-color: rgba(255, 255, 255, 0.03);
+	border-radius: 8px;
+}
+
+.albumImage {
+	object-fit: cover;
+	width: 100%;
+	height: 180px;
+	margin-bottom: 16px;
+	border-radius: 4px;
+}
+
+.albumTitle {
+	font-size: 1rem;
+	font-weight: 500;
+	color: var(--white);
+	margin-bottom: 4px;
+}
+
+.albumDescription {
+	display: flex;
+	align-items: center;
+	gap: 3px;
+}
+
+.albumYear,
+.albumType {
+	color: var(--gray-light);
+	font-weight: 500;
+}
+
+.albumTitle:hover {
+	text-decoration: underline;
+}
+
+/* ======================================== */
+
+.artistItem {
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	padding: 16px;
+}
+
+.artistItem:hover {
+	background-color: rgba(255, 255, 255, 0.03);
+	border-radius: 8px;
+}
+
+.artistImage {
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	object-fit: cover;
+	border-radius: 50%;
+	margin-bottom: 12px;
+}
+
+.artistTitle {
+	width: fit-content;
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--white);
+	margin-bottom: 4px;
+}
+
+.artistTitle:hover {
+	text-decoration: underline;
+}
+
+.artistType {
+	width: fit-content;
+	font-size: 14px;
+	font-weight: 400;
+	color: var(--gray-light);
+}

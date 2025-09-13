@@ -9,7 +9,7 @@ export interface SimplifiedMappedPlaylistItem {
 		name: string;
 		type: string;
 	}[];
-	type: string;
+	type: 'playlist';
 }
 
 export interface SimplifiedMappedAlbumItem {
@@ -19,8 +19,21 @@ export interface SimplifiedMappedAlbumItem {
 	name: string;
 	images: Image[];
 	release_date: string;
-	type: string;
+	type: 'album';
 }
+
+export interface SimplifiedMappedArtistItem {
+	id: string;
+	name: string;
+	images: Image[];
+	popularity: number;
+	type: 'artist';
+}
+
+export type SimplifiedMappedItem =
+	| SimplifiedMappedPlaylistItem
+	| SimplifiedMappedAlbumItem
+	| SimplifiedMappedArtistItem;
 
 export interface Image {
 	height: number | null;

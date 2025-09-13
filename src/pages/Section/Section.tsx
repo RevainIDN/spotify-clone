@@ -1,44 +1,67 @@
 import section from './Section.module.css'
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { type SimplifiedMappedPlaylistItem } from '../../types/collection/generalTypes';
+import { type SimplifiedMappedItem } from '../../types/collection/generalTypes';
+import { extractYear } from '../../utils/extractYear';
 
-function Item({ playlist }: { playlist: SimplifiedMappedPlaylistItem }) {
+function Item({ data }: { data: SimplifiedMappedItem }) {
 	const navigate = useNavigate();
 
 	const handleClick = () => {
-		switch (playlist.type) {
+		switch (data.type) {
 			case 'playlist':
-				navigate(`/playlist/${playlist.id}`);
+				navigate(`/playlist/${data.id}`);
 				break;
 			case 'album':
-				navigate(`/album/${playlist.id}`);
+				navigate(`/album/${data.id}`);
+				break;
+			case 'artist':
+				navigate(`/artist/${data.id}`);
 				break;
 		}
 	};
 
-	const handleArtist = async (e: React.MouseEvent, name: string) => {
+	const handleOwner = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		const artist = playlist.artists.find(a => a.name === name);
-
-		if (artist) {
-			navigate(`/artist/${artist.id}`);
-		}
+		if (data.type !== 'playlist') return;
+		navigate(`/user/${data.ownerName}`);
 	};
 
 	return (
-		<li key={playlist.id} className={section.item} onClick={handleClick}>
-			<img className={section.playlistImage} src={playlist.images[0]?.url} alt={playlist.name} />
-			<span className={section.playlistTitle}>{playlist.name}</span>
-			<ul className={section.playlistDescription}>
-				{playlist.type === 'playlist'
-					? <li className={section.playlistArtist} onClick={(e) => handleArtist(e, playlist.ownerName)}>{playlist.ownerName}</li>
-					: playlist.artists.map((artist, index) => <li className={section.playlistArtist} key={artist.id} onClick={(e) => handleArtist(e, artist.name)}>
-						{artist.name}
-						{index < playlist.artists.length - 1 && ', '}
-					</li>)}
-			</ul>
-		</li>
+		<>
+			{data.type === 'playlist' && (
+				<li key={data.id} className={section.item} onClick={handleClick}>
+					<img className={section.playlistImage} src={data.images[0]?.url} alt={data.name} />
+					<span className={section.playlistTitle}>{data.name}</span>
+					<ul className={section.playlistDescription}>
+						<li className={section.playlistArtist} onClick={(e) => handleOwner(e)}>{data.ownerName}</li>
+					</ul>
+				</li>
+			)}
+			{data.type === 'album' && (
+				<li onClick={handleClick} className={section.albumItem}>
+					<img className={section.albumImage} src={data.images[0]?.url} alt={data.name} />
+					<span className={section.albumTitle}>{data.name}</span>
+					<ul className={section.albumDescription}>
+						<li className={section.albumYear}>{extractYear(data.release_date)}</li>
+						<li className='delimiter'></li>
+						<li className={section.albumType}>
+							{data.album_type === 'album' ? 'Album'
+								: data.album_type === 'single' ? 'Single'
+									: data.album_type === 'compilation' ? 'Compilation'
+										: 'Signle'}
+						</li>
+					</ul>
+				</li>
+			)}
+			{data.type === 'artist' && (
+				<li onClick={handleClick} className={section.artistItem}>
+					<img className={section.artistImage} src={data.images[0]?.url} alt={data.name} />
+					<span className={section.artistTitle}>{data.name}</span>
+					<span className={section.artistType}>{data.type && 'Artist'}</span>
+				</li>
+			)}
+		</>
 	)
 }
 
@@ -49,8 +72,8 @@ export default function Section() {
 		<div className={section.section}>
 			<h1 className={section.title}>{state.title}</h1>
 			<ul className={section.list}>
-				{state.items.map((playlist: SimplifiedMappedPlaylistItem) => (
-					<Item key={playlist.id} playlist={playlist} />
+				{state.items.map((playlist: SimplifiedMappedItem) => (
+					<Item key={playlist.id} data={playlist} />
 				))}
 			</ul>
 		</div>
