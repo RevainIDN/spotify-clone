@@ -114,31 +114,30 @@ export const usePlaybackControls = ({
 					dispatch(setIsPlaying(false));
 				}
 			} else {
-				const tracks = collectionData ? normalizeTracks(collectionData) : [];
-				const uris = tracks
-					.filter(t => t.track && t.track.uri && t.track.available_markets.length > 0)
-					.map(t => t.track.uri);
+				let uris: string[] = [];
 
-				const offsetIndex = uris?.indexOf(uri);
-
-				if (uris && offsetIndex !== undefined && offsetIndex >= 0) {
-					await axios.put(
-						`https://api.spotify.com/v1/me/player/play`,
-						{
-							uris,
-							offset: { position: offsetIndex >= 0 ? offsetIndex : 0 }
-						},
-						{
-							headers: {
-								Authorization: `Bearer ${token}`,
-								'Content-Type': 'application/json',
-							},
-							params: { device_id: deviceId }
-						}
-					);
-					dispatch(setIsPlaying(true));
-					dispatch(setCurrentTrackUri(uri));
+				if (collectionData) {
+					const tracks = normalizeTracks(collectionData);
+					uris = tracks
+						.filter(t => t.track && t.track.uri && t.track.available_markets.length > 0)
+						.map(t => t.track.uri);
+				} else {
+					uris = [uri];
 				}
+
+				await axios.put(
+					`https://api.spotify.com/v1/me/player/play`,
+					{ uris, offset: { position: uris.indexOf(uri) >= 0 ? uris.indexOf(uri) : 0 } },
+					{
+						headers: {
+							Authorization: `Bearer ${token}`,
+							'Content-Type': 'application/json',
+						},
+						params: { device_id: deviceId }
+					}
+				);
+				dispatch(setIsPlaying(true));
+				dispatch(setCurrentTrackUri(uri));
 			}
 		} catch (error) {
 			console.error('Ошибка при переключении воспроизведения:', error);

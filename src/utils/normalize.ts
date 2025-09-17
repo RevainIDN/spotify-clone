@@ -32,3 +32,10 @@ export function normalizeTracks(collection: Collection): NormalizedTrack[] {
 
 	return [];
 }
+
+export function normalizeSingleTrack(track: Track): NormalizedTrack {
+	return {
+		track,
+		added_at: null
+	};
+}

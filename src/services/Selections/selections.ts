@@ -1,6 +1,7 @@
 import axios from "axios";
 import { type Playlist } from "../../types/collection/categoriesPlaylistsTypes";
-import { type SimplifiedMappedPlaylistItem, type SimplifiedMappedAlbumItem, type SimplifiedMappedArtistItem } from "../../types/collection/generalTypes"
+import { type FullArtist } from "../../types/collection/artistTypes";
+import { type SimplifiedMappedPlaylistItem, type SimplifiedMappedAlbumItem, type SimplifiedMappedArtistItem, type SimplifiedMappedTrackItem, type Track } from "../../types/collection/generalTypes"
 import { type ArtistAlbumItems } from "../../types/collection/artistTypes";
 
 export const mapPlaylistToSimplified = (playlist: Playlist | null): SimplifiedMappedPlaylistItem | null => {
@@ -29,7 +30,7 @@ export const mapAlbumToSimplified = (album: ArtistAlbumItems | null): Simplified
 	};
 };
 
-export const mapArtistToSimplified = (artist: any | null): SimplifiedMappedArtistItem | null => {
+export const mapArtistToSimplified = (artist: FullArtist | null): SimplifiedMappedArtistItem | null => {
 	if (!artist) return null;
 	return {
 		id: artist.id,
@@ -39,6 +40,22 @@ export const mapArtistToSimplified = (artist: any | null): SimplifiedMappedArtis
 		type: artist.type
 	};
 }
+
+export const mapTrackToSimplified = (track: Track | null): SimplifiedMappedTrackItem | null => {
+	if (!track) return null;
+	return {
+		id: track.id,
+		name: track.name,
+		images: track.album.images,
+		duration_ms: track.duration_ms,
+		artists: track.artists.map((artist: any) => ({
+			id: artist.id,
+			name: artist.name,
+			type: artist.type
+		})),
+		type: 'track'
+	};
+};
 
 const getNewReleases = async (token: string | null) => {
 	if (!token) {

@@ -8,6 +8,7 @@ export interface FullArtist extends Artist {
 	genres: string[];
 	images: Image[];
 	popularity: number;
+	type: 'artist';
 }
 
 export interface ArtistTracks {

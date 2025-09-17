@@ -6,7 +6,6 @@ import { usePlaybackControls } from '../../hooks/usePlaybackControls';
 import { useDispatch, useSelector } from 'react-redux';
 import { type AppDispatch, type RootState } from '../../store';
 import { setNavigation } from '../../store/general';
-import { formatDuration } from '../../utils/formatDuration';
 
 import { getArtist, getArtistTopTracks, getArtistAlbums } from '../../services/Catalog/artists';
 import { type FullArtist, type ArtistTracks, type ArtistAlbums } from '../../types/collection/artistTypes';
@@ -16,6 +15,7 @@ import { mapAlbumToSimplified } from '../../services/Selections/selections';
 
 import CollectionHeader from '../../components/CollectionModule/CollectionHeader/CollectionHeader'
 import CollectionControls from '../../components/CollectionModule/CollectionControls/CollectionControls';
+import CollectionTrack from '../../components/CollectionModule/CollectionTrack/CollectionTrack';
 import AlbumsSection from '../../components/SectionModule/AlbumsSection/AlbumsSection';
 import Loader from '../../components/common/Loader';
 
@@ -25,9 +25,7 @@ export default function Artist() {
 	const [artistMusic, setArtistMusic] = useState<ArtistAlbums | null>(null);
 	const [isShuffled, setIsShuffled] = useState<boolean>(false);
 
-	const { currentTrackUri, isPlaying } = useSelector((state: RootState) => state.player);
 	const [selectedTrackState, setSelectedTrackState] = useState<string | null>(null);
-	const [hoveredTrack, setHoveredTrack] = useState<string | null>(null);
 
 	const token = useSelector((state: RootState) => state.auth.accessToken);
 	const { id } = useParams();
@@ -90,71 +88,22 @@ export default function Artist() {
 					</thead>
 					<tbody className={artistStyles.tableBody}>
 						{topTracks.tracks.map((track, index) => {
+							const normalizedTrack = { track, added_at: null };
 							if (!track) {
 								return null;
 							}
 
 							return (
-								<tr
+								<CollectionTrack
 									key={`${track.id}-${index}`}
-									className={`
-    								${selectedTrackState === track.id ? artistStyles.selectedTrack : artistStyles.track}
-    								${track.available_markets.length === 0 ? artistStyles.unavailableTrack : ''}
-  									`}
-									onClick={() => {
-										setSelectedTrackState(track.id)
-									}}
-									onMouseEnter={() => setHoveredTrack(track.id)}
-									onMouseLeave={() => setHoveredTrack(null)}
-								>
-									<th className={artistStyles.trackNumber} onClick={() => playTrack(track.uri, track.available_markets)}>
-										{currentTrackUri === track.uri && track.available_markets.length > 0 ||
-											hoveredTrack === track.id && track.available_markets.length > 0 ||
-											selectedTrackState === track.id && track.available_markets.length > 0 ? (
-											<button>
-												<img
-													src={
-														isPlaying && currentTrackUri === track.uri
-															? '/Track/pause.svg'
-															: '/Track/play.svg'
-													}
-													alt="play"
-												/>
-											</button>
-										) : (
-											<span className={
-												currentTrackUri === track.uri
-													? artistStyles.trackActive
-													: selectedTrackState === track.id
-														? artistStyles.selectedTrack
-														: ''
-											}>
-												{index + 1}
-											</span>
-										)}
-									</th>
-									<th className={artistStyles.trackImg}>
-										<img
-											className={artistStyles.trackCover}
-											src={
-												track.album?.images?.[2]?.url ?? track.album?.images?.[0]?.url ?? '/default-cover.png'
-											}
-											alt={track.name}
-										/>
-										<div className={artistStyles.trackInfo}>
-											<span className={
-												currentTrackUri === track.uri
-													? artistStyles.trackActive
-													: selectedTrackState === track.id
-														? artistStyles.selectedTrackName
-														: artistStyles.trackName
-											}>
-												{track.name}
-											</span>
-										</div>
-									</th>
-									<th className={artistStyles.trackDuration}><span>{formatDuration(track.duration_ms)}</span></th>
-								</tr>
+									playTrack={playTrack}
+									sortViewMode='List'
+									track={normalizedTrack}
+									index={index}
+									displayedIn='artist'
+									selectedTrackState={selectedTrackState}
+									setSelectedTrackState={setSelectedTrackState}
+								/>
 							)
 						})}
 					</tbody>

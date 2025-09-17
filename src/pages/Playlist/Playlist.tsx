@@ -12,7 +12,7 @@ import { type Playlist } from '../../types/collection/playlistTypes';
 
 import CollectionHeader from '../../components/CollectionModule/CollectionHeader/CollectionHeader';
 import CollectionControls from '../../components/CollectionModule/CollectionControls/CollectionControls';
-import ColelctionTrackList from '../../components/CollectionModule/CollectionTrackList/ColelctionTrackList';
+import ColelctionTrackList from '../../components/CollectionModule/CollectionTrackList/CollectionTrackList';
 import Loader from '../../components/common/Loader';
 
 export default function Playlist() {

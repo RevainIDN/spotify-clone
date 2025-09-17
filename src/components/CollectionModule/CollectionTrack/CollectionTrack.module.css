@@ -1,0 +1,167 @@
+.track {
+	height: 54px;
+}
+
+.track:hover {
+	background-color: #323232;
+}
+
+.track:hover .trackAlbum,
+.track:hover .trackArtist,
+.selectedTrack .trackAlbum,
+.selectedTrack .trackArtist {
+	color: var(--white);
+}
+
+.trackActive {
+	color: var(--active-track);
+}
+
+.selectedTrack {
+	background-color: #646464;
+}
+
+.track th:first-child,
+.selectedTrack th:first-child {
+	border-top-left-radius: 6px;
+	border-bottom-left-radius: 6px;
+}
+
+.track th:last-child,
+.selectedTrack th:last-child {
+	border-top-right-radius: 6px;
+	border-bottom-right-radius: 6px;
+}
+
+.unavailableTrack {
+	opacity: 0.5;
+}
+
+.trackNumber button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+
+.coverWrapper {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.playOverlay {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border: none;
+	border-radius: 50%;
+	padding: 6px;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.playOverlay img {
+	width: 30px;
+	height: 30px;
+}
+
+.trackImg {
+	display: flex;
+	align-items: center;
+	height: 54px;
+	gap: 20px;
+}
+
+.trackInfo {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: start;
+	text-align: start;
+	min-width: 0;
+}
+
+.trackInfoCompact {
+	max-width: 100px;
+	height: 100%;
+	text-align: start;
+	min-width: 0;
+}
+
+.trackName {
+	width: 100%;
+	font-size: 1rem;
+	color: var(--white);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	padding-right: 10px;
+}
+
+.trackNameCompact {
+	display: block;
+	max-width: 100%;
+	font-size: 1rem;
+	color: var(--white);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	padding-right: 10px;
+}
+
+.trackCover {
+	position: relative;
+	width: 52px;
+	height: 52px;
+	border-radius: 6px;
+}
+
+.trackCoverOverlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 52px;
+	height: 52px;
+	background-color: rgba(0, 0, 0, 0.5);
+	border-radius: 6px;
+}
+
+.trackArtistList {
+	display: flex;
+	gap: 3px;
+}
+
+.trackArtist {
+	cursor: pointer;
+	font-size: 0.9rem;
+	font-weight: 400;
+	color: var(--gray-light);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-align: start;
+}
+
+.trackArtist:hover {
+	text-decoration: underline;
+	color: var(--white);
+}
+
+.trackAlbum span:hover {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.trackAlbum,
+.trackDate,
+.trackDuration {
+	cursor: default;
+	font-weight: 400;
+	text-align: start;
+	color: var(--gray-light);
+}

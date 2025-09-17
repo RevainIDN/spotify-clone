@@ -1,3 +1,7 @@
+import { type Playlist } from './categoriesPlaylistsTypes';
+import { type Album } from './albumTypes';
+import { type FullArtist } from './artistTypes';
+
 export interface SimplifiedMappedPlaylistItem {
 	id: string;
 	name: string;
@@ -30,10 +34,61 @@ export interface SimplifiedMappedArtistItem {
 	type: 'artist';
 }
 
+export interface SimplifiedMappedTrackItem {
+	id: string;
+	name: string;
+	images: Image[];
+	duration_ms: number;
+	artists: {
+		id: string;
+		name: string;
+		type: string;
+	}[];
+	type: 'track';
+}
+
 export type SimplifiedMappedItem =
 	| SimplifiedMappedPlaylistItem
 	| SimplifiedMappedAlbumItem
 	| SimplifiedMappedArtistItem;
+
+export interface RawCombinedResults {
+	playlists: {
+		href: string;
+		items: Playlist[];
+	};
+	albums: {
+		href: string;
+		items: Album[];
+	};
+	artists: {
+		href: string;
+		items: FullArtist[];
+	};
+	tracks: {
+		href: string;
+		items: Track[];
+	};
+}
+
+export interface CombinedResults {
+	playlists: {
+		href: string;
+		items: SimplifiedMappedPlaylistItem[];
+	};
+	albums: {
+		href: string;
+		items: SimplifiedMappedAlbumItem[];
+	};
+	artists: {
+		href: string;
+		items: SimplifiedMappedArtistItem[];
+	};
+	tracks: {
+		href: string;
+		items: SimplifiedMappedTrackItem[];
+	};
+}
 
 export interface Image {
 	height: number | null;
