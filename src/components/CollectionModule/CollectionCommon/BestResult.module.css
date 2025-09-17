@@ -1,0 +1,50 @@
+.bestResult {
+	cursor: pointer;
+	transition: background-color 0.2s ease-in;
+	border-radius: 10px;
+	width: 100%;
+	max-width: 400px;
+	height: fit-content;
+	padding: 20px 20px;
+}
+
+.bestResult:hover {
+	background-color: #282828;
+}
+
+.coverContainer {
+	width: 128px;
+	height: 128px;
+	margin-bottom: 12px;
+}
+
+.cover {
+	border-radius: 6px;
+}
+
+.title {
+	color: var(--white);
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.title:hover {
+	text-decoration: underline;
+}
+
+.type {
+	display: flex;
+	gap: 2px;
+	color: var(--gray-dark);
+	font-size: 0.9rem;
+	font-weight: 700;
+}
+
+.type span {
+	color: var(--white);
+}
+
+.type span:hover {
+	text-decoration: underline;
+}

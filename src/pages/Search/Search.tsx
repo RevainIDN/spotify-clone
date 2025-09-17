@@ -4,25 +4,63 @@ import { useSelector } from 'react-redux'
 import { type RootState } from '../../store';
 
 import { useNavigate } from 'react-router-dom';
+import { usePlaybackControls } from '../../hooks/usePlaybackControls';
 
 import { getCategories, getSearchResult } from '../../services/Search/search';
 import { type CategoriesResponse } from '../../types/search/searchTypes';
 
 import { mapPlaylistToSimplified, mapAlbumToSimplified, mapArtistToSimplified } from '../../services/Selections/selections';
-import { type SimplifiedMappedPlaylistItem, type SimplifiedMappedAlbumItem, type SimplifiedMappedArtistItem } from '../../types/collection/generalTypes';
+import { type SimplifiedMappedPlaylistItem, type SimplifiedMappedAlbumItem, type SimplifiedMappedArtistItem, type RawCombinedResults, type Track } from '../../types/collection/generalTypes';
+import { normalizeSingleTrack } from '../../utils/normalize';
+
+import { pickBestResult } from '../../utils/pickBestResult';
+import { type BestResultItem } from '../../utils/pickBestResult';
 
 import PlaylistSection from '../../components/SectionModule/PlaylistSection/PlaylistSection';
 import AlbumsSection from '../../components/SectionModule/AlbumsSection/AlbumsSection';
 import ArtistSection from '../../components/SectionModule/ArtistSection/ArtistSection';
+import CollectionTrack from '../../components/CollectionModule/CollectionTrack/CollectionTrack';
+import BestResult from '../../components/CollectionModule/CollectionCommon/BestResult';
 import Loader from '../../components/common/Loader';
 
 export default function Search() {
 	const [categories, setCategories] = useState<CategoriesResponse | null>(null);
 	const [searchQuery, setSearchQuery] = useState<string>('');
-	const [searchResults, setSearchResults] = useState<any>(null);
+	const [searchResults, setSearchResults] = useState<RawCombinedResults | null>(null);
+	const [bestResult, setBestResult] = useState<BestResultItem | null>(null);
+	const [selectedTrackState, setSelectedTrackState] = useState<string | null>(null);
 
 	const token = useSelector((state: RootState) => state.auth.accessToken);
 	const navigate = useNavigate();
+
+	const { playTrack } = usePlaybackControls({
+		collectionData: undefined,
+		isShuffled: false
+	});
+
+	useEffect(() => {
+		if (!searchQuery) {
+			setSearchResults(null);
+			setBestResult(null);
+			return;
+		}
+
+		const timer = setTimeout(async () => {
+			const data = await getSearchResult(token, searchQuery.trim());
+			setSearchResults(data);
+			const res = pickBestResult(data, searchQuery);
+			setBestResult(res);
+		}, 1000);
+
+		return () => clearTimeout(timer);
+	}, [searchQuery, token]);
+
+	useEffect(() => {
+		if (searchResults) {
+			localStorage.setItem('searchResults', JSON.stringify(searchResults))
+			localStorage.setItem('searchQuery', JSON.stringify(searchQuery))
+		}
+	}, [searchResults, searchQuery, token])
 
 	useEffect(() => {
 		const fetchCategories = async () => {
@@ -30,25 +68,21 @@ export default function Search() {
 			setCategories(data);
 		};
 
+		const storedSearchResult = localStorage.getItem("searchResults");
+		const storedSearchQuery = localStorage.getItem('searchQuery');
+		if (storedSearchResult && storedSearchQuery) {
+			const parsedResults = JSON.parse(storedSearchResult) as RawCombinedResults;
+			const parsedQuery = JSON.parse(storedSearchQuery) as string;
+
+			setSearchResults(parsedResults);
+			setSearchQuery(parsedQuery);
+
+			const res = pickBestResult(parsedResults, parsedQuery);
+			setBestResult(res);
+		}
+
 		fetchCategories();
 	}, []);
-
-	useEffect(() => {
-		if (searchQuery === '') {
-			setSearchResults(null);
-			return;
-		}
-		setTimeout(() => {
-			const fetchSearchResults = async () => {
-				if (searchQuery && searchQuery !== '') {
-					const data = await getSearchResult(token, searchQuery.trim());
-					setSearchResults(data);
-				}
-			};
-
-			fetchSearchResults();
-		}, 1000)
-	}, [searchQuery]);
 
 	if (!categories) {
 		return <Loader />;
@@ -70,6 +104,51 @@ export default function Search() {
 			</nav>
 			{searchResults && searchQuery !== '' && (
 				<div className={searchStyles.searchResultsContainer}>
+					<div className={searchStyles.bestResultContainer}>
+						<div className={searchStyles.bestResult}>
+							<h1 className={searchStyles.resultTitle}>Best result</h1>
+							<BestResult
+								bestResult={bestResult}
+							/>
+						</div>
+						<div className={searchStyles.searchedTracks}>
+							<h1 className={searchStyles.resultTitle}>Tracks</h1>
+							<table className={searchStyles.tracks}>
+								<colgroup>
+									<col style={{ width: '8%' }} />
+									<col style={{ width: '87%' }} />
+									<col style={{ width: '5%' }} />
+								</colgroup>
+								<tbody>
+									{searchResults.tracks && searchResults.tracks.items.length > 0 ? (
+										searchResults.tracks.items
+											.filter((t): t is Track => t !== null)
+											.slice(0, 4)
+											.map((track, index) => {
+												const normalizedTrack = normalizeSingleTrack(track);
+
+												return (
+													<CollectionTrack
+														key={`${track.id}-${index}`}
+														playTrack={playTrack}
+														sortViewMode='List'
+														track={normalizedTrack}
+														index={index}
+														displayedIn='search'
+														selectedTrackState={selectedTrackState}
+														setSelectedTrackState={setSelectedTrackState}
+													/>
+												);
+											})
+									) : (
+										<tr>
+											<td colSpan={3}>No results found</td>
+										</tr>
+									)}
+								</tbody>
+							</table>
+						</div>
+					</div>
 					<PlaylistSection
 						title="Playlists"
 						sectionKey='search-playlists'
