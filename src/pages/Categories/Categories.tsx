@@ -42,7 +42,7 @@ export default function Categories() {
 	}
 
 	return (
-		<div className={categoriesStyles.categoriesPage}>
+		<div className='content'>
 			<h1 className={categoriesStyles.title}>{id}</h1>
 			<PlaylistSection
 				title="Best Playlists"

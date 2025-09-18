@@ -59,7 +59,7 @@ export default function Playlist() {
 	}
 
 	return (
-		<div className={playlist.playlist}>
+		<div className='content'>
 			<CollectionHeader collectionData={playlistData} />
 			<div className={playlist.main}>
 				<CollectionControls

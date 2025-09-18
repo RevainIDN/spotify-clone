@@ -1,17 +1,3 @@
-.artistContainer {
-	position: relative;
-	width: 100%;
-	height: 100vh;
-	padding: 60px 32px 100px 32px;
-	background-color: #121212;
-	overflow-y: auto;
-	z-index: 1;
-}
-
-.main {
-	z-index: 3;
-}
-
 .topTracks {
 	width: 100%;
 	border-collapse: separate;

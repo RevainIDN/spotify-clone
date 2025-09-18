@@ -1,9 +1,6 @@
 .player {
-	position: fixed;
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
-	bottom: 0;
-	left: 0;
 	width: 100vw;
 	height: 90px;
 	background-color: #181818;

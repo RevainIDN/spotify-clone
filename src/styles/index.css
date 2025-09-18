@@ -20,7 +20,26 @@
 }
 
 .spotify-clone {
-  display: flex;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  height: 100vh;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  overflow: hidden;
+  height: 100%;
+}
+
+.content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 60px 32px 10px 32px;
+  background-color: #121212;
+  overflow-y: auto;
+  z-index: 1;
 }
 
 .spotify-clone .loader {
@@ -34,6 +53,33 @@
   margin: 6px;
   background-color: var(--gray-light);
   border-radius: 50%;
+}
+
+/* Скроллбар */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+/* Ползунок */
+::-webkit-scrollbar-thumb {
+  background: #595959;
+}
+
+/* Ползунок при наведении */
+::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+
+/* Трек (фон) */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Толщина и цвета */
+* {
+  scrollbar-width: 20px;
+  scrollbar-color: #595959;
 }
 
 @font-face {

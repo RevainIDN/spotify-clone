@@ -1,4 +1,3 @@
-import home from './Home.module.css'
 import { usePlaylistsOverview } from '../../hooks/usePlaylistsOverview';
 import { type SimplifiedMappedPlaylistItem } from '../../types/collection/generalTypes';
 import { mapPlaylistToSimplified } from '../../services/Selections/selections';
@@ -19,7 +18,7 @@ export default function Home({ token }: HomeProps) {
 	}
 
 	return (
-		<div className={home.home}>
+		<div className='content'>
 			<AlbumsSection
 				title='New Releases'
 				sectionKey='new-releases'

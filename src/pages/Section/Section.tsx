@@ -69,7 +69,7 @@ export default function Section() {
 	const { state } = useLocation();
 
 	return (
-		<div className={section.section}>
+		<div className='content'>
 			<h1 className={section.title}>{state.title}</h1>
 			<ul className={section.list}>
 				{state.items.map((playlist: SimplifiedMappedItem) => (

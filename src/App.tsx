@@ -35,18 +35,20 @@ function App() {
 
   return (
     <div className="spotify-clone">
-      <Sidebar />
-      <Routes>
-        <Route path='/' element={<Home token={authToken} />} />
-        <Route path='/callback' element={<p>Авторизация прошла успешно! Теперь ты можешь закрыть эту вкладку.</p>} />
-        <Route path='/search' element={<Search />} />
-        <Route path='/search/:id' element={<Categories />} />
-        <Route path='/section/:id' element={<Section />} />
-        <Route path='/playlist/:id' element={<Playlist />} />
-        <Route path='/album/:id' element={<Album />} />
-        <Route path='/artist/:id' element={<Artist />} />
-        <Route path='/user/:id' element={<User />} />
-      </Routes>
+      <div className='main'>
+        <Sidebar />
+        <Routes>
+          <Route path='/' element={<Home token={authToken} />} />
+          <Route path='/callback' element={<p>Авторизация прошла успешно! Теперь ты можешь закрыть эту вкладку.</p>} />
+          <Route path='/search' element={<Search />} />
+          <Route path='/search/:id' element={<Categories />} />
+          <Route path='/section/:id' element={<Section />} />
+          <Route path='/playlist/:id' element={<Playlist />} />
+          <Route path='/album/:id' element={<Album />} />
+          <Route path='/artist/:id' element={<Artist />} />
+          <Route path='/user/:id' element={<User />} />
+        </Routes>
+      </div>
       <Player />
     </div>
   )

@@ -58,7 +58,7 @@ export default function Album() {
 	}
 
 	return (
-		<div className={albumStyles.album}>
+		<div className='content'>
 			<CollectionHeader collectionData={albumData} />
 			<div className={albumStyles.main}>
 				<CollectionControls

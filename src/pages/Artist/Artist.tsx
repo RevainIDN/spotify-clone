@@ -65,7 +65,7 @@ export default function Artist() {
 	}
 
 	return (
-		<div className={artistStyles.artistContainer}>
+		<div className='content'>
 			<CollectionHeader collectionData={artistData} />
 			<div className={artistStyles.main}>
 				<CollectionControls
