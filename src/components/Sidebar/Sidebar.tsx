@@ -1,13 +1,40 @@
 import sidebar from './Sidebar.module.css'
 import { Link } from 'react-router-dom'
 
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { type AppDispatch, type RootState } from '../../store';
 import { setNavigation } from '../../store/general';
 
+import { getUserPlaylists } from '../../services/User/userContent';
+import { type UserPlaylistsResponse } from '../../types/user/userPlaylistsTypes';
+
 export default function Sidebar() {
+	const [userPlaylists, setUserPlaylists] = useState<UserPlaylistsResponse | null>(null);
+	const [selectedUserPlaylist, setSelectedUserPlaylist] = useState<string | null>(null);
+
 	const dispatch = useDispatch<AppDispatch>();
-	const navigation = useSelector((state: RootState) => state.general.navigation)
+	const navigate = useNavigate();
+	const navigation = useSelector((state: RootState) => state.general.navigation);
+	const token = useSelector((state: RootState) => state.auth.accessToken);
+
+	const handleUserPlaylist = (playlistName: string, playlistId: string) => {
+		setSelectedUserPlaylist(playlistName)
+		navigate(`/playlist/${playlistId}`)
+	}
+
+	useEffect(() => {
+		const fetchUserPlaylists = async () => {
+			const data = await getUserPlaylists(token)
+			setUserPlaylists(data)
+		}
+		fetchUserPlaylists();
+	}, [token])
+
+	useEffect(() => {
+		navigation !== 'playlist' && setSelectedUserPlaylist(null);
+	}, [navigation])
 
 	return (
 		<div className={sidebar.sidebar}>
@@ -82,8 +109,17 @@ export default function Sidebar() {
 						Liked Songs
 					</li>
 				</ul>
-				<ul className={sidebar.playlists}>
-					<li className={sidebar.playlist}>Jazz</li>
+				<ul className={sidebar.playlistList}>
+					{userPlaylists?.items.map(playlist => (
+						<li
+							className={sidebar.playlistItem}
+							key={playlist.id}
+							onClick={() => handleUserPlaylist(playlist.name, playlist.id)}
+							style={selectedUserPlaylist === playlist.name ? { color: 'var(--white)' } : { color: 'var(--gray-light)' }}
+						>
+							{playlist.name}
+						</li>
+					))}
 				</ul>
 			</div>
 		</div>
