@@ -12,6 +12,7 @@ import Sidebar from './components/Sidebar/Sidebar';
 import Player from './components/Player/Player';
 import Home from './pages/Home/Home';
 import Search from './pages/Search/Search';
+import Library from './pages/Library/Library';
 import Categories from './pages/Categories/Categories';
 import Section from './pages/Section/Section';
 import Playlist from './pages/Playlist/Playlist';
@@ -42,6 +43,7 @@ function App() {
           <Route path='/callback' element={<p>Авторизация прошла успешно! Теперь ты можешь закрыть эту вкладку.</p>} />
           <Route path='/search' element={<Search />} />
           <Route path='/search/:id' element={<Categories />} />
+          <Route path='/library' element={<Library />} />
           <Route path='/section/:id' element={<Section />} />
           <Route path='/playlist/:id' element={<Playlist />} />
           <Route path='/album/:id' element={<Album />} />

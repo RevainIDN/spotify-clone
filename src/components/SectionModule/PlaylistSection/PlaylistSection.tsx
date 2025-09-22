@@ -1,6 +1,8 @@
 import playlistSection from './PlaylistSection.module.css';
 import { type SimplifiedMappedPlaylistItem } from '../../../types/collection/generalTypes';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { type RootState } from '../../../store';
 
 interface PlaylistSectionProps {
 	title: string;
@@ -28,17 +30,24 @@ function PlaylistItem({ playlist }: { playlist: SimplifiedMappedPlaylistItem }) 
 }
 
 export default function PlaylistSection({ title, sectionKey, items }: PlaylistSectionProps) {
+	const navigation = useSelector((state: RootState) => state.general.navigation);
 	const navigate = useNavigate();
 	return (
 		<div className={playlistSection.playlistSection}>
-			<div className={playlistSection.header}>
-				<h1 className={playlistSection.title}>{title}</h1>
-				<button onClick={() => navigate(`/section/${sectionKey}`, { state: { title, items } })} className={playlistSection.showAll}>Show all</button>
-			</div>
+			{navigation !== 'library' && (
+				<div className={playlistSection.header}>
+					<h1 className={playlistSection.title}>{title}</h1>
+					<button onClick={() => navigate(`/section/${sectionKey}`, { state: { title, items } })} className={playlistSection.showAll}>Show all</button>
+				</div>
+			)}
 			<ul className={playlistSection.playlists}>
-				{items.slice(0, 5).map(album => (
+				{navigation !== 'library' ? items.slice(0, 5).map(album => (
 					<PlaylistItem key={album.id} playlist={album} />
-				))}
+				))
+					:
+					items.map(album => (
+						<PlaylistItem key={album.id} playlist={album} />
+					))}
 			</ul>
 		</div>
 	);

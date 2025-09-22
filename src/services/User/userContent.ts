@@ -12,3 +12,29 @@ export async function getUserPlaylists(token: string) {
 		console.error(error);
 	}
 }
+
+export async function getUserFollowingAlbums(token: string) {
+	try {
+		const response = await axios.get('https://api.spotify.com/v1/me/albums', {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		})
+		return response.data
+	} catch (error) {
+		console.log(error)
+	}
+}
+
+export async function getUserFollowingArtists(token: string) {
+	try {
+		const response = await axios.get('https://api.spotify.com/v1/me/following?type=artist', {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		})
+		return response.data
+	} catch (error) {
+		console.log(error)
+	}
+}

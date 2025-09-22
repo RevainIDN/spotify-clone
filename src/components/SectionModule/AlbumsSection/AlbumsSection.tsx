@@ -3,6 +3,8 @@ import { type SimplifiedMappedAlbumItem } from '../../../types/collection/genera
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { extractYear } from '../../../utils/extractYear';
+import { useSelector } from 'react-redux';
+import { type RootState } from '../../../store';
 
 interface AlbumsSectionProps {
 	title: string;
@@ -66,6 +68,7 @@ function AlbumFilters({ activeFilter, setActiveFilter, items }: {
 }
 
 export default function AlbumsSection({ title, sectionKey, isFiltered, items }: AlbumsSectionProps) {
+	const navigation = useSelector((state: RootState) => state.general.navigation);
 	const [activeFilter, setActiveFilter] = useState<string>('all');
 
 	const filteredAlbums = activeFilter === 'all'
@@ -76,10 +79,12 @@ export default function AlbumsSection({ title, sectionKey, isFiltered, items }: 
 
 	return (
 		<div className={albumsSectionStyles.albumSection}>
-			<div className={albumsSectionStyles.header}>
-				<h1 className={albumsSectionStyles.title}>{title}</h1>
-				<button onClick={() => navigate(`/section/${sectionKey}`, { state: { title, items } })} className={albumsSectionStyles.showAll}>Show all</button>
-			</div>
+			{navigation !== 'library' && (
+				<div className={albumsSectionStyles.header}>
+					<h1 className={albumsSectionStyles.title}>{title}</h1>
+					<button onClick={() => navigate(`/section/${sectionKey}`, { state: { title, items } })} className={albumsSectionStyles.showAll}>Show all</button>
+				</div>
+			)}
 			{isFiltered && <AlbumFilters activeFilter={activeFilter} setActiveFilter={setActiveFilter} items={items} />}
 			<ul className={albumsSectionStyles.albums}>
 				{filteredAlbums.slice(0, 5).map(album => (

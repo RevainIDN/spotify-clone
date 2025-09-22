@@ -32,7 +32,7 @@ export interface Playlist {
 		type: string;
 		uri: string;
 	};
-	primary_color: string | null;
+	primary_color?: string | null | undefined;
 	public: boolean;
 	snapshot_id: string;
 	tracks: {

@@ -1,6 +1,8 @@
 import artistSectionStyles from './ArtistSection.module.css'
 import { useNavigate } from 'react-router-dom';
 import { type SimplifiedMappedArtistItem } from '../../../types/collection/generalTypes';
+import { useSelector } from 'react-redux';
+import { type RootState } from '../../../store';
 
 interface ArtistSectionProps {
 	title: string;
@@ -28,14 +30,17 @@ function ArtistItem({ artist }: { artist: SimplifiedMappedArtistItem }) {
 }
 
 export default function ArtistSection({ title, sectionKey, items }: ArtistSectionProps) {
+	const navigation = useSelector((state: RootState) => state.general.navigation);
 	const navigate = useNavigate();
 
 	return (
 		<div className={artistSectionStyles.artistSection}>
-			<div className={artistSectionStyles.header}>
-				<h1 className={artistSectionStyles.title}>{title}</h1>
-				<button onClick={() => navigate(`/section/${sectionKey}`, { state: { title, items } })} className={artistSectionStyles.showAll}>Show all</button>
-			</div>
+			{navigation !== 'library' && (
+				<div className={artistSectionStyles.header}>
+					<h1 className={artistSectionStyles.title}>{title}</h1>
+					<button onClick={() => navigate(`/section/${sectionKey}`, { state: { title, items } })} className={artistSectionStyles.showAll}>Show all</button>
+				</div>
+			)}
 			<ul className={artistSectionStyles.artists}>
 				{items.slice(0, 5).map(artist => (
 					<ArtistItem key={artist.id} artist={artist} />

@@ -1,0 +1,35 @@
+.section {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	padding: 60px 32px 10px 32px;
+	background-color: #121212;
+	overflow-y: auto;
+	z-index: 1;
+}
+
+.library {
+	padding: 0 32px 10px 32px;
+}
+
+.filters {
+	width: 100%;
+	padding: 10px 10px 20px 10px;
+}
+
+.filterList {
+	display: flex;
+	gap: 6px;
+	width: 100%;
+}
+
+.filterItem {
+	cursor: pointer;
+	padding: 10px 20px;
+	transition: background-color 0.2s;
+	border-radius: 4px;
+}
+
+.filterItem:hover {
+	background-color: #333333a2;
+}

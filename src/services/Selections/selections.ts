@@ -3,6 +3,7 @@ import { type Playlist } from "../../types/collection/categoriesPlaylistsTypes";
 import { type FullArtist } from "../../types/collection/artistTypes";
 import { type SimplifiedMappedPlaylistItem, type SimplifiedMappedAlbumItem, type SimplifiedMappedArtistItem, type SimplifiedMappedTrackItem, type Track } from "../../types/collection/generalTypes"
 import { type ArtistAlbumItems } from "../../types/collection/artistTypes";
+import { type SavedAlbumObject } from "../../types/user/userCollectionsTypes";
 
 export const mapPlaylistToSimplified = (playlist: Playlist | null): SimplifiedMappedPlaylistItem | null => {
 	if (!playlist) return null;
@@ -27,6 +28,20 @@ export const mapAlbumToSimplified = (album: ArtistAlbumItems | null): Simplified
 		images: album.images,
 		release_date: album.release_date,
 		type: 'album'
+	};
+};
+
+export const mapSavedAlbumToSimplified = (saved: SavedAlbumObject | null): SimplifiedMappedAlbumItem | null => {
+	if (!saved) return null;
+	const album = saved.album;
+	return {
+		album_group: undefined,
+		album_type: album.album_type,
+		id: album.id,
+		name: album.name,
+		images: album.images,
+		release_date: album.release_date,
+		type: "album"
 	};
 };
 
