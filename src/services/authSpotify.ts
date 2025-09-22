@@ -8,6 +8,9 @@ const SCOPES = [
 	'user-read-private',
 	'user-read-playback-state',
 	'user-modify-playback-state',
+	'playlist-read-private',
+	'user-library-read',
+	'user-follow-read'
 ].join(' ');
 
 export const getSpotifyAccessToken = async () => {

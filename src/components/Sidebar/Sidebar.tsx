@@ -8,7 +8,7 @@ import { type AppDispatch, type RootState } from '../../store';
 import { setNavigation } from '../../store/general';
 
 import { getUserPlaylists } from '../../services/User/userContent';
-import { type UserPlaylistsResponse } from '../../types/user/userPlaylistsTypes';
+import { type UserPlaylistsResponse } from '../../types/user/userCollectionsTypes';
 
 export default function Sidebar() {
 	const [userPlaylists, setUserPlaylists] = useState<UserPlaylistsResponse | null>(null);
