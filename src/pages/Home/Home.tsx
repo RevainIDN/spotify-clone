@@ -1,6 +1,6 @@
 import { usePlaylistsOverview } from '../../hooks/usePlaylistsOverview';
+import { mapPlaylistToSimplified } from '../../mappers';
 import { type SimplifiedMappedPlaylistItem } from '../../types/collection/generalTypes';
-import { mapPlaylistToSimplified } from '../../services/Selections/selections';
 
 import PlaylistSection from '../../components/SectionModule/PlaylistSection/PlaylistSection';
 import AlbumsSection from '../../components/SectionModule/AlbumsSection/AlbumsSection';

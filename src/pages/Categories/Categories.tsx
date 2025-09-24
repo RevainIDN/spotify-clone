@@ -5,7 +5,7 @@ import { type RootState } from '../../store';
 import { useParams } from 'react-router-dom';
 import { getDataCategory } from '../../services/Search/categories';
 
-import { mapPlaylistToSimplified, mapAlbumToSimplified, mapArtistToSimplified } from '../../services/Selections/selections';
+import { mapPlaylistToSimplified, mapAlbumToSimplified, mapArtistToSimplified } from '../../mappers';
 import { type SimplifiedMappedPlaylistItem, type SimplifiedMappedAlbumItem, type SimplifiedMappedArtistItem } from '../../types/collection/generalTypes';
 
 import PlaylistSection from '../../components/SectionModule/PlaylistSection/PlaylistSection';

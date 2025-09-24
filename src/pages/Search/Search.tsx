@@ -9,7 +9,7 @@ import { usePlaybackControls } from '../../hooks/usePlaybackControls';
 import { getCategories, getSearchResult } from '../../services/Search/search';
 import { type CategoriesResponse } from '../../types/search/searchTypes';
 
-import { mapPlaylistToSimplified, mapAlbumToSimplified, mapArtistToSimplified } from '../../services/Selections/selections';
+import { mapPlaylistToSimplified, mapAlbumToSimplified, mapArtistToSimplified } from '../../mappers';
 import { type SimplifiedMappedPlaylistItem, type SimplifiedMappedAlbumItem, type SimplifiedMappedArtistItem, type RawCombinedResults, type Track } from '../../types/collection/generalTypes';
 import { normalizeSingleTrack } from '../../utils/normalize';
 

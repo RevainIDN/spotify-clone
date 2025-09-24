@@ -33,3 +33,11 @@
 .filterItem:hover {
 	background-color: #333333a2;
 }
+
+.loader {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 275px;
+}

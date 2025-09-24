@@ -11,7 +11,7 @@ import { getArtist, getArtistTopTracks, getArtistAlbums } from '../../services/C
 import { type FullArtist, type ArtistTracks, type ArtistAlbums } from '../../types/collection/artistTypes';
 
 import { type SimplifiedMappedAlbumItem } from '../../types/collection/generalTypes';
-import { mapAlbumToSimplified } from '../../services/Selections/selections';
+import { mapAlbumToSimplified } from '../../mappers';
 
 import CollectionHeader from '../../components/CollectionModule/CollectionHeader/CollectionHeader'
 import CollectionControls from '../../components/CollectionModule/CollectionControls/CollectionControls';

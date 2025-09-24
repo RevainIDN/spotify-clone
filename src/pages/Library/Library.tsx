@@ -10,7 +10,7 @@ import { setNavigation } from '../../store/general';
 import PlaylistSection from '../../components/SectionModule/PlaylistSection/PlaylistSection';
 import AlbumsSection from '../../components/SectionModule/AlbumsSection/AlbumsSection';
 import ArtistSection from '../../components/SectionModule/ArtistSection/ArtistSection';
-import { mapPlaylistToSimplified, mapArtistToSimplified, mapSavedAlbumToSimplified } from '../../services/Selections/selections';
+import { mapPlaylistToSimplified, mapArtistToSimplified, mapSavedAlbumToSimplified } from '../../mappers';
 import { type SimplifiedMappedPlaylistItem, type SimplifiedMappedAlbumItem, type SimplifiedMappedArtistItem } from '../../types/collection/generalTypes';
 
 import Loader from '../../components/common/Loader';
@@ -26,75 +26,62 @@ export default function Library() {
 	const [userPlaylists, setUserPlaylists] = useState<UserPlaylistsResponse | null>(null);
 	const [userAlbums, setUserAlbums] = useState<UserAlbumsResponse | null>(null);
 	const [userArtists, setUserArtists] = useState<UserFollowedArtistsResponse | null>(null);
+	const [loading, setLoading] = useState<boolean>(false);
+	const [initialLoading, setInitialLoading] = useState(true);
 
 	const dispatch = useDispatch<AppDispatch>();
 	const token = useSelector((state: RootState) => state.auth.accessToken);
 
 	useEffect(() => {
-		if (selectedFilter === 'Playlist') {
-			const fetchPlaylists = async () => {
-				try {
+		const fetchData = async () => {
+			setLoading(true);
+			try {
+				if (selectedFilter === 'Playlist') {
 					const data = await getUserPlaylists(token);
 					setUserPlaylists(data);
-				} catch (error) {
-					console.error("Failed to fetch playlists:", error);
 				}
-			}
-			fetchPlaylists();
-		}
 
-		if (selectedFilter === 'Album') {
-			const fetchAlbums = async () => {
-				try {
+				if (selectedFilter === 'Album') {
 					const data = await getUserFollowingAlbums(token);
 					setUserAlbums(data);
-				} catch (error) {
-					console.error(error);
 				}
-			}
-			fetchAlbums();
-		}
 
-		if (selectedFilter === 'Artist') {
-			const fetchArtists = async () => {
-				try {
+				if (selectedFilter === 'Artist') {
 					const data = await getUserFollowingArtists(token);
-					setUserArtists(data)
-				} catch (error) {
-					console.error(error)
+					setUserArtists(data);
 				}
+			} catch (error) {
+				console.error(error);
+			} finally {
+				setLoading(false)
+				setInitialLoading(false)
 			}
-			fetchArtists();
+		};
+
+		if (token) {
+			fetchData();
 		}
 
-		dispatch(setNavigation('library'))
-	}, [token, selectedFilter])
+		dispatch(setNavigation('library'));
+	}, [token, selectedFilter, dispatch]);
 
 	const simplifiedPlaylists = useMemo(() => {
 		return userPlaylists?.items
 			.map(mapPlaylistToSimplified)
-			.filter(Boolean) as SimplifiedMappedPlaylistItem[];
+			.filter(Boolean) as SimplifiedMappedPlaylistItem[] ?? [];
 	}, [userPlaylists]);
 
 	const simplifiedAlbums = useMemo(() => {
 		return userAlbums?.items
 			.map(mapSavedAlbumToSimplified)
-			.filter(Boolean) as SimplifiedMappedAlbumItem[];
+			.filter(Boolean) as SimplifiedMappedAlbumItem[] ?? [];
 	}, [userAlbums]);
 
 	const simplifiedArtists = useMemo(() => {
 		return userArtists?.artists.items
 			.map(mapArtistToSimplified)
-			.filter(Boolean) as SimplifiedMappedArtistItem[];
+			.filter(Boolean) as SimplifiedMappedArtistItem[] ?? [];
 	}, [userArtists]);
-
-	if (
-		(selectedFilter === 'Playlist' && !userPlaylists) ||
-		(selectedFilter === 'Album' && !userAlbums) ||
-		(selectedFilter === 'Artist' && !userArtists)
-	) {
-		return <Loader />
-	}
 
 	return (
 		<div className={`${libraryStyles.library} ${libraryStyles.section}`}>
@@ -133,6 +120,11 @@ export default function Library() {
 						sectionKey='user-following-artists'
 						items={simplifiedArtists}
 					/>
+				)}
+				{initialLoading && loading && (
+					<div className={libraryStyles.loader}>
+						<Loader />
+					</div>
 				)}
 			</div>
 		</div>
