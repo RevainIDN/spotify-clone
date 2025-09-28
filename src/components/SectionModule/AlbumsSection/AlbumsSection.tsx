@@ -87,9 +87,13 @@ export default function AlbumsSection({ title, sectionKey, isFiltered, items }: 
 			)}
 			{isFiltered && <AlbumFilters activeFilter={activeFilter} setActiveFilter={setActiveFilter} items={items} />}
 			<ul className={albumsSectionStyles.albums}>
-				{filteredAlbums.slice(0, 5).map(album => (
+				{navigation !== 'library' ? filteredAlbums.slice(0, 5).map(album => (
 					<AlbumItem key={album.id} album={album} />
-				))}
+				))
+					:
+					items.map(album => (
+						<AlbumItem key={album.id} album={album} />
+					))}
 			</ul>
 		</div>
 	);

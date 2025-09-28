@@ -42,9 +42,13 @@ export default function ArtistSection({ title, sectionKey, items }: ArtistSectio
 				</div>
 			)}
 			<ul className={artistSectionStyles.artists}>
-				{items.slice(0, 5).map(artist => (
+				{navigation !== 'library' ? items.slice(0, 5).map(artist => (
 					<ArtistItem key={artist.id} artist={artist} />
-				))}
+				))
+					:
+					items.map(artist => (
+						<ArtistItem key={artist.id} artist={artist} />
+					))}
 			</ul>
 		</div>
 	);

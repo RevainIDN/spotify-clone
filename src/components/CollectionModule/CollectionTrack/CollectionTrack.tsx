@@ -14,7 +14,7 @@ interface CollectionTrackProps {
 	sortViewMode: 'List' | 'Compact';
 	track: NormalizedTrack;
 	index: number;
-	displayedIn: 'playlist' | 'album' | 'artist' | 'search';
+	displayedIn: 'playlist' | 'album' | 'artist' | 'search' | 'my-profile';
 	selectedTrackState: string | null;
 	setSelectedTrackState: (id: string) => void;
 }
@@ -163,7 +163,7 @@ export default function CollectionTrack({ playTrack, sortViewMode, track, index,
 				</th>
 			)}
 			{/* Track Album */}
-			{displayedIn === 'playlist' && <th className={trackStyles.trackAlbum}><span onClick={() => navigate(`/album/${track.track.album?.id}`)}>{track.track.album?.name ?? 'Unknown Album'}</span></th>}
+			{(displayedIn === 'playlist' || displayedIn === 'my-profile') && <th className={trackStyles.trackAlbum}><span onClick={() => navigate(`/album/${track.track.album?.id}`)}>{track.track.album?.name ?? 'Unknown Album'}</span></th>}
 			{/* Track Date */}
 			{displayedIn === 'playlist' && <th className={trackStyles.trackDate}><span>{track.added_at ? formatDate(track.added_at) : '-'}</span></th>}
 			{/* Track Duration */}

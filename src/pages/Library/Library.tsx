@@ -2,6 +2,7 @@ import libraryStyles from './Library.module.css'
 import { useState, useEffect, useMemo } from 'react'
 import { getUserPlaylists, getUserFollowingAlbums, getUserFollowingArtists } from '../../services/User/userContent';
 import { type UserPlaylistsResponse, type UserAlbumsResponse, type UserFollowedArtistsResponse } from '../../types/user/userCollectionsTypes';
+import { Link } from 'react-router-dom';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { type RootState, type AppDispatch } from '../../store';
@@ -28,9 +29,11 @@ export default function Library() {
 	const [userArtists, setUserArtists] = useState<UserFollowedArtistsResponse | null>(null);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [initialLoading, setInitialLoading] = useState(true);
+	const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
 	const dispatch = useDispatch<AppDispatch>();
 	const token = useSelector((state: RootState) => state.auth.accessToken);
+	const userProfileData = useSelector((state: RootState) => state.user.userProfileData);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -98,6 +101,32 @@ export default function Library() {
 						</li>
 					))}
 				</ul>
+				{token && userProfileData && (
+					<div
+						className={libraryStyles.userProfile}
+						onClick={() => setIsDropdownOpen((prev) => !prev)}
+					>
+						<div className={libraryStyles.userCoverContainer}>
+							{userProfileData?.images?.length > 0 ? (
+								<img
+									className={libraryStyles.userCover}
+									src={userProfileData?.images[0].url}
+									alt={userProfileData?.display_name}
+								/>
+							) : (
+								<div className={libraryStyles.userDefaulCover}>{userProfileData?.display_name.slice(0, 1).toUpperCase()}</div>
+							)}
+						</div>
+						<span className={libraryStyles.userName}>{userProfileData?.display_name}</span>
+						<div className={libraryStyles.userDropdown}></div>
+						{isDropdownOpen && (
+							<ul className={libraryStyles.dropdown}>
+								<Link className={libraryStyles.dropdownItem} to={'/me'}>Profile</Link>
+								<li className={libraryStyles.dropdownItem}>Exit</li>
+							</ul>
+						)}
+					</div>
+				)}
 			</div>
 			<div className={libraryStyles.collections}>
 				{selectedFilter === 'Playlist' && (

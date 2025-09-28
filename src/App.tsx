@@ -3,10 +3,12 @@ import { Routes, Route } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useSpotifyAuth } from './hooks/useSpotifyAuth';
 import { useSpotifyPlayer } from './hooks/useSpotifyPlayer';
+import { getUserProfileData } from './services/User/userProfile';
 
 import { useDispatch } from 'react-redux';
 import { type AppDispatch } from './store';
 import { setAccessToken } from './store/authSlice';
+import { setUserProfileData } from './store/userSlice';
 
 import Sidebar from './components/Sidebar/Sidebar';
 import Player from './components/Player/Player';
@@ -18,7 +20,7 @@ import Section from './pages/Section/Section';
 import Playlist from './pages/Playlist/Playlist';
 import Album from './pages/Album/Album';
 import Artist from './pages/Artist/Artist';
-import User from './pages/User/User';
+import MyProfile from './pages/Profile/MyProfile';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -26,9 +28,19 @@ function App() {
   useSpotifyPlayer(authToken);
 
   useEffect(() => {
-    if (authToken) {
-      dispatch(setAccessToken(authToken));
+    if (!authToken) return;
+
+    dispatch(setAccessToken(authToken));
+
+    const fetchUserProfileData = async () => {
+      try {
+        const data = await getUserProfileData(authToken);
+        dispatch(setUserProfileData(data));
+      } catch (error) {
+        console.error(error)
+      }
     }
+    fetchUserProfileData();
   }, [authToken, dispatch]);
 
   if (loading) return <p>Загрузка...</p>;
@@ -48,7 +60,7 @@ function App() {
           <Route path='/playlist/:id' element={<Playlist />} />
           <Route path='/album/:id' element={<Album />} />
           <Route path='/artist/:id' element={<Artist />} />
-          <Route path='/user/:id' element={<User />} />
+          <Route path='/me' element={<MyProfile />} />
         </Routes>
       </div>
       <Player />

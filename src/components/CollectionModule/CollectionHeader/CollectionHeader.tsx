@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { type Playlist } from '../../../types/collection/playlistTypes';
 import { type Album } from '../../../types/collection/albumTypes';
 import { type FullArtist } from '../../../types/collection/artistTypes';
+import { type UserProfile } from '../../../types/user/userProfileTypes';
 import { normalizeTracks } from '../../../utils/normalize';
-import { isCollectionOfType } from '../../../utils/typeGuard';
+import { isCollectionOfType, isUserProfile } from '../../../utils/typeGuard';
 import { formatDuration } from '../../../utils/formatDuration';
 
 interface CollectionHeaderProps {
-	collectionData: Playlist | Album | FullArtist;
+	collectionData: Playlist | Album | FullArtist | UserProfile;
 }
 
 export default function CollectionHeader({ collectionData }: CollectionHeaderProps) {
@@ -84,13 +85,52 @@ export default function CollectionHeader({ collectionData }: CollectionHeaderPro
 	if (isCollectionOfType<FullArtist>(collectionData, "artist")) {
 		return (
 			<>
-				<img className={headerStyles.background} style={{ height: '300px' }} src={collectionData.images[0].url} alt="background" />
+				<img
+					className={headerStyles.background}
+					style={{ height: '300px' }}
+					src={collectionData.images[0].url} alt="background"
+				/>
 				<div className={headerStyles.header}>
-					<img className={headerStyles.cover} src={collectionData.images[0]?.url ?? collectionData.images[0].url} alt={collectionData.name} />
+					<img
+						className={headerStyles.cover}
+						src={collectionData.images[0]?.url ?? collectionData.images[0].url} alt={collectionData.name}
+						style={{ borderRadius: '50%' }}
+					/>
 					<div className={headerStyles.playlistInfo}>
 						<h3 className={headerStyles.type}>Artist</h3>
 						<h1>{collectionData.name}</h1>
 						<h3>{collectionData.followers.total.toLocaleString()} followers</h3>
+					</div>
+				</div>
+			</>
+		);
+	}
+
+	if (isUserProfile(collectionData)) {
+		return (
+			<>
+				<img
+					className={headerStyles.background}
+					src={collectionData.images?.[0]?.url ?? "/default-cover.jpg"}
+					alt="background"
+				/>
+				<div className={headerStyles.header}>
+					{collectionData.images?.[0]?.url ? (
+						<img
+							className={headerStyles.cover}
+							src={collectionData.images[0].url}
+							alt={collectionData.display_name}
+							style={{ borderRadius: '50%' }}
+						/>
+					) : (
+						<div className={headerStyles.coverDefault}>
+							{collectionData.display_name.slice(0, 1).toUpperCase()}
+						</div>
+					)}
+					<div className={headerStyles.playlistInfo}>
+						<h3 className={headerStyles.type}>User</h3>
+						<h1 style={{ fontSize: '5rem' }}>{collectionData.display_name}</h1>
+						<h3>{collectionData.followers?.total.toLocaleString() ?? 0} followers</h3>
 					</div>
 				</div>
 			</>

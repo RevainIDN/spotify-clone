@@ -1,0 +1,24 @@
+.main {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	margin-top: 20px;
+}
+
+.resultTitle {
+	font-size: 1.5rem;
+	color: var(--white);
+	margin-left: 16px;
+}
+
+.searchedTracks {
+	width: 100%;
+	margin-bottom: 40px;
+}
+
+.tracks {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0 10px;
+	z-index: 3;
+}

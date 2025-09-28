@@ -13,7 +13,13 @@ interface HomeProps {
 export default function Home({ token }: HomeProps) {
 	const { newReleases, popPlaylists, rockPlaylists, relaxPlaylists } = usePlaylistsOverview(token);
 
-	if (!newReleases || !popPlaylists || !rockPlaylists || !relaxPlaylists) {
+	const isLoading =
+		newReleases.isLoading ||
+		popPlaylists.isLoading ||
+		rockPlaylists.isLoading ||
+		relaxPlaylists.isLoading;
+
+	if (isLoading) {
 		return <Loader />;
 	}
 
