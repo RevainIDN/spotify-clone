@@ -3,6 +3,7 @@ import authReducer from "./authSlice";
 import playlistsReducer from "./playlists/playlistsSlice";
 import generalReducer from './general';
 import playerReducer from './playerSlice';
+import userReduces from './userSlice';
 
 const store = configureStore({
 	reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
 		playlists: playlistsReducer,
 		general: generalReducer,
 		player: playerReducer,
+		user: userReduces,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({
