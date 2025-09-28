@@ -2,8 +2,9 @@ import { type Playlist } from "../types/collection/playlistTypes";
 import { type Album } from "../types/collection/albumTypes";
 import { type FullArtist } from "../types/collection/artistTypes";
 import { type ArtistTracks } from "../types/collection/artistTypes";
+import { type UserProfile } from "../types/user/userProfileTypes";
 
-export type Collection = Playlist | Album | FullArtist | ArtistTracks;
+export type Collection = Playlist | Album | FullArtist | ArtistTracks | UserProfile;
 
 type TypedCollection = Playlist | Album | FullArtist;
 
@@ -16,4 +17,8 @@ export function isCollectionOfType<T extends TypedCollection>(
 
 export function isArtistTracks(collection: any): collection is ArtistTracks {
 	return collection && "tracks" in collection && Array.isArray(collection.tracks);
+}
+
+export function isUserProfile(collection: any): collection is UserProfile {
+	return collection && "id" in collection && "display_name" in collection;
 }
