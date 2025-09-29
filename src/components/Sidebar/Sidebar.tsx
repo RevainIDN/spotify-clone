@@ -117,7 +117,7 @@ export default function Sidebar() {
 							onClick={() => handleUserPlaylist(playlist.name, playlist.id)}
 							style={selectedUserPlaylist === playlist.name ? { color: 'var(--white)' } : { color: 'var(--gray-light)' }}
 						>
-							{playlist.name}
+							<span className={sidebar.playlistItemText}>{playlist.name}</span>
 						</li>
 					))}
 				</ul>

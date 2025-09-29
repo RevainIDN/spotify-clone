@@ -55,11 +55,19 @@
 }
 
 .playlistItem {
+	display: flex;
 	cursor: pointer;
 	color: var(--gray-light);
 	font-size: 0.875rem;
 	font-weight: 400;
 	padding: 2px 0;
+}
+
+.playlistItemText {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	flex: 1;
 }
 
 .playlistItem:hover {

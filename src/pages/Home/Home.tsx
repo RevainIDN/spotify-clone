@@ -1,6 +1,11 @@
+import { useEffect } from 'react';
 import { usePlaylistsOverview } from '../../hooks/usePlaylistsOverview';
 import { mapPlaylistToSimplified } from '../../mappers';
 import { type SimplifiedMappedPlaylistItem } from '../../types/collection/generalTypes';
+
+import { useDispatch } from 'react-redux';
+import { type AppDispatch } from '../../store';
+import { setNavigation } from '../../store/general';
 
 import PlaylistSection from '../../components/SectionModule/PlaylistSection/PlaylistSection';
 import AlbumsSection from '../../components/SectionModule/AlbumsSection/AlbumsSection';
@@ -11,7 +16,12 @@ interface HomeProps {
 }
 
 export default function Home({ token }: HomeProps) {
+	const dispatch = useDispatch<AppDispatch>();
 	const { newReleases, popPlaylists, rockPlaylists, relaxPlaylists } = usePlaylistsOverview(token);
+
+	useEffect(() => {
+		dispatch(setNavigation('home'));
+	}, [])
 
 	const isLoading =
 		newReleases.isLoading ||

@@ -1,7 +1,9 @@
 import searchStyles from './Search.module.css'
 import { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import { type RootState } from '../../store';
+
+import { useDispatch, useSelector } from 'react-redux'
+import { type AppDispatch, type RootState } from '../../store';
+import { setNavigation } from '../../store/general';
 
 import { useNavigate } from 'react-router-dom';
 import { usePlaybackControls } from '../../hooks/usePlaybackControls';
@@ -13,8 +15,7 @@ import { mapPlaylistToSimplified, mapAlbumToSimplified, mapArtistToSimplified } 
 import { type SimplifiedMappedPlaylistItem, type SimplifiedMappedAlbumItem, type SimplifiedMappedArtistItem, type RawCombinedResults, type Track } from '../../types/collection/generalTypes';
 import { normalizeSingleTrack } from '../../utils/normalize';
 
-import { pickBestResult } from '../../utils/pickBestResult';
-import { type BestResultItem } from '../../utils/pickBestResult';
+import { pickBestResult, type BestResultItem } from '../../utils/pickBestResult';
 
 import PlaylistSection from '../../components/SectionModule/PlaylistSection/PlaylistSection';
 import AlbumsSection from '../../components/SectionModule/AlbumsSection/AlbumsSection';
@@ -30,6 +31,7 @@ export default function Search() {
 	const [bestResult, setBestResult] = useState<BestResultItem | null>(null);
 	const [selectedTrackState, setSelectedTrackState] = useState<string | null>(null);
 
+	const dispatch = useDispatch<AppDispatch>();
 	const token = useSelector((state: RootState) => state.auth.accessToken);
 	const navigate = useNavigate();
 
@@ -82,7 +84,8 @@ export default function Search() {
 		}
 
 		fetchCategories();
-	}, []);
+		dispatch(setNavigation('search'))
+	}, [token]);
 
 	if (!categories) {
 		return <Loader />;

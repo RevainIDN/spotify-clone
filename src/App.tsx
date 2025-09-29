@@ -5,10 +5,11 @@ import { useSpotifyAuth } from './hooks/useSpotifyAuth';
 import { useSpotifyPlayer } from './hooks/useSpotifyPlayer';
 import { getUserProfileData } from './services/User/userProfile';
 
-import { useDispatch } from 'react-redux';
-import { type AppDispatch } from './store';
+import { useDispatch, useSelector } from 'react-redux';
+import { type AppDispatch, type RootState } from './store';
 import { setAccessToken } from './store/authSlice';
 import { setUserProfileData } from './store/userSlice';
+import { setNavigation } from './store/general';
 
 import Sidebar from './components/Sidebar/Sidebar';
 import Player from './components/Player/Player';
@@ -25,6 +26,8 @@ import MyProfile from './pages/Profile/MyProfile';
 function App() {
   const dispatch = useDispatch<AppDispatch>();
   const { token: authToken, loading } = useSpotifyAuth();
+  const navigation = useSelector((state: RootState) => state.general.navigation);
+
   useSpotifyPlayer(authToken);
 
   useEffect(() => {
@@ -42,6 +45,10 @@ function App() {
     }
     fetchUserProfileData();
   }, [authToken, dispatch]);
+
+  useEffect(() => {
+    dispatch(setNavigation(navigation));
+  }, [navigation])
 
   if (loading) return <p>Загрузка...</p>;
   if (!authToken) return <p>Ошибка загрузки токена. Проверь консоль.</p>;
