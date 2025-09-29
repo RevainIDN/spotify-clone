@@ -13,17 +13,12 @@ interface PlaylistSectionProps {
 function PlaylistItem({ playlist }: { playlist: SimplifiedMappedPlaylistItem }) {
 	const navigate = useNavigate();
 
-	const handleOwner = (e: React.MouseEvent) => {
-		e.stopPropagation();
-		navigate(`/user/${playlist.ownerName}`);
-	};
-
 	return (
 		<li onClick={() => { navigate(`/playlist/${playlist.id}`) }} className={playlistSection.playlistItem}>
-			<img className={playlistSection.playlistImage} src={playlist.images[0]?.url} alt={playlist.name} />
+			<img className={playlistSection.playlistImage} src={playlist.images[0]?.url ?? "/default-cover.jpg"} alt={playlist.name} />
 			<span className={playlistSection.playlistTitle}>{playlist.name}</span>
 			<ul className={playlistSection.playlistDescription}>
-				<li className={playlistSection.playlistArtist} onClick={(e) => handleOwner(e)}>{playlist.ownerName}</li>
+				<li className={playlistSection.playlistArtist}>{playlist.ownerName}</li>
 			</ul>
 		</li>
 	);
@@ -37,7 +32,7 @@ export default function PlaylistSection({ title, sectionKey, items }: PlaylistSe
 			{navigation !== 'library' && (
 				<div className={playlistSection.header}>
 					<h1 className={playlistSection.title}>{title}</h1>
-					<button onClick={() => navigate(`/section/${sectionKey}`, { state: { title, items } })} className={playlistSection.showAll}>Show all</button>
+					{items.length > 5 && <button onClick={() => navigate(`/section/${sectionKey}`, { state: { title, items } })} className={playlistSection.showAll}>Show all</button>}
 				</div>
 			)}
 			<ul className={playlistSection.playlists}>

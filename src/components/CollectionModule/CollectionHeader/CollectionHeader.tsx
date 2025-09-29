@@ -4,15 +4,17 @@ import { type Playlist } from '../../../types/collection/playlistTypes';
 import { type Album } from '../../../types/collection/albumTypes';
 import { type FullArtist } from '../../../types/collection/artistTypes';
 import { type UserProfile } from '../../../types/user/userProfileTypes';
+import { type UserPublicProfile } from '../../../types/user/userPublicProfileTypes';
 import { normalizeTracks } from '../../../utils/normalize';
 import { isCollectionOfType, isUserProfile } from '../../../utils/typeGuard';
 import { formatDuration } from '../../../utils/formatDuration';
 
 interface CollectionHeaderProps {
-	collectionData: Playlist | Album | FullArtist | UserProfile;
+	collectionData: Playlist | Album | FullArtist | UserProfile | UserPublicProfile;
+	playlistCount?: number;
 }
 
-export default function CollectionHeader({ collectionData }: CollectionHeaderProps) {
+export default function CollectionHeader({ collectionData, playlistCount }: CollectionHeaderProps) {
 	const navigate = useNavigate();
 
 	// Нормализация треков
@@ -109,11 +111,13 @@ export default function CollectionHeader({ collectionData }: CollectionHeaderPro
 	if (isUserProfile(collectionData)) {
 		return (
 			<>
-				<img
-					className={headerStyles.background}
-					src={collectionData.images?.[0]?.url ?? "/default-cover.jpg"}
-					alt="background"
-				/>
+				{collectionData.images?.[0]?.url && (
+					<img
+						className={headerStyles.background}
+						src={collectionData.images?.[0]?.url ?? "/default-cover.jpg"}
+						alt="background"
+					/>
+				)}
 				<div className={headerStyles.header}>
 					{collectionData.images?.[0]?.url ? (
 						<img
@@ -130,7 +134,11 @@ export default function CollectionHeader({ collectionData }: CollectionHeaderPro
 					<div className={headerStyles.playlistInfo}>
 						<h3 className={headerStyles.type}>User</h3>
 						<h1 style={{ fontSize: '5rem' }}>{collectionData.display_name}</h1>
-						<h3>{collectionData.followers?.total.toLocaleString() ?? 0} followers</h3>
+						<div className={headerStyles.playlistsDescription}>
+							<h3>{playlistCount} open playlists</h3>
+							<div className='delimiter'></div>
+							<h3>{collectionData.followers?.total.toLocaleString() ?? 0} followers</h3>
+						</div>
 					</div>
 				</div>
 			</>

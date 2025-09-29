@@ -21,6 +21,7 @@ import Section from './pages/Section/Section';
 import Playlist from './pages/Playlist/Playlist';
 import Album from './pages/Album/Album';
 import Artist from './pages/Artist/Artist';
+import User from './pages/User/User';
 import MyProfile from './pages/Profile/MyProfile';
 
 function App() {
@@ -67,6 +68,7 @@ function App() {
           <Route path='/playlist/:id' element={<Playlist />} />
           <Route path='/album/:id' element={<Album />} />
           <Route path='/artist/:id' element={<Artist />} />
+          <Route path='/user/:id' element={<User />} />
           <Route path='/me' element={<MyProfile />} />
         </Routes>
       </div>

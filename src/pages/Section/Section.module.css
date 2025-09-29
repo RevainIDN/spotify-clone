@@ -50,8 +50,7 @@
 	color: var(--gray-dark);
 }
 
-.playlistTitle:hover,
-.playlistArtist:hover {
+.playlistTitle:hover {
 	text-decoration: underline;
 }
 

@@ -7,7 +7,7 @@ import { isArtistTracks } from '../../../utils/typeGuard';
 
 import CollectionTrack from '../CollectionTrack/CollectionTrack';
 
-interface ColelctionTrackListProps {
+interface CollectionTrackListProps {
 	collectionData: Collection;
 	isShuffled: boolean;
 	filterValue: string;
@@ -16,7 +16,7 @@ interface ColelctionTrackListProps {
 	sortViewMode: 'List' | 'Compact';
 }
 
-export default function ColelctionTrackList({ collectionData, isShuffled, filterValue, sortType, sortOrder, sortViewMode }: ColelctionTrackListProps) {
+export default function CollectionTrackList({ collectionData, isShuffled, filterValue, sortType, sortOrder, sortViewMode }: CollectionTrackListProps) {
 	const [selectedTrackState, setSelectedTrackState] = useState<string | null>(null);
 
 	const { playTrack } = usePlaybackControls({

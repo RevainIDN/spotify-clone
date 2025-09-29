@@ -12,7 +12,7 @@ import { type Playlist } from '../../types/collection/playlistTypes';
 
 import CollectionHeader from '../../components/CollectionModule/CollectionHeader/CollectionHeader';
 import CollectionControls from '../../components/CollectionModule/CollectionControls/CollectionControls';
-import ColelctionTrackList from '../../components/CollectionModule/CollectionTrackList/CollectionTrackList';
+import CollectionTrackList from '../../components/CollectionModule/CollectionTrackList/CollectionTrackList';
 import Loader from '../../components/common/Loader';
 
 export default function Playlist() {
@@ -75,7 +75,7 @@ export default function Playlist() {
 					sortViewMode={sortViewMode}
 					setSortViewMode={setSortViewMode}
 				/>
-				<ColelctionTrackList
+				<CollectionTrackList
 					collectionData={playlistData}
 					isShuffled={isShuffled}
 					filterValue={filterValue}

@@ -21,12 +21,6 @@ function Item({ data }: { data: SimplifiedMappedItem }) {
 		}
 	};
 
-	const handleOwner = (e: React.MouseEvent) => {
-		e.stopPropagation();
-		if (data.type !== 'playlist') return;
-		navigate(`/user/${data.ownerName}`);
-	};
-
 	return (
 		<>
 			{data.type === 'playlist' && (
@@ -34,7 +28,7 @@ function Item({ data }: { data: SimplifiedMappedItem }) {
 					<img className={section.playlistImage} src={data.images[0]?.url} alt={data.name} />
 					<span className={section.playlistTitle}>{data.name}</span>
 					<ul className={section.playlistDescription}>
-						<li className={section.playlistArtist} onClick={(e) => handleOwner(e)}>{data.ownerName}</li>
+						<li className={section.playlistArtist}>{data.ownerName}</li>
 					</ul>
 				</li>
 			)}

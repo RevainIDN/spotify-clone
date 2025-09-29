@@ -12,7 +12,7 @@ import { type Album } from '../../types/collection/albumTypes';
 
 import CollectionHeader from '../../components/CollectionModule/CollectionHeader/CollectionHeader'
 import CollectionControls from '../../components/CollectionModule/CollectionControls/CollectionControls'
-import ColelctionTrackList from '../../components/CollectionModule/CollectionTrackList/CollectionTrackList'
+import CollectionTrackList from '../../components/CollectionModule/CollectionTrackList/CollectionTrackList'
 import Loader from '../../components/common/Loader';
 
 export default function Album() {
@@ -74,7 +74,7 @@ export default function Album() {
 					sortViewMode={sortViewMode}
 					setSortViewMode={setSortViewMode}
 				/>
-				<ColelctionTrackList
+				<CollectionTrackList
 					collectionData={albumData}
 					isShuffled={isShuffled}
 					filterValue={filterValue}
