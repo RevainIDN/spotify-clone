@@ -1,4 +1,5 @@
 import headerStyles from './CollectionHeader.module.css';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { type Playlist } from '../../../types/collection/playlistTypes';
 import { type Album } from '../../../types/collection/albumTypes';
@@ -8,6 +9,7 @@ import { type UserPublicProfile } from '../../../types/user/userPublicProfileTyp
 import { normalizeTracks } from '../../../utils/normalize';
 import { isCollectionOfType, isUserProfile } from '../../../utils/typeGuard';
 import { formatDuration } from '../../../utils/formatDuration';
+import ColorThief from 'colorthief';
 
 interface CollectionHeaderProps {
 	collectionData: Playlist | Album | FullArtist | UserProfile | UserPublicProfile;
@@ -16,6 +18,32 @@ interface CollectionHeaderProps {
 
 export default function CollectionHeader({ collectionData, playlistCount }: CollectionHeaderProps) {
 	const navigate = useNavigate();
+	const [dominantColor, setDominantColor] = useState<number[]>([0, 0, 0]);
+	const bgImgRef = useRef<HTMLImageElement | null>(null);
+
+	useEffect(() => {
+		if (!bgImgRef.current) return;
+
+		const img = bgImgRef.current;
+		const colorThief = new ColorThief();
+
+		const handleLoad = () => {
+			try {
+				const color = colorThief.getColor(img);
+				setDominantColor(color);
+			} catch (e) {
+				console.error('ColorThief error:', e);
+				setDominantColor([18, 18, 18]);
+			}
+		};
+
+		if (img.complete) {
+			handleLoad();
+		} else {
+			img.addEventListener('load', handleLoad);
+			return () => img.removeEventListener('load', handleLoad);
+		}
+	}, [collectionData.id, collectionData.images[0].url]);
 
 	// Нормализация треков
 	const tracks = isCollectionOfType<Playlist>(collectionData, "playlist") ||
@@ -37,7 +65,14 @@ export default function CollectionHeader({ collectionData, playlistCount }: Coll
 	if (isCollectionOfType<Playlist>(collectionData, "playlist")) {
 		return (
 			<>
-				<img className={headerStyles.background} src={collectionData?.images[0].url} alt="background" />
+				<img ref={bgImgRef} className={headerStyles.background} src={collectionData?.images[0].url} alt="background" crossOrigin="anonymous" />
+				<div
+					className={headerStyles.headerOverlay}
+					style={{
+						background: `linear-gradient(to bottom, rgba(${dominantColor.join(',')},0.8), #121212)`,
+						opacity: 0.8,
+					}}
+				></div>
 				<div className={headerStyles.header}>
 					<img className={headerStyles.cover} src={collectionData.images[0].url} alt={collectionData.name} />
 					<div className={headerStyles.playlistInfo}>
