@@ -42,6 +42,15 @@
 	transform: scale(1.05);
 }
 
+.addBtn {
+	display: flex;
+	align-items: center;
+}
+
+.addBtn:hover {
+	transform: scale(1.05);
+}
+
 .followBtn {
 	border: 1px var(--gray-dark) solid;
 	border-radius: 30px;

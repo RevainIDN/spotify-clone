@@ -22,6 +22,7 @@ export interface TrackCollectionControlsProps extends BaseControlsProps {
 	setSortOrder: React.Dispatch<React.SetStateAction<"asc" | "desc">>;
 	sortViewMode: "List" | "Compact";
 	setSortViewMode: React.Dispatch<React.SetStateAction<"List" | "Compact">>;
+	playlistId?: string;
 }
 
 export interface ArtistControlsProps extends BaseControlsProps {

@@ -71,7 +71,7 @@ export default function MyProfile() {
 
 	return (
 		<div className='content'>
-			<CollectionHeader collectionData={userProfileData} />
+			<CollectionHeader collectionData={userProfileData} playlistCount={userPlaylists?.items.length} />
 			<div className={myProfileStyles.main}>
 				<ArtistSection
 					title='Top artists of this month'

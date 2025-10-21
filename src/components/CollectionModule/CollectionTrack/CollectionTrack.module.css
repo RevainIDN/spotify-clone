@@ -152,6 +152,12 @@
 	color: var(--white);
 }
 
+.trackAlbum span {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
 .trackAlbum span:hover {
 	cursor: pointer;
 	text-decoration: underline;

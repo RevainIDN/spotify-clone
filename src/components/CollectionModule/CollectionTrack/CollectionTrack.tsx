@@ -36,6 +36,7 @@ export default function CollectionTrack({ playTrack, sortViewMode, track, index,
 			}}
 			onMouseEnter={() => setHoveredTrack(track.track.id)}
 			onMouseLeave={() => setHoveredTrack(null)}
+			style={sortViewMode === 'Compact' ? { height: '30px' } : {}}
 		>
 			<th
 				className={trackStyles.trackNumber}

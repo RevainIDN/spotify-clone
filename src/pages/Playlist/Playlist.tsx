@@ -6,9 +6,12 @@ import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { type AppDispatch, type RootState } from '../../store';
 import { setNavigation } from '../../store/general';
+import { setIsUserSubscribedToPlaylist } from '../../store/userSlice';
 
 import { getPlaylist } from '../../services/Catalog/playlists';
 import { type Playlist } from '../../types/collection/playlistTypes';
+
+import { getIsUserSubscribedToPlaylist } from '../../services/User/userActivity';
 
 import CollectionHeader from '../../components/CollectionModule/CollectionHeader/CollectionHeader';
 import CollectionControls from '../../components/CollectionModule/CollectionControls/CollectionControls';
@@ -43,8 +46,12 @@ export default function Playlist() {
 
 		const fetchData = async () => {
 			try {
-				const data = await getPlaylist(token, id) as Playlist;
-				setPlaylistData(data);
+				const playlistData = await getPlaylist(token, id) as Playlist;
+				setPlaylistData(playlistData);
+				if (playlistData) {
+					const isUserSubscribed = await getIsUserSubscribedToPlaylist(token, id);
+					dispatch(setIsUserSubscribedToPlaylist(isUserSubscribed));
+				}
 			} catch (error) {
 				console.error(error);
 			}
@@ -74,6 +81,7 @@ export default function Playlist() {
 					setSortOrder={setSortOrder}
 					sortViewMode={sortViewMode}
 					setSortViewMode={setSortViewMode}
+					playlistId={playlistData.id}
 				/>
 				<CollectionTrackList
 					collectionData={playlistData}
