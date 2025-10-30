@@ -21,7 +21,26 @@
 	height: 60px;
 }
 
+.trackDetails {
+	min-width: 0;
+	max-width: 300px;
+}
+
+.marqueeContainer {
+	overflow: hidden;
+	width: 100%;
+}
+
+.marqueeContainer:hover .trackTitle {
+	animation-play-state: paused;
+}
+
 .trackTitle {
+	display: inline-block;
+	white-space: nowrap;
+	animation: marqueePingPong linear infinite alternate;
+	animation-play-state: running;
+	width: auto;
 	font-size: 14px;
 	font-weight: 400;
 	color: var(--white);
@@ -101,4 +120,14 @@
 	cursor: pointer;
 	width: 20px;
 	height: 20px;
+}
+
+@keyframes marqueePingPong {
+	0% {
+		transform: translateX(0);
+	}
+
+	100% {
+		transform: translateX(calc(var(--marquee-distance) * -1));
+	}
 }

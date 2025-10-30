@@ -40,6 +40,7 @@
 	border-collapse: separate;
 	border-spacing: 0 10px;
 	z-index: 3;
+	table-layout: fixed;
 }
 
 .searchContainer {

@@ -1,7 +1,7 @@
 import playerStyles from './Player.module.css'
 import axios from 'axios'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { type AppDispatch, type RootState } from '../../store'
@@ -20,6 +20,12 @@ export default function Player() {
 	const [lastTrack, setLastTrack] = useState<CurrentTrack | null>(null);
 	const [hoveredButton, setHoveredButton] = useState<string | null>(null);
 
+	const trackTitleRef = useRef<HTMLHeadingElement>(null);
+	const [animationDistance, setAnimationDistance] = useState(0);
+	const [shouldAnimate, setShouldAnimate] = useState(false);
+
+	const displayTrack = currentTrack ?? lastTrack;
+
 	useEffect(() => {
 		const saved = localStorage.getItem('lastTrack');
 		if (saved) {
@@ -29,6 +35,21 @@ export default function Player() {
 			dispatch(setCurrentTrackUri(parsed.track));
 		}
 	}, [dispatch]);
+
+	useEffect(() => {
+		if (trackTitleRef.current) {
+			const containerWidth = trackTitleRef.current.parentElement?.clientWidth ?? 0;
+			const textWidth = trackTitleRef.current.scrollWidth;
+
+			if (textWidth > containerWidth) {
+				setAnimationDistance(textWidth - containerWidth);
+				setShouldAnimate(true);
+			} else {
+				setAnimationDistance(0);
+				setShouldAnimate(false);
+			}
+		}
+	}, [displayTrack?.name]);
 
 	const updateCurrentTrack = async () => {
 		try {
@@ -118,14 +139,24 @@ export default function Player() {
 		}
 	};
 
-	const displayTrack = currentTrack ?? lastTrack;
-
 	return (
 		<div className={playerStyles.player}>
 			<div className={playerStyles.trackInfo}>
 				<img className={playerStyles.trackImage} src={displayTrack?.albumImage} alt="" />
 				<div className={playerStyles.trackDetails}>
-					<h2 className={playerStyles.trackTitle} onClick={handleAlbum}>{displayTrack?.name}</h2>
+					<div className={playerStyles.marqueeContainer}>
+						<h2
+							className={`${playerStyles.trackTitle} ${shouldAnimate ? playerStyles.animate : ''}`}
+							ref={trackTitleRef}
+							onClick={handleAlbum}
+							style={{
+								'--marquee-distance': animationDistance + 'px',
+								animationDuration: `${animationDistance / 20}s`,
+							} as React.CSSProperties}
+						>
+							{displayTrack?.name}
+						</h2>
+					</div>
 					<ul className={playerStyles.trackArtistList}>
 						{displayTrack?.artists.map((artist, index) => (
 							<li key={index} className={playerStyles.trackArtist} onClick={() => handleArtist(artist)} >
