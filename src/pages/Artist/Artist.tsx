@@ -6,12 +6,15 @@ import { usePlaybackControls } from '../../hooks/usePlaybackControls';
 import { useDispatch, useSelector } from 'react-redux';
 import { type AppDispatch, type RootState } from '../../store';
 import { setNavigation } from '../../store/general';
+import { setIsUserSubscribedToArtist } from '../../store/userSlice';
 
 import { getArtist, getArtistTopTracks, getArtistAlbums } from '../../services/Catalog/artists';
 import { type FullArtist, type ArtistTracks, type ArtistAlbums } from '../../types/collection/artistTypes';
 
 import { type SimplifiedMappedAlbumItem } from '../../types/collection/generalTypes';
 import { mapAlbumToSimplified } from '../../mappers';
+
+import { getIsUserSubscribedToArtist } from '../../services/User/userActivity';
 
 import CollectionHeader from '../../components/CollectionModule/CollectionHeader/CollectionHeader'
 import CollectionControls from '../../components/CollectionModule/CollectionControls/CollectionControls';
@@ -51,6 +54,11 @@ export default function Artist() {
 				setArtistData(data);
 				setTopTracks(topTracksData);
 				setArtistMusic(artistMusic);
+
+				if (data) {
+					const isUserSubscribed = await getIsUserSubscribedToArtist(token, [id]);
+					dispatch(setIsUserSubscribedToArtist(isUserSubscribed));
+				}
 			} catch (error) {
 				console.error(error);
 			}
@@ -72,6 +80,7 @@ export default function Artist() {
 					collectionData={topTracks}
 					isShuffled={isShuffled}
 					setIsShuffled={setIsShuffled}
+					artistId={artistData.id}
 				/>
 				<table className={artistStyles.topTracks}>
 					<colgroup>

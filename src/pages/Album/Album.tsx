@@ -6,9 +6,12 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { type AppDispatch, type RootState } from '../../store';
 import { setNavigation } from '../../store/general';
+import { setIsUserSubscribedToAlbum } from '../../store/userSlice';
 
 import { getAlbum } from '../../services/Catalog/albums';
 import { type Album } from '../../types/collection/albumTypes';
+
+import { getIsUserSubscribedToAlbums } from '../../services/User/userActivity';
 
 import CollectionHeader from '../../components/CollectionModule/CollectionHeader/CollectionHeader'
 import CollectionControls from '../../components/CollectionModule/CollectionControls/CollectionControls'
@@ -42,8 +45,12 @@ export default function Album() {
 
 		const fetchData = async () => {
 			try {
-				const data = await getAlbum(token, id) as Album;
-				setAlbumData(data);
+				const albumData = await getAlbum(token, id) as Album;
+				setAlbumData(albumData);
+				if (albumData) {
+					const setIsUserSubscribed = await getIsUserSubscribedToAlbums(token, [id]);
+					dispatch(setIsUserSubscribedToAlbum(setIsUserSubscribed));
+				}
 			} catch (error) {
 				console.error(error);
 			}
@@ -73,6 +80,7 @@ export default function Album() {
 					setSortOrder={setSortOrder}
 					sortViewMode={sortViewMode}
 					setSortViewMode={setSortViewMode}
+					albumId={albumData.id}
 				/>
 				<CollectionTrackList
 					collectionData={albumData}

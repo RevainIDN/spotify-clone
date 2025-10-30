@@ -23,6 +23,8 @@ export interface TrackCollectionControlsProps extends BaseControlsProps {
 	sortViewMode: "List" | "Compact";
 	setSortViewMode: React.Dispatch<React.SetStateAction<"List" | "Compact">>;
 	playlistId?: string;
+	albumId?: string;
+	artistId?: string;
 }
 
 export interface ArtistControlsProps extends BaseControlsProps {

@@ -5,20 +5,21 @@ import { useState } from 'react';
 import { usePlaybackControls } from '../../../hooks/usePlaybackControls';
 import { useSelector, useDispatch } from 'react-redux';
 import { type RootState, type AppDispatch } from '../../../store';
-import { setIsUserSubscribedToPlaylist } from '../../../store/userSlice';
+import { setIsUserSubscribedToPlaylist, setIsUserSubscribedToAlbum, setIsUserSubscribedToArtist } from '../../../store/userSlice';
 
 import { type CollectionControlsProps } from './CollectionControls.types';
 import { type TrackCollectionControlsProps } from './CollectionControls.types';
 import { isArtistTracks } from '../../../utils/typeGuard';
 
-import { followPlaylist, unfollowPlaylist } from '../../../services/User/userActivity';
+import { followPlaylist, unfollowPlaylist, followAlbum, unfollowAlbum, followArtist, unfollowArtist } from '../../../services/User/userActivity';
 
 export default function CollectionControls(props: CollectionControlsProps) {
 	const { collectionData, isShuffled, setIsShuffled } = props;
-	const { playlistId } = (props as TrackCollectionControlsProps);
+	const { playlistId, albumId, artistId } = (props as TrackCollectionControlsProps);
 	const { currentTrackUri, isPlaying } = useSelector((state: RootState) => state.player);
-	const isUserSubscribedToPlaylist = useSelector((state: RootState) => state.user.isUserSubscribedToPlaylist);
+
 	const token = useSelector((state: RootState) => state.auth.accessToken)
+	const { isUserSubscribedToPlaylist, isUserSubscribedToAlbum, isUserSubscribedToArtist } = useSelector((state: RootState) => state.user);
 
 	const [hoveredOption, setHoveredOption] = useState<string | null>(null);
 	const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
@@ -45,31 +46,53 @@ export default function CollectionControls(props: CollectionControlsProps) {
 		};
 	}
 
-	const handlePlaylistSubscription = () => {
-		if (isUserSubscribedToPlaylist?.[0] === true) {
-			const fetchUnfollow = async () => {
-				try {
-					const res = await unfollowPlaylist(token, playlistId);
-					console.log(res);
-				} catch (error) {
-					console.log(error);
-				}
-			}
-			dispatch(setIsUserSubscribedToPlaylist([false]));
-			fetchUnfollow();
+	const handleCollectionSubscription = async () => {
+		if (!token) return;
+
+		let isSubscribed: boolean | undefined;
+		let collectionId: string | undefined;
+		let followFn: ((token: string, id?: string) => Promise<any>) | null = null;
+		let unfollowFn: ((token: string, id?: string) => Promise<any>) | null = null;
+		let setSubscription: ((value: boolean[]) => any) | null = null;
+
+		// 🟢 Определяем тип коллекции
+		if (isPlaylist) {
+			isSubscribed = isUserSubscribedToPlaylist?.[0];
+			collectionId = playlistId;
+			followFn = followPlaylist;
+			unfollowFn = unfollowPlaylist;
+			setSubscription = (val) => dispatch(setIsUserSubscribedToPlaylist(val));
+		} else if (isAlbum) {
+			isSubscribed = isUserSubscribedToAlbum?.[0];
+			collectionId = albumId;
+			followFn = followAlbum;
+			unfollowFn = unfollowAlbum;
+			setSubscription = (val) => dispatch(setIsUserSubscribedToAlbum(val));
+		} else if (isArtist) {
+			// 🎤 подписка на артиста
+			isSubscribed = isUserSubscribedToArtist?.[0];
+			collectionId = artistId;
+			followFn = followArtist;
+			unfollowFn = unfollowArtist;
+			setSubscription = (val) => dispatch(setIsUserSubscribedToArtist(val));
 		} else {
-			const fetchFollow = async () => {
-				try {
-					const res = await followPlaylist(token, playlistId);
-					console.log(res);
-				} catch (error) {
-					console.log(error);
-				}
-			}
-			dispatch(setIsUserSubscribedToPlaylist([true]));
-			fetchFollow();
+			return;
 		}
-	}
+
+		if (!collectionId || !followFn || !unfollowFn || !setSubscription) return;
+
+		try {
+			if (isSubscribed) {
+				setSubscription([false]);
+				await unfollowFn(token, collectionId);
+			} else {
+				setSubscription([true]);
+				await followFn(token, collectionId);
+			}
+		} catch (error) {
+			console.error("Ошибка при изменении подписки:", error);
+		}
+	};
 
 	// Значения сортировки
 	const sortValues = [
@@ -114,17 +137,17 @@ export default function CollectionControls(props: CollectionControlsProps) {
 				</button>
 
 				{(isPlaylist || isAlbum) && (
-					<button className={controlsStyles.addBtn} onClick={handlePlaylistSubscription}>
-						{isUserSubscribedToPlaylist?.[0] ? (
+					<button className={controlsStyles.addBtn} onClick={handleCollectionSubscription}>
+						{(isPlaylist ? isUserSubscribedToPlaylist?.[0] : isUserSubscribedToAlbum?.[0]) ? (
 							<svg width="42" height="42" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<ellipse cx="11" cy="10.5" rx="11" ry="10.5" fill="#1ED760" />
-								<path d="M7 11L9.50292 13.3104C9.91351 13.6894 10.5552 13.6582 10.9273 13.2414C12.9643 10.96 14.2943 9.47038 16.5 7" stroke="black" stroke-width="1.5" stroke-linecap="round" />
+								<path d="M7 11L9.50292 13.3104C9.91351 13.6894 10.5552 13.6582 10.9273 13.2414C12.9643 10.96 14.2943 9.47038 16.5 7" stroke="black" strokeWidth="1.5" strokeLinecap="round" />
 							</svg>
 						) : (
 							<svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg" onMouseEnter={() => setHoveredOption('add')} onMouseLeave={() => setHoveredOption(null)}>
 								<rect x="17" y="31" width="24" height="4" rx="2" transform="rotate(-90 17 31)" fill={hoveredOption === 'add' ? '#FFFFFF' : '#FFFFFFB2'} />
 								<rect x="7" y="17" width="24" height="4" rx="2" fill={hoveredOption === 'add' ? '#FFFFFF' : '#FFFFFFB2'} />
-								<circle cx="19" cy="19" r="17.75" stroke={hoveredOption === 'add' ? '#FFFFFF' : '#FFFFFFB2'} stroke-width="2.5" />
+								<circle cx="19" cy="19" r="17.75" stroke={hoveredOption === 'add' ? '#FFFFFF' : '#FFFFFFB2'} strokeWidth="2.5" />
 							</svg>
 						)}
 
@@ -133,8 +156,8 @@ export default function CollectionControls(props: CollectionControlsProps) {
 
 				{/* Follow только для артиста */}
 				{isArtist && (
-					<button className={controlsStyles.followBtn}>
-						Подписаться
+					<button className={controlsStyles.followBtn} onClick={handleCollectionSubscription}>
+						{isUserSubscribedToArtist?.[0] ? 'Уже подписаны' : 'Подписаться'}
 					</button>
 				)}
 			</div>
