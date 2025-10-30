@@ -13,7 +13,8 @@ const SCOPES = [
 	'user-library-read',
 	'user-follow-read',
 	'playlist-modify-public',
-	'playlist-modify-private'
+	'playlist-modify-private',
+	'user-read-recently-played'
 ].join(' ');
 
 export const getSpotifyAccessToken = async () => {

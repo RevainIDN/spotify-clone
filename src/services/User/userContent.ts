@@ -22,7 +22,7 @@ export async function getUserFollowingAlbums(token: string) {
 		})
 		return response.data
 	} catch (error) {
-		console.log(error)
+		console.error(error)
 	}
 }
 
@@ -35,6 +35,22 @@ export async function getUserFollowingArtists(token: string) {
 		})
 		return response.data
 	} catch (error) {
-		console.log(error)
+		console.error(error)
+	}
+}
+
+export async function getUserRecentlyPlayedTracks(token: string) {
+	try {
+		const response = await axios.get('https://api.spotify.com/v1/me/player/recently-played', {
+			headers: {
+				Authorization: `Bearer ${token}`
+			},
+			params: {
+				limit: 30
+			}
+		})
+		return response.data
+	} catch (error) {
+		console.error(error);
 	}
 }

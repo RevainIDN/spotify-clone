@@ -1,13 +1,20 @@
-import { useEffect } from 'react';
-import { usePlaylistsOverview } from '../../hooks/usePlaylistsOverview';
-import { mapPlaylistToSimplified } from '../../mappers';
-import { type SimplifiedMappedPlaylistItem } from '../../types/collection/generalTypes';
+import homeStyles from './Home.module.css';
+import { useEffect, useState, useMemo } from 'react';
+import { getNewReleases } from '../../services/Selections/selections';
+import { getUserRecentlyPlayedTracks } from '../../services/User/userContent';
+import { type RecentlyPlayedResponse } from '../../types/collection/trackTypes';
+
+import { useSelector } from 'react-redux';
+import { type RootState } from '../../store';
+
+import { mapTrackToSimplified, mapAlbumToSimplified } from '../../mappers';
+import { type SimplifiedMappedTrackItem, type SimplifiedMappedAlbumItem, type RawCombinedResults } from '../../types/collection/generalTypes';
 
 import { useDispatch } from 'react-redux';
 import { type AppDispatch } from '../../store';
 import { setNavigation } from '../../store/general';
 
-import PlaylistSection from '../../components/SectionModule/PlaylistSection/PlaylistSection';
+import TrackSection from '../../components/SectionModule/TrackSection/TrackSection';
 import AlbumsSection from '../../components/SectionModule/AlbumsSection/AlbumsSection';
 import Loader from '../../components/common/Loader';
 
@@ -17,63 +24,74 @@ interface HomeProps {
 
 export default function Home({ token }: HomeProps) {
 	const dispatch = useDispatch<AppDispatch>();
-	const { newReleases, popPlaylists, rockPlaylists, relaxPlaylists } = usePlaylistsOverview(token);
-
+	const [recentlyPlayedTracks, setRecentlyPlayedTracks] = useState<RecentlyPlayedResponse | null>(null);
+	const [newReleases, setNewReleases] = useState<RawCombinedResults>();
+	const userName = useSelector((state: RootState) => state.user.userProfileData?.display_name);
+	const timeNow = new Date().getHours();
 	useEffect(() => {
+		const fetchRecentlyPlayed = async () => {
+			if (token) {
+				const data = await getUserRecentlyPlayedTracks(token);
+				setRecentlyPlayedTracks(data);
+			}
+		};
+		fetchRecentlyPlayed();
+
+		const fetchNewReleases = async () => {
+			if (token) {
+				const data = await getNewReleases(token);
+				setNewReleases(data);
+			}
+		};
+		fetchNewReleases();
+
 		dispatch(setNavigation('home'));
 	}, [])
 
-	const isLoading =
-		newReleases.isLoading ||
-		popPlaylists.isLoading ||
-		rockPlaylists.isLoading ||
-		relaxPlaylists.isLoading;
+	const simplifiedTracks = useMemo(() => {
+		if (!recentlyPlayedTracks?.items) return [];
+
+		const mapped = recentlyPlayedTracks.items
+			.map(item => mapTrackToSimplified(item.track))
+			.filter((t): t is SimplifiedMappedTrackItem => t !== null);
+
+		const unique = mapped.filter(
+			(track, index, self) =>
+				index === self.findIndex(t => t.id === track.id)
+		);
+
+		return unique;
+	}, [recentlyPlayedTracks]);
+
+	const isLoading = !recentlyPlayedTracks;
 
 	if (isLoading) {
 		return <Loader />;
 	}
 
 	return (
-		<div className='content'>
+		<div className="content">
+			<div className={homeStyles.greeting}>
+				{(timeNow >= 6 && timeNow <= 11) && <h1>Good morning, {userName}! New day, new music.</h1>}
+				{(timeNow >= 12 && timeNow <= 17) && <h1>Have a wonderful day, {userName}!</h1>}
+				{(timeNow >= 18 && timeNow <= 22) && <h1>The evening promises to be musical, {userName}!</h1>}
+				{(timeNow >= 23 || timeNow <= 5) && <h1>Good night, {userName}! Immerse yourself in the melodies!</h1>}
+			</div>
+			<TrackSection
+				title="Recently Played"
+				items={simplifiedTracks}
+			/>
 			<AlbumsSection
-				title='New Releases'
+				title="New Releases"
 				sectionKey='new-releases'
-				isFiltered={false}
-				items={newReleases.data?.albums.items || []}
-			/>
-			<PlaylistSection
-				title="Pop"
-				sectionKey='pop'
 				items={
-					popPlaylists.data
-						? popPlaylists.data.playlists.items
-							.map(mapPlaylistToSimplified)
-							.filter(Boolean) as SimplifiedMappedPlaylistItem[]
-						: []
-				}
-			/>
-			<PlaylistSection
-				title="Rock"
-				sectionKey='rock'
-				items={
-					rockPlaylists.data
-						? rockPlaylists.data.playlists.items
-							.map(mapPlaylistToSimplified)
-							.filter(Boolean) as SimplifiedMappedPlaylistItem[]
-						: []
-				}
-			/>
-			<PlaylistSection
-				title="Relax"
-				sectionKey='relax'
-				items={
-					relaxPlaylists.data
-						? relaxPlaylists.data.playlists.items
-							.map(mapPlaylistToSimplified)
-							.filter(Boolean) as SimplifiedMappedPlaylistItem[]
+					newReleases
+						? newReleases.albums.items
+							.map(mapAlbumToSimplified)
+							.filter(Boolean) as SimplifiedMappedAlbumItem[]
 						: []
 				}
 			/>
 		</div>
-	)
+	);
 }

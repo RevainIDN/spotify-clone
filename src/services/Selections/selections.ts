@@ -1,16 +1,22 @@
 import axios from "axios";
 
-const getNewReleases = async (token: string | null) => {
+export const getNewReleases = async (token: string | null) => {
 	if (!token) {
 		console.error("Token is null, skipping request");
 		throw new Error("No access token provided");
 	}
+
+	const today = new Date();
+	const year = today.getFullYear();
+
 	try {
-		const response = await axios.get("https://api.spotify.com/v1/browse/new-releases", {
+		const response = await axios.get("https://api.spotify.com/v1/search", {
 			headers: {
 				Authorization: `Bearer ${token}`
 			},
 			params: {
+				q: `tag:new year:${year}`,
+				type: "album",
 				limit: 20
 			}
 		});
@@ -21,58 +27,26 @@ const getNewReleases = async (token: string | null) => {
 	}
 }
 
-const getPopPlaylists = async (token: string | null) => {
+export const getPopularTracks = async (token: string | null) => {
 	if (!token) {
 		console.error("Token is null, skipping request");
 		throw new Error("No access token provided");
 	}
 	try {
-		const response = await axios.get("https://api.spotify.com/v1/search?q=pop&type=playlist&limit=20", {
+		const response = await axios.get("https://api.spotify.com/v1/search", {
 			headers: {
 				Authorization: `Bearer ${token}`
+			},
+			params: {
+				q: "tag:new genre:pop",
+				type: "album",
+				limit: 20,
+				market: "US"
 			}
 		});
-		return response.data;
+		return response.data.albums.items;
 	} catch (error) {
-		console.error("Error fetching pop playlists:", error);
+		console.error("Error fetching popular tracks:", error);
 		throw error;
 	}
 }
-
-const getRockPlaylists = async (token: string | null) => {
-	if (!token) {
-		console.error("Token is null, skipping request");
-		throw new Error("No access token provided");
-	}
-	try {
-		const response = await axios.get("https://api.spotify.com/v1/search?q=rock&type=playlist&limit=20", {
-			headers: {
-				Authorization: `Bearer ${token}`
-			}
-		});
-		return response.data;
-	} catch (error) {
-		console.error("Error fetching rock playlists:", error);
-		throw error;
-	}
-}
-
-const getRelaxPlaylists = async (token: string | null) => {
-	if (!token) {
-		console.error("Token is null, skipping request");
-		throw new Error("No access token provided");
-	}
-	try {
-		const response = await axios.get("https://api.spotify.com/v1/search?q=relax&type=playlist&limit=20", {
-			headers: {
-				Authorization: `Bearer ${token}`
-			}
-		});
-		return response.data;
-	} catch (error) {
-		console.error("Error fetching relax playlists:", error);
-		throw error;
-	}
-}
-
-export default { getNewReleases, getPopPlaylists, getRockPlaylists, getRelaxPlaylists };
