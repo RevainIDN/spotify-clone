@@ -84,6 +84,7 @@
 	align-items: start;
 	text-align: start;
 	min-width: 0;
+	width: 100%;
 }
 
 .trackInfoCompact {
@@ -93,8 +94,11 @@
 	min-width: 0;
 }
 
+.trackActive,
+.selectedTrackName,
 .trackName {
-	width: 100%;
+	display: block;
+	width: 90%;
 	font-size: 1rem;
 	color: var(--white);
 	overflow: hidden;
@@ -115,6 +119,7 @@
 }
 
 .trackCover {
+	flex-shrink: 0;
 	position: relative;
 	width: 52px;
 	height: 52px;
@@ -131,9 +136,18 @@
 	border-radius: 6px;
 }
 
+.trackArtistsContainer {
+	display: block;
+	max-width: 93%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 .trackArtistList {
-	display: flex;
+	display: inline-flex;
 	gap: 3px;
+	align-items: center;
 }
 
 .trackArtist {
@@ -141,9 +155,6 @@
 	font-size: 0.9rem;
 	font-weight: 400;
 	color: var(--gray-light);
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 	text-align: start;
 }
 
@@ -152,10 +163,18 @@
 	color: var(--white);
 }
 
-.trackAlbum span {
-	white-space: nowrap;
+.trackAlbum {
 	overflow: hidden;
 	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.trackAlbum span {
+	display: block;
+	width: 90%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .trackAlbum span:hover {

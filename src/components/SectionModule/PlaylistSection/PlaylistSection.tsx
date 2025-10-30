@@ -1,8 +1,11 @@
 import playlistSection from './PlaylistSection.module.css';
+import { useState } from 'react';
 import { type SimplifiedMappedPlaylistItem } from '../../../types/collection/generalTypes';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { type RootState } from '../../../store';
+
+import PlayButton from '../../common/PlayButton';
 
 interface PlaylistSectionProps {
 	title: string;
@@ -12,10 +15,19 @@ interface PlaylistSectionProps {
 
 function PlaylistItem({ playlist }: { playlist: SimplifiedMappedPlaylistItem }) {
 	const navigate = useNavigate();
+	const [isHovered, setIsHovered] = useState(false);
 
 	return (
-		<li onClick={() => { navigate(`/playlist/${playlist.id}`) }} className={playlistSection.playlistItem}>
-			<img className={playlistSection.playlistImage} src={playlist.images[0]?.url ?? "/default-cover.jpg"} alt={playlist.name} />
+		<li
+			onClick={() => { navigate(`/playlist/${playlist.id}`) }}
+			className={playlistSection.playlistItem}
+			onMouseEnter={() => setIsHovered(true)}
+			onMouseLeave={() => setIsHovered(false)}
+		>
+			<div className={playlistSection.playlistImageContainer}>
+				<img className={playlistSection.playlistImage} src={playlist.images[0]?.url ?? "/default-cover.jpg"} alt={playlist.name} />
+				<PlayButton playlistId={playlist.id} isHovered={isHovered} />
+			</div>
 			<span className={playlistSection.playlistTitle}>{playlist.name}</span>
 			<ul className={playlistSection.playlistDescription}>
 				<li className={playlistSection.playlistArtist}>{playlist.ownerName}</li>

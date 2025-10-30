@@ -6,6 +6,8 @@ import { extractYear } from '../../../utils/extractYear';
 import { useSelector } from 'react-redux';
 import { type RootState } from '../../../store';
 
+import PlayButton from '../../common/PlayButton';
+
 interface AlbumsSectionProps {
 	title: string;
 	sectionKey: string;
@@ -22,10 +24,19 @@ const filterValues = [
 
 function AlbumItem({ album }: { album: SimplifiedMappedAlbumItem }) {
 	const navigate = useNavigate();
+	const [isHovered, setIsHovered] = useState(false);
 
 	return (
-		<li onClick={() => { navigate(`/album/${album.id}`) }} className={albumsSectionStyles.albumItem}>
-			<img className={albumsSectionStyles.albumImage} src={album.images[0]?.url} alt={album.name} />
+		<li
+			onClick={() => { navigate(`/album/${album.id}`) }}
+			className={albumsSectionStyles.albumItem}
+			onMouseEnter={() => setIsHovered(true)}
+			onMouseLeave={() => setIsHovered(false)}
+		>
+			<div className={albumsSectionStyles.albumImageContainer}>
+				<img className={albumsSectionStyles.albumImage} src={album.images[0]?.url} alt={album.name} />
+				<PlayButton albumId={album.id} isHovered={isHovered} />
+			</div>
 			<span className={albumsSectionStyles.albumTitle}>{album.name}</span>
 			<ul className={albumsSectionStyles.albumDescription}>
 				<li className={albumsSectionStyles.albumYear}>{extractYear(album.release_date)}</li>

@@ -39,6 +39,11 @@ export interface SimplifiedMappedTrackItem {
 	name: string;
 	images: Image[];
 	duration_ms: number;
+	uri?: string;
+	available_markets?: string[];
+	album?: {
+		id: string;
+	}
 	artists: {
 		id: string;
 		name: string;
@@ -53,22 +58,10 @@ export type SimplifiedMappedItem =
 	| SimplifiedMappedArtistItem;
 
 export interface RawCombinedResults {
-	playlists: {
-		href: string;
-		items: Playlist[];
-	};
-	albums: {
-		href: string;
-		items: Album[];
-	};
-	artists: {
-		href: string;
-		items: FullArtist[];
-	};
-	tracks: {
-		href: string;
-		items: Track[];
-	};
+	playlists: TracksBase<Playlist>;
+	albums: TracksBase<Album>;
+	artists: TracksBase<FullArtist>;
+	tracks: TracksBase<Track>;
 }
 
 export interface CombinedResults {

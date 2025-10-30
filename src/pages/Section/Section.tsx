@@ -1,10 +1,14 @@
 import section from './Section.module.css'
+import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { type SimplifiedMappedItem } from '../../types/collection/generalTypes';
 import { extractYear } from '../../utils/extractYear';
 
+import PlayButton from '../../components/common/PlayButton';
+
 function Item({ data }: { data: SimplifiedMappedItem }) {
+	const [isHovered, setIsHovered] = useState(false);
 	const navigate = useNavigate();
 
 	const handleClick = () => {
@@ -33,8 +37,16 @@ function Item({ data }: { data: SimplifiedMappedItem }) {
 				</li>
 			)}
 			{data.type === 'album' && (
-				<li onClick={handleClick} className={section.albumItem}>
-					<img className={section.albumImage} src={data.images[0]?.url} alt={data.name} />
+				<li
+					onClick={handleClick}
+					className={section.albumItem}
+					onMouseEnter={() => setIsHovered(true)}
+					onMouseLeave={() => setIsHovered(false)}
+				>
+					<div className={section.albumImageContainer}>
+						<img className={section.albumImage} src={data.images[0]?.url} alt={data.name} />
+						<PlayButton albumId={data.id} isHovered={isHovered} />
+					</div>
 					<span className={section.albumTitle}>{data.name}</span>
 					<ul className={section.albumDescription}>
 						<li className={section.albumYear}>{extractYear(data.release_date)}</li>

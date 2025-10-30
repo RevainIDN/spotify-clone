@@ -1,6 +1,9 @@
 import bestResultStyles from './BestResult.module.css'
-import { type BestResultItem } from '../../../utils/pickBestResult';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { type BestResultItem } from '../../../utils/pickBestResult';
+
+import PlayButton from '../../common/PlayButton';
 
 interface BestResultProps {
 	bestResult: BestResultItem | null;
@@ -8,6 +11,7 @@ interface BestResultProps {
 
 export default function BestResult({ bestResult }: BestResultProps) {
 	const navigate = useNavigate();
+	const [isHovered, setIsHovered] = useState(false);
 
 	if (!bestResult) return null;
 
@@ -25,7 +29,19 @@ export default function BestResult({ bestResult }: BestResultProps) {
 	}
 
 	return (
-		<div className={bestResultStyles.bestResult} onClick={() => navigate(`/${type}/${bestResult.id}`)}>
+		<div
+			className={bestResultStyles.bestResult}
+			onClick={() => navigate(`/${type}/${bestResult.id}`)}
+			onMouseEnter={() => setIsHovered(true)}
+			onMouseLeave={() => setIsHovered(false)}
+		>
+			<PlayButton
+				albumId={type === 'album' ? bestResult.id : undefined}
+				playlistId={type === 'playlist' ? bestResult.id : undefined}
+				trackUri={type === 'track' ? bestResult.uri : undefined}
+				availableMarkets={type === 'track' ? bestResult.available_markets : undefined}
+				isHovered={isHovered}
+			/>
 			<div className={bestResultStyles.coverContainer}>
 				{type === 'artist' ? (
 					<img className={bestResultStyles.cover} style={{ borderRadius: '50%' }} src={cover} alt={title} />

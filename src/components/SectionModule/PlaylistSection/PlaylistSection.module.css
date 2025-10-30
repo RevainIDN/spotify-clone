@@ -43,6 +43,11 @@
 	padding: 16px;
 }
 
+.playlistImageContainer {
+	position: relative;
+	margin-bottom: 16px;
+}
+
 .playlistItem:hover {
 	background-color: rgba(255, 255, 255, 0.03);
 	border-radius: 8px;
@@ -52,7 +57,6 @@
 	object-fit: cover;
 	width: 100%;
 	height: 180px;
-	margin-bottom: 16px;
 	border-radius: 4px;
 }
 
@@ -60,7 +64,7 @@
 	font-size: 16px;
 	font-weight: 700;
 	color: var(--white);
-	margin-bottom: 4px;
+	margin-bottom: 6px;
 }
 
 .playlistDescription {
@@ -76,4 +80,14 @@
 
 .playlistTitle:hover {
 	text-decoration: underline;
+}
+
+.playlistTitle,
+.playlistArtist {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	line-height: 1.2em;
 }

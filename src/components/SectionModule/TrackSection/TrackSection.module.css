@@ -1,4 +1,4 @@
-.albumSection {
+.trackSection {
 	display: flex;
 	flex-direction: column;
 	width: 100%;
@@ -30,92 +30,60 @@
 	text-decoration: underline;
 }
 
-.filters {
-	display: flex;
-	align-items: center;
-	gap: 12px;
-	margin: 0 0 14px 16px;
-}
-
-.filterItem,
-.filterItemActive {
-	cursor: pointer;
-	padding: 6px 12px;
-	color: var(--white);
-	font-size: 0.9rem;
-	font-weight: 500;
-	background-color: #FFFFFF1A;
-	border-radius: 24px;
-	transition: background-color 0.1s;
-}
-
-.filterItem:hover {
-	background-color: #ffffff1e;
-}
-
-.filterItem:active {
-	background-color: #ffffff2b;
-}
-
-.filterItemActive {
-	color: #000000;
-	background-color: var(--white);
-}
-
-.albums {
+.tracks {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 	gap: 24px;
 }
 
-.albumItem {
+.trackItem {
 	cursor: pointer;
 	display: flex;
 	flex-direction: column;
 	padding: 16px;
 }
 
-.albumImageContainer {
+.trackImageContainer {
 	position: relative;
 	margin-bottom: 16px;
 }
 
-.albumItem:hover {
+.trackItem:hover {
 	background-color: rgba(255, 255, 255, 0.03);
 	border-radius: 8px;
 }
 
-.albumImage {
+.trackImage {
 	object-fit: cover;
 	width: 100%;
 	height: 180px;
 	border-radius: 4px;
 }
 
-.albumTitle {
+.trackTitle {
 	font-size: 1rem;
 	font-weight: 500;
 	color: var(--white);
 	margin-bottom: 4px;
 }
 
-.albumDescription {
+.trackTitle:hover {
+	text-decoration: underline;
+}
+
+.trackDescription {
 	display: flex;
 	align-items: center;
 	gap: 3px;
 }
 
-.albumYear,
-.albumType {
+.trackArtist {
 	color: var(--gray-light);
 	font-weight: 500;
 }
 
-.albumTitle:hover {
-	text-decoration: underline;
-}
-
-.albumTitle {
+.trackTitle,
+.trackArtist {
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 2;

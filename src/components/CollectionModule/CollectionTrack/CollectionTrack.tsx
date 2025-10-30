@@ -138,14 +138,16 @@ export default function CollectionTrack({ playTrack, sortViewMode, track, index,
 						</span>
 						{/* Track Artists */}
 						{displayedIn !== 'artist' && (
-							<ul className={trackStyles.trackArtistList}>
-								{track.track.artists.map((artist, index) => (
-									<li className={trackStyles.trackArtist} key={artist.id || index} onClick={() => navigate(`/artist/${artist.id}`)}>
-										{artist.name}
-										{index < track.track.artists.length - 1 && ', '}
-									</li>
-								))}
-							</ul>
+							<div className={trackStyles.trackArtistsContainer}>
+								<ul className={trackStyles.trackArtistList}>
+									{track.track.artists.map((artist, index) => (
+										<li className={trackStyles.trackArtist} key={artist.id || index} onClick={() => navigate(`/artist/${artist.id}`)}>
+											{artist.name}
+											{index < track.track.artists.length - 1 && ', '}
+										</li>
+									))}
+								</ul>
+							</div>
 						)}
 					</div>
 				</th>

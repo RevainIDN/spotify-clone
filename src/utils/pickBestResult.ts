@@ -11,6 +11,8 @@ export type BestResultItem = {
 	artistId?: string;
 	ownerName?: string;
 	ownerId?: string;
+	uri?: string;
+	available_markets?: string[];
 };
 
 function calcRelevance(name: string, query: string): number {
@@ -42,7 +44,9 @@ export function pickBestResult(results: RawCombinedResults, query: string): Best
 				images: t.album?.images ?? [],
 				type: "track",
 				popularity: t.popularity,
-				score
+				score,
+				uri: t.uri,
+				available_markets: t.available_markets
 			});
 		}
 	}
