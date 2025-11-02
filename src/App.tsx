@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { type AppDispatch, type RootState } from './store';
 import { setAccessToken } from './store/authSlice';
 import { setUserProfileData } from './store/userSlice';
-import { setNavigation } from './store/general';
+import { setNavigation, setNotification } from './store/general';
 
 import Sidebar from './components/Sidebar/Sidebar';
 import Player from './components/Player/Player';
@@ -24,11 +24,13 @@ import Album from './pages/Album/Album';
 import Artist from './pages/Artist/Artist';
 import User from './pages/User/User';
 import MyProfile from './pages/Profile/MyProfile';
+import Notification from './components/common/Notification';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
   const { token: authToken, loading } = useSpotifyAuth();
   const navigation = useSelector((state: RootState) => state.general.navigation);
+  const notification = useSelector((state: RootState) => state.general.notification);
 
   useSpotifyPlayer(authToken);
 
@@ -52,6 +54,16 @@ function App() {
     dispatch(setNavigation(navigation));
   }, [navigation])
 
+  useEffect(() => {
+    if (!notification) return;
+
+    const timer = setTimeout(() => {
+      dispatch(setNotification(null));
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [notification, dispatch]);
+
   if (loading) return <p>Загрузка...</p>;
   if (!authToken) return <p>Ошибка загрузки токена. Проверь консоль.</p>;
 
@@ -73,6 +85,7 @@ function App() {
           <Route path='/user/:id' element={<User />} />
           <Route path='/me' element={<MyProfile />} />
         </Routes>
+        {notification && <Notification message={notification} />}
       </div>
       <Player />
     </div>

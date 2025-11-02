@@ -1,0 +1,32 @@
+.notification {
+	position: fixed;
+	bottom: 100px;
+	left: 50%;
+	transform: translateX(-50%);
+	background: #fff;
+	color: black;
+	padding: 14px 20px;
+	border-radius: 6px;
+	font-size: 14px;
+	opacity: 0;
+	animation: fadeInOut 3s ease-in-out forwards;
+	z-index: 100;
+}
+
+@keyframes fadeInOut {
+	0% {
+		opacity: 0;
+		transform: translate(-50%, 10px);
+	}
+
+	10%,
+	90% {
+		opacity: 1;
+		transform: translate(-50%, 0);
+	}
+
+	100% {
+		opacity: 0;
+		transform: translate(-50%, 10px);
+	}
+}
