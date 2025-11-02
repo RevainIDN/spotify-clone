@@ -6,7 +6,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { type AppDispatch, type RootState } from '../../store'
 import { setIsPlaying, setCurrentTrack, setCurrentTrackUri } from '../../store/playerSlice'
+import { setNotification } from '../../store/general'
 import { type CurrentTrack } from '../../types/playerTypes'
+import { checkLikedTracks, saveLikedTrack, deleteLikedTrack } from '../../services/User/likedTracks'
 
 import VolumeSlider from './VolumeSlider/VolumeSlider'
 import ProgressBar from './ProgressBar/ProgressBar'
@@ -16,6 +18,7 @@ export default function Player() {
 	const dispatch = useDispatch<AppDispatch>();
 	const { accessToken } = useSelector((state: RootState) => state.auth);
 	const { player, deviceId, currentTrack, currentTrackUri, isPlaying } = useSelector((state: RootState) => state.player);
+	const [isTrackLiked, setIsTrackLiked] = useState<boolean>(false);
 
 	const [lastTrack, setLastTrack] = useState<CurrentTrack | null>(null);
 	const [hoveredButton, setHoveredButton] = useState<string | null>(null);
@@ -50,6 +53,24 @@ export default function Player() {
 			}
 		}
 	}, [displayTrack?.name]);
+
+	useEffect(() => {
+		if (!accessToken || !player || !currentTrackUri) return;
+
+		const checkIfTrackIsLiked = async () => {
+			try {
+				const trackId = currentTrackUri.split(':').pop();
+				if (!trackId) return;
+
+				const response = await checkLikedTracks(accessToken, [trackId]);
+				setIsTrackLiked(response[0]);
+			} catch (error) {
+				console.error('Ошибка при проверке лайка трека:', error);
+			}
+		};
+
+		checkIfTrackIsLiked();
+	}, [accessToken, player, currentTrackUri]);
 
 	const updateCurrentTrack = async () => {
 		try {
@@ -139,6 +160,27 @@ export default function Player() {
 		}
 	};
 
+	const handleLikedTrack = async () => {
+		if (!player || !currentTrackUri) return;
+
+		const trackId = currentTrackUri.split(':').pop();
+		if (!trackId) return;
+
+		try {
+			if (isTrackLiked) {
+				await deleteLikedTrack(accessToken, trackId);
+				setIsTrackLiked(false);
+				dispatch(setNotification('Removed from the "Liked Songs" playlist'));
+			} else {
+				await saveLikedTrack(accessToken, trackId);
+				setIsTrackLiked(true);
+				dispatch(setNotification('Added to the "Liked Songs" playlist'));
+			}
+		} catch (error) {
+			console.error('Ошибка при добавлении/удалении лайка:', error);
+		}
+	}
+
 	return (
 		<div className={playerStyles.player}>
 			<div className={playerStyles.trackInfo}>
@@ -166,7 +208,12 @@ export default function Player() {
 						))}
 					</ul>
 				</div>
-				<img className={playerStyles.addToFavorites} src="/Player/add-to-favorite.svg" alt="Favorite" />
+				<img
+					className={playerStyles.addToFavorites}
+					src={isTrackLiked ? '/Player/favorite-active.svg' : '/Player/add-to-favorite.svg'}
+					alt="Favorite"
+					onClick={handleLikedTrack}
+				/>
 			</div>
 			<div className={playerStyles.progressContainer}>
 				<div className={playerStyles.controls}>
