@@ -1,4 +1,5 @@
 .track {
+	position: relative;
 	height: 54px;
 }
 
@@ -18,6 +19,7 @@
 }
 
 .selectedTrack {
+	position: relative;
 	background-color: #646464;
 }
 
@@ -34,6 +36,7 @@
 }
 
 .unavailableTrack {
+	position: relative;
 	opacity: 0.5;
 }
 
@@ -73,7 +76,7 @@
 .trackImg {
 	display: flex;
 	align-items: center;
-	height: 54px;
+	height: 62px;
 	gap: 20px;
 }
 
@@ -189,4 +192,18 @@
 	font-weight: 400;
 	text-align: start;
 	color: var(--gray-light);
+}
+
+.addToFavorites {
+	position: absolute;
+	content: '';
+	width: 16px;
+	height: 16px;
+	top: 50%;
+	transform: translateY(-50%);
+	right: 80px;
+}
+
+.addToFavorites img {
+	width: 100%;
 }

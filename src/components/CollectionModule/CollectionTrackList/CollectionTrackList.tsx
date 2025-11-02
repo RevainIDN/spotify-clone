@@ -1,9 +1,13 @@
 import trackListStyles from './CollectionTrackList.module.css'
 import { type Collection } from '../../../utils/typeGuard';
 import { normalizeTracks } from '../../../utils/normalize';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePlaybackControls } from '../../../hooks/usePlaybackControls';
 import { isArtistTracks } from '../../../utils/typeGuard';
+
+import { checkLikedTracks } from '../../../services/User/likedTracks';
+import { useSelector } from 'react-redux';
+import { type RootState } from '../../../store';
 
 import CollectionTrack from '../CollectionTrack/CollectionTrack';
 
@@ -18,6 +22,9 @@ interface CollectionTrackListProps {
 
 export default function CollectionTrackList({ collectionData, isShuffled, filterValue, sortType, sortOrder, sortViewMode }: CollectionTrackListProps) {
 	const [selectedTrackState, setSelectedTrackState] = useState<string | null>(null);
+	const [isTracksLiked, setIsTracksLiked] = useState<boolean[] | null>(null);
+
+	const token = useSelector((state: RootState) => state.auth.accessToken);
 
 	const { playTrack } = usePlaybackControls({
 		collectionData,
@@ -28,6 +35,23 @@ export default function CollectionTrackList({ collectionData, isShuffled, filter
 	const tracks = collectionData ? normalizeTracks(collectionData) : []
 
 	const isPlaylist = !isArtistTracks(collectionData) && collectionData.type === 'playlist';
+
+	useEffect(() => {
+		if (!token) return;
+
+		const tracksId = tracks.map(track => track.track.id);
+
+		const checkIfTrackIsLiked = async () => {
+			try {
+				const response = await checkLikedTracks(token, tracksId);
+				setIsTracksLiked(response);
+			} catch (error) {
+				console.error('Ошибка при проверке лайка трека:', error);
+			}
+		};
+
+		checkIfTrackIsLiked();
+	}, [token, tracks]);
 
 	// Фильтрация треков
 	const filteredValues = tracks.filter(track => {
@@ -97,6 +121,8 @@ export default function CollectionTrackList({ collectionData, isShuffled, filter
 						return null;
 					}
 
+					const isLiked = isTracksLiked ? isTracksLiked[index] : false;
+
 					return (
 						<CollectionTrack
 							key={`${track.track.id}-${track.added_at ?? index}`}
@@ -107,6 +133,7 @@ export default function CollectionTrackList({ collectionData, isShuffled, filter
 							displayedIn={isPlaylist ? 'playlist' : 'album'}
 							selectedTrackState={selectedTrackState}
 							setSelectedTrackState={setSelectedTrackState}
+							isLiked={isLiked}
 						/>
 					)
 				})}
