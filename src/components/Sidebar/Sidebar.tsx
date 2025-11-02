@@ -96,7 +96,8 @@ export default function Sidebar() {
 						/>
 						Create Playlist
 					</li>
-					<li
+					<Link
+						to={'/liked-songs'}
 						className={sidebar.menuItem}
 						onClick={() => dispatch(setNavigation('liked-songs'))}
 						style={navigation === 'liked-songs' ? { color: 'var(--white)' } : { color: 'var(--gray-light)' }}
@@ -107,7 +108,7 @@ export default function Sidebar() {
 							alt="S"
 						/>
 						Liked Songs
-					</li>
+					</Link>
 				</ul>
 				<ul className={sidebar.playlistList}>
 					{userPlaylists?.items.map(playlist => (

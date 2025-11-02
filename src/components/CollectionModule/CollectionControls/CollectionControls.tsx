@@ -19,6 +19,8 @@ export default function CollectionControls(props: CollectionControlsProps) {
 	const { currentTrackUri, isPlaying } = useSelector((state: RootState) => state.player);
 
 	const token = useSelector((state: RootState) => state.auth.accessToken)
+	const nav = useSelector((state: RootState) => state.general.navigation);
+	console.log(nav)
 	const { isUserSubscribedToPlaylist, isUserSubscribedToAlbum, isUserSubscribedToArtist } = useSelector((state: RootState) => state.user);
 
 	const [hoveredOption, setHoveredOption] = useState<string | null>(null);
@@ -55,7 +57,6 @@ export default function CollectionControls(props: CollectionControlsProps) {
 		let unfollowFn: ((token: string, id?: string) => Promise<any>) | null = null;
 		let setSubscription: ((value: boolean[]) => any) | null = null;
 
-		// 🟢 Определяем тип коллекции
 		if (isPlaylist) {
 			isSubscribed = isUserSubscribedToPlaylist?.[0];
 			collectionId = playlistId;
@@ -69,7 +70,6 @@ export default function CollectionControls(props: CollectionControlsProps) {
 			unfollowFn = unfollowAlbum;
 			setSubscription = (val) => dispatch(setIsUserSubscribedToAlbum(val));
 		} else if (isArtist) {
-			// 🎤 подписка на артиста
 			isSubscribed = isUserSubscribedToArtist?.[0];
 			collectionId = artistId;
 			followFn = followArtist;
@@ -136,7 +136,7 @@ export default function CollectionControls(props: CollectionControlsProps) {
 					</svg>
 				</button>
 
-				{(isPlaylist || isAlbum) && (
+				{(isPlaylist || isAlbum) && nav !== 'liked-songs' && (
 					<button className={controlsStyles.addBtn} onClick={handleCollectionSubscription}>
 						{(isPlaylist ? isUserSubscribedToPlaylist?.[0] : isUserSubscribedToAlbum?.[0]) ? (
 							<svg width="42" height="42" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg">

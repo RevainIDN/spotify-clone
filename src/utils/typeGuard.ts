@@ -4,10 +4,11 @@ import { type FullArtist } from "../types/collection/artistTypes";
 import { type ArtistTracks } from "../types/collection/artistTypes";
 import { type UserProfile } from "../types/user/userProfileTypes";
 import { type UserPublicProfile } from "../types/user/userPublicProfileTypes";
+import { type LikedSongsCollection } from "../types/collection/likedSongsTypes";
 
-export type Collection = Playlist | Album | FullArtist | ArtistTracks | UserProfile | UserPublicProfile;
+export type Collection = Playlist | Album | FullArtist | ArtistTracks | UserProfile | UserPublicProfile | LikedSongsCollection;
 
-type TypedCollection = Playlist | Album | FullArtist;
+type TypedCollection = Playlist | Album | FullArtist | LikedSongsCollection;
 
 export function isCollectionOfType<T extends TypedCollection>(
 	collection: Collection,
@@ -42,5 +43,16 @@ export function isUserPublicProfile(collection: unknown): collection is UserPubl
 		"display_name" in collection &&
 		(collection as UserPublicProfile).type === "user" &&
 		"followers" in collection
+	);
+}
+
+export function isLikedSongsCollection(collection: unknown): collection is LikedSongsCollection {
+	return (
+		typeof collection === "object" &&
+		collection !== null &&
+		"id" in collection &&
+		(collection as LikedSongsCollection).id === "liked-songs" &&
+		"tracks" in collection &&
+		Array.isArray((collection as LikedSongsCollection).tracks.items)
 	);
 }

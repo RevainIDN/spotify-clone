@@ -5,6 +5,7 @@ import { type FullArtist } from '../types/collection/artistTypes';
 import { type ArtistTracks } from '../types/collection/artistTypes';
 import { type UserProfile } from '../types/user/userProfileTypes';
 import { type UserPublicProfile } from '../types/user/userPublicProfileTypes';
+import { type LikedSongsCollection } from '../types/collection/likedSongsTypes';
 import { normalizeTracks } from '../utils/normalize';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,7 +13,7 @@ import { type AppDispatch, type RootState } from '../store';
 import { setCurrentTrackUri, setIsPlaying } from '../store/playerSlice';
 
 interface UseSpotifyPlayerControlsProps {
-	collectionData?: Playlist | Album | FullArtist | ArtistTracks | UserProfile | UserPublicProfile;
+	collectionData?: Playlist | Album | FullArtist | ArtistTracks | UserProfile | UserPublicProfile | LikedSongsCollection;
 	isShuffled: boolean;
 }
 

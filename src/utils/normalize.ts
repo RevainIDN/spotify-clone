@@ -2,6 +2,7 @@ import { type Collection, isCollectionOfType, isArtistTracks } from "./typeGuard
 import { type Playlist, type PlaylistTrack } from "../types/collection/playlistTypes";
 import { type Album } from "../types/collection/albumTypes";
 import { type Track } from "../types/collection/generalTypes";
+import { type LikedSongsCollection } from "../types/collection/likedSongsTypes";
 
 export interface NormalizedTrack {
 	track: Track;
@@ -23,6 +24,12 @@ export function normalizeTracks(collection: Collection): NormalizedTrack[] {
 		}));
 	}
 
+	if (isCollectionOfType<LikedSongsCollection>(collection, "playlist") && collection.id === "liked-songs") {
+		return collection.tracks.items.map((item) => ({
+			track: item.track,
+			added_at: item.added_at ?? null
+		}));
+	}
 	if (isArtistTracks(collection)) {
 		return collection.tracks.map((track: Track) => ({
 			track,

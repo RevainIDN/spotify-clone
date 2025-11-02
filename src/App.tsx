@@ -16,6 +16,7 @@ import Player from './components/Player/Player';
 import Home from './pages/Home/Home';
 import Search from './pages/Search/Search';
 import Library from './pages/Library/Library';
+import LikedSongs from './pages/LikedSongs/LikedSongs';
 import Categories from './pages/Categories/Categories';
 import Section from './pages/Section/Section';
 import Playlist from './pages/Playlist/Playlist';
@@ -64,6 +65,7 @@ function App() {
           <Route path='/search' element={<Search />} />
           <Route path='/search/:id' element={<Categories />} />
           <Route path='/library' element={<Library />} />
+          <Route path='/liked-songs' element={<LikedSongs />} />
           <Route path='/section/:id' element={<Section />} />
           <Route path='/playlist/:id' element={<Playlist />} />
           <Route path='/album/:id' element={<Album />} />
