@@ -20,7 +20,7 @@ export default function CollectionControls(props: CollectionControlsProps) {
 
 	const token = useSelector((state: RootState) => state.auth.accessToken)
 	const nav = useSelector((state: RootState) => state.general.navigation);
-	console.log(nav)
+
 	const { isUserSubscribedToPlaylist, isUserSubscribedToAlbum, isUserSubscribedToArtist } = useSelector((state: RootState) => state.user);
 
 	const [hoveredOption, setHoveredOption] = useState<string | null>(null);

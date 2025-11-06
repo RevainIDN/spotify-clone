@@ -138,7 +138,7 @@ export default function Search() {
 											.map((track, index) => {
 												const normalizedTrack = normalizeSingleTrack(track);
 
-												const isLiked = likedTracks[index] ?? false;
+												const isLiked = likedTracks?.[index] ?? false;
 
 												return (
 													<CollectionTrack

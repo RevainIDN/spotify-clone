@@ -100,7 +100,7 @@ export default function CollectionTrackList({ collectionData, isShuffled, filter
 						return null;
 					}
 
-					const isLiked = likedTracks[index] ?? false;
+					const isLiked = likedTracks?.[index] ?? false;
 
 					return (
 						<CollectionTrack

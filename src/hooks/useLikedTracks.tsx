@@ -11,19 +11,45 @@ export function useLikedTracks(trackIds: string[] | null) {
 
 	// Проверка, какие треки лайкнуты
 	useEffect(() => {
-		if (!token || !trackIds || trackIds.length === 0) return;
+		if (!token || !trackIds || trackIds.length === 0) {
+			setLikedTracks([]);
+			return;
+		}
 
-		const fetchLiked = async () => {
+		let cancelled = false;
+
+		const fetchLikedTracks = async () => {
 			try {
-				const response = await checkLikedTracks(token, trackIds);
-				setLikedTracks(response);
+				const chunks: boolean[] = [];
+
+				for (let i = 0; i < trackIds.length; i += 50) {
+					const chunk = trackIds.slice(i, i + 50);
+					const result = await checkLikedTracks(token, chunk);
+
+					if (Array.isArray(result)) {
+						chunks.push(...result);
+					} else {
+						chunks.push(...Array(chunk.length).fill(false));
+					}
+				}
+
+				if (!cancelled) {
+					setLikedTracks(chunks);
+				}
 			} catch (error) {
-				console.error('Ошибка при проверке лайков:', error);
+				console.error('Failed to fetch liked tracks:', error);
+				if (!cancelled) {
+					setLikedTracks(Array(trackIds.length).fill(false));
+				}
 			}
 		};
 
-		fetchLiked();
-	}, [token, trackIds]);
+		fetchLikedTracks();
+
+		return () => {
+			cancelled = true;
+		};
+	}, [trackIds, token]);
 
 	// Переключатель лайков
 	const toggleLike = useCallback(

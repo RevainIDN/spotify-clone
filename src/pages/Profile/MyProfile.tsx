@@ -99,7 +99,7 @@ export default function MyProfile() {
 								.slice(0, 4)
 								.map((track, index) => {
 									const normalizedTrack = normalizeSingleTrack(track);
-									const isLiked = likedTracks[index] ?? false;
+									const isLiked = likedTracks?.[index] ?? false;
 
 									return (
 										<CollectionTrack
