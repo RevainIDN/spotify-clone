@@ -1,6 +1,7 @@
 import myProfileStyles from './MyProfile.module.css'
 import { useState, useEffect } from 'react'
 import { usePlaybackControls } from '../../hooks/usePlaybackControls';
+import { useLikedTracks } from '../../hooks/useLikedTracks';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { type RootState, type AppDispatch } from '../../store';
@@ -38,6 +39,9 @@ export default function MyProfile() {
 		collectionData: undefined,
 		isShuffled: false
 	});
+
+	const trackIds = userTopTracks?.items?.map(track => track.id) ?? [];
+	const { likedTracks, toggleLike } = useLikedTracks(trackIds);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -95,6 +99,7 @@ export default function MyProfile() {
 								.slice(0, 4)
 								.map((track, index) => {
 									const normalizedTrack = normalizeSingleTrack(track);
+									const isLiked = likedTracks[index] ?? false;
 
 									return (
 										<CollectionTrack
@@ -106,6 +111,8 @@ export default function MyProfile() {
 											displayedIn='my-profile'
 											selectedTrackState={selectedTrackState}
 											setSelectedTrackState={setSelectedTrackState}
+											isLiked={isLiked}
+											onToggleLike={() => toggleLike(track.id, index)}
 										/>
 									);
 								})

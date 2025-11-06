@@ -1,0 +1,60 @@
+import { useEffect, useState, useCallback } from 'react';
+import { checkLikedTracks, saveLikedTrack, deleteLikedTrack } from '../services/User/likedTracks';
+import { useSelector, useDispatch } from 'react-redux';
+import { setNotification } from '../store/general';
+import type { RootState, AppDispatch } from '../store';
+
+export function useLikedTracks(trackIds: string[] | null) {
+	const token = useSelector((state: RootState) => state.auth.accessToken);
+	const [likedTracks, setLikedTracks] = useState<boolean[]>([]);
+	const dispatch = useDispatch<AppDispatch>();
+
+	// Проверка, какие треки лайкнуты
+	useEffect(() => {
+		if (!token || !trackIds || trackIds.length === 0) return;
+
+		const fetchLiked = async () => {
+			try {
+				const response = await checkLikedTracks(token, trackIds);
+				setLikedTracks(response);
+			} catch (error) {
+				console.error('Ошибка при проверке лайков:', error);
+			}
+		};
+
+		fetchLiked();
+	}, [token, trackIds]);
+
+	// Переключатель лайков
+	const toggleLike = useCallback(
+		async (trackId: string, index: number) => {
+			if (!token) return;
+
+			try {
+				if (likedTracks[index]) {
+					await deleteLikedTrack(token, trackId);
+					setLikedTracks(prev => {
+						const copy = [...prev];
+						copy[index] = false;
+						return copy;
+					});
+					dispatch(setNotification('Removed from the "Liked Songs" playlist'));
+				} else {
+					await saveLikedTrack(token, trackId);
+					setLikedTracks(prev => {
+						const copy = [...prev];
+						copy[index] = true;
+						return copy;
+					});
+					dispatch(setNotification('Added to the "Liked Songs" playlist'));
+				}
+			} catch (error) {
+				console.error(error);
+				dispatch(setNotification('Something went wrong'));
+			}
+		},
+		[token, likedTracks, dispatch]
+	);
+
+	return { likedTracks, toggleLike };
+}

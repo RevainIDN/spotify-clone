@@ -2,6 +2,7 @@ import artistStyles from './Artist.module.css'
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { usePlaybackControls } from '../../hooks/usePlaybackControls';
+import { useLikedTracks } from '../../hooks/useLikedTracks';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { type AppDispatch, type RootState } from '../../store';
@@ -34,6 +35,9 @@ export default function Artist() {
 	const { id } = useParams();
 
 	const dispatch = useDispatch<AppDispatch>();
+
+	const trackIds = topTracks ? topTracks.tracks.map(track => track.id) : [];
+	const { likedTracks, toggleLike } = useLikedTracks(trackIds);
 
 	const { playTrack } = usePlaybackControls({
 		collectionData: topTracks || undefined,
@@ -102,6 +106,8 @@ export default function Artist() {
 								return null;
 							}
 
+							const isLiked = likedTracks[index] ?? false;
+
 							return (
 								<CollectionTrack
 									key={`${track.id}-${index}`}
@@ -112,6 +118,8 @@ export default function Artist() {
 									displayedIn='artist'
 									selectedTrackState={selectedTrackState}
 									setSelectedTrackState={setSelectedTrackState}
+									isLiked={isLiked}
+									onToggleLike={() => toggleLike(track.id, index)}
 								/>
 							)
 						})}

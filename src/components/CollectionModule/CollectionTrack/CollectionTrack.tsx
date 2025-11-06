@@ -3,11 +3,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { type NormalizedTrack } from '../../../utils/normalize';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { type RootState, type AppDispatch } from '../../../store';
-import { setNotification } from '../../../store/general';
-
-import { saveLikedTrack, deleteLikedTrack } from '../../../services/User/likedTracks';
+import { useSelector } from 'react-redux';
+import { type RootState } from '../../../store';
 import { formatDuration } from '../../../utils/formatDuration'
 import { formatDate } from '../../../utils/formatDate'
 
@@ -20,32 +17,13 @@ interface CollectionTrackProps {
 	selectedTrackState: string | null;
 	setSelectedTrackState: (id: string) => void;
 	isLiked?: boolean;
+	onToggleLike?: () => void;
 }
 
-export default function CollectionTrack({ playTrack, sortViewMode, track, index, displayedIn, selectedTrackState, setSelectedTrackState, isLiked }: CollectionTrackProps) {
+export default function CollectionTrack({ playTrack, sortViewMode, track, index, displayedIn, selectedTrackState, setSelectedTrackState, isLiked, onToggleLike }: CollectionTrackProps) {
 	const { currentTrackUri, isPlaying } = useSelector((state: RootState) => state.player);
-	const token = useSelector((state: RootState) => state.auth.accessToken);
 	const [hoveredTrack, setHoveredTrack] = useState<string | null>(null);
-	const dispatch = useDispatch<AppDispatch>();
 	const navigate = useNavigate();
-
-	const handleToggleLike = async () => {
-		if (!token) return;
-		const trackId = track.track.id;
-
-		try {
-			if (isLiked) {
-				await deleteLikedTrack(token, trackId);
-				dispatch(setNotification('Removed from the "Liked Songs" playlist'));
-			} else {
-				await saveLikedTrack(token, trackId);
-				dispatch(setNotification('Added to the "Liked Songs" playlist'));
-			}
-		} catch (error) {
-			console.error(error);
-			dispatch(setNotification('Something went wrong 😕'));
-		}
-	};
 
 	return (
 		<tr
@@ -197,8 +175,16 @@ export default function CollectionTrack({ playTrack, sortViewMode, track, index,
 				<span>{formatDuration(track.track.duration_ms)}</span>
 				{(selectedTrackState === track.track.id || hoveredTrack === track.track.id) && (
 					<div className={trackStyles.trackOptions}>
-						<button className={trackStyles.addToFavorites} onClick={handleToggleLike}>
-							<img src={isLiked ? '/Player/favorite-active.svg' : '/Player/add-to-favorite.svg'} alt="Add to Fav" />
+						<button
+							className={trackStyles.addToFavorites}
+							onClick={(e) => {
+								e.stopPropagation();
+								onToggleLike?.();
+							}}>
+							<img
+								src={isLiked ? '/Player/favorite-active.svg' : '/Player/add-to-favorite.svg'}
+								alt="Add to Fav"
+							/>
 						</button>
 					</div>
 				)}

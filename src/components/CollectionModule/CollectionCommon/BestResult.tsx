@@ -28,10 +28,18 @@ export default function BestResult({ bestResult }: BestResultProps) {
 		}
 	}
 
+	const handleNavigate = () => {
+		if (type === 'track') {
+			return;
+		} else {
+			navigate(`/${type}/${bestResult.id}`)
+		}
+	}
+
 	return (
 		<div
 			className={bestResultStyles.bestResult}
-			onClick={() => navigate(`/${type}/${bestResult.id}`)}
+			onClick={() => handleNavigate()}
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
 		>

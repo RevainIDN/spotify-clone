@@ -7,6 +7,7 @@ import { setNavigation } from '../../store/general';
 
 import { useNavigate } from 'react-router-dom';
 import { usePlaybackControls } from '../../hooks/usePlaybackControls';
+import { useLikedTracks } from '../../hooks/useLikedTracks';
 
 import { getCategories, getSearchResult } from '../../services/Search/search';
 import { type CategoriesResponse } from '../../types/search/searchTypes';
@@ -39,6 +40,13 @@ export default function Search() {
 		collectionData: undefined,
 		isShuffled: false
 	});
+
+	const trackIds = searchResults && searchResults.tracks
+		? searchResults.tracks.items
+			.filter((t): t is Track => t !== null)
+			.map(track => track.id)
+		: [];
+	const { likedTracks, toggleLike } = useLikedTracks(trackIds);
 
 	useEffect(() => {
 		if (!searchQuery) {
@@ -130,6 +138,8 @@ export default function Search() {
 											.map((track, index) => {
 												const normalizedTrack = normalizeSingleTrack(track);
 
+												const isLiked = likedTracks[index] ?? false;
+
 												return (
 													<CollectionTrack
 														key={`${track.id}-${index}`}
@@ -140,6 +150,8 @@ export default function Search() {
 														displayedIn='search'
 														selectedTrackState={selectedTrackState}
 														setSelectedTrackState={setSelectedTrackState}
+														isLiked={isLiked}
+														onToggleLike={() => toggleLike(track.id, index)}
 													/>
 												);
 											})
