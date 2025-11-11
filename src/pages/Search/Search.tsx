@@ -1,5 +1,5 @@
 import searchStyles from './Search.module.css'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { type AppDispatch, type RootState } from '../../store';
@@ -41,11 +41,14 @@ export default function Search() {
 		isShuffled: false
 	});
 
-	const trackIds = searchResults && searchResults.tracks
-		? searchResults.tracks.items
-			.filter((t): t is Track => t !== null)
-			.map(track => track.id)
-		: [];
+	const trackIds = useMemo(() => {
+		return searchResults && searchResults.tracks
+			? searchResults.tracks.items
+				.filter((t): t is Track => t !== null)
+				.map(track => track.id)
+			: [];
+	}, [searchResults]);
+
 	const { likedTracks, toggleLike } = useLikedTracks(trackIds);
 
 	useEffect(() => {

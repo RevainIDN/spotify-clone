@@ -1,18 +1,22 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { checkLikedTracks, saveLikedTrack, deleteLikedTrack } from '../services/User/likedTracks';
 import { useSelector, useDispatch } from 'react-redux';
 import { setNotification } from '../store/general';
 import type { RootState, AppDispatch } from '../store';
+
+const globalLikedCache: Record<string, boolean> = {};
 
 export function useLikedTracks(trackIds: string[] | null) {
 	const token = useSelector((state: RootState) => state.auth.accessToken);
 	const [likedTracks, setLikedTracks] = useState<boolean[]>([]);
 	const dispatch = useDispatch<AppDispatch>();
 
+	const likedCache = useRef(globalLikedCache);
+
 	// Проверка, какие треки лайкнуты
 	useEffect(() => {
-		if (!token || !trackIds || trackIds.length === 0) {
-			setLikedTracks([]);
+		if (!token || !trackIds?.length) {
+			setLikedTracks(prev => (prev.length === 0 ? prev : []));
 			return;
 		}
 
@@ -20,26 +24,40 @@ export function useLikedTracks(trackIds: string[] | null) {
 
 		const fetchLikedTracks = async () => {
 			try {
-				const chunks: boolean[] = [];
+				const uncachedIds = trackIds.filter(id => !(id in likedCache.current));
+				if (uncachedIds.length === 0) {
+					const finalArray = trackIds.map(id => likedCache.current[id] || false);
+					setLikedTracks(finalArray);
+					return;
+				}
 
-				for (let i = 0; i < trackIds.length; i += 50) {
-					const chunk = trackIds.slice(i, i + 50);
+				for (let i = 0; i < uncachedIds.length; i += 50) {
+					const chunk = uncachedIds.slice(i, i + 50);
 					const result = await checkLikedTracks(token, chunk);
 
 					if (Array.isArray(result)) {
-						chunks.push(...result);
+						chunk.forEach((id, idx) => {
+							likedCache.current[id] = result[idx];
+						});
 					} else {
-						chunks.push(...Array(chunk.length).fill(false));
+						chunk.forEach(id => {
+							likedCache.current[id] = false;
+						});
 					}
 				}
 
 				if (!cancelled) {
-					setLikedTracks(chunks);
+					const finalArray = trackIds.map(id => likedCache.current[id] || false);
+
+					setLikedTracks(prev => {
+						const isSame = prev.length === finalArray.length && prev.every((v, i) => v === finalArray[i]);
+						return isSame ? prev : finalArray;
+					});
 				}
 			} catch (error) {
 				console.error('Failed to fetch liked tracks:', error);
 				if (!cancelled) {
-					setLikedTracks(Array(trackIds.length).fill(false));
+					setLikedTracks(trackIds.map(() => false));
 				}
 			}
 		};

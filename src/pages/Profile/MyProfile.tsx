@@ -1,5 +1,5 @@
 import myProfileStyles from './MyProfile.module.css'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { usePlaybackControls } from '../../hooks/usePlaybackControls';
 import { useLikedTracks } from '../../hooks/useLikedTracks';
 
@@ -40,7 +40,7 @@ export default function MyProfile() {
 		isShuffled: false
 	});
 
-	const trackIds = userTopTracks?.items?.map(track => track.id) ?? [];
+	const trackIds = useMemo(() => userTopTracks?.items?.map(track => track.id) ?? [], [userTopTracks]);
 	const { likedTracks, toggleLike } = useLikedTracks(trackIds);
 
 	useEffect(() => {

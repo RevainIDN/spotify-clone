@@ -1,7 +1,7 @@
 import trackListStyles from './CollectionTrackList.module.css'
 import { type Collection } from '../../../utils/typeGuard';
 import { normalizeTracks } from '../../../utils/normalize';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { usePlaybackControls } from '../../../hooks/usePlaybackControls';
 import { useLikedTracks } from '../../../hooks/useLikedTracks';
 import { isArtistTracks } from '../../../utils/typeGuard';
@@ -26,10 +26,16 @@ export default function CollectionTrackList({ collectionData, isShuffled, filter
 	});
 
 	// Нормализация треков
-	const tracks = collectionData ? normalizeTracks(collectionData) : []
+	const tracks = useMemo(() => {
+		return collectionData ? normalizeTracks(collectionData) : [];
+	}, [collectionData]);
+
+	// Определение типа коллекции
 	const isPlaylist = !isArtistTracks(collectionData) && collectionData.type === 'playlist';
 
-	const trackIds = tracks.map(track => track.track.id);
+	// Получение статусов лайков треков
+	const trackIds = useMemo(() => tracks.map(track => track.track.id), [tracks]);
+
 	const { likedTracks, toggleLike } = useLikedTracks(trackIds);
 
 	// Фильтрация треков

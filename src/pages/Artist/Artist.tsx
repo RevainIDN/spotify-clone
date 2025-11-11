@@ -1,5 +1,5 @@
 import artistStyles from './Artist.module.css'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { usePlaybackControls } from '../../hooks/usePlaybackControls';
 import { useLikedTracks } from '../../hooks/useLikedTracks';
@@ -36,7 +36,10 @@ export default function Artist() {
 
 	const dispatch = useDispatch<AppDispatch>();
 
-	const trackIds = topTracks ? topTracks.tracks.map(track => track.id) : [];
+	const trackIds = useMemo(() => {
+		return topTracks ? topTracks.tracks.map(track => track.id) : [];
+	}, [topTracks]);
+
 	const { likedTracks, toggleLike } = useLikedTracks(trackIds);
 
 	const { playTrack } = usePlaybackControls({
