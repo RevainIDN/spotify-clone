@@ -29,6 +29,7 @@ export default function Player() {
 
 	const displayTrack = currentTrack ?? lastTrack;
 
+	// Загрузка последнего трека из localStorage при монтировании
 	useEffect(() => {
 		const saved = localStorage.getItem('lastTrack');
 		if (saved) {
@@ -39,6 +40,7 @@ export default function Player() {
 		}
 	}, [dispatch]);
 
+	// Сохранение текущего трека в localStorage при изменении
 	useEffect(() => {
 		if (trackTitleRef.current) {
 			const containerWidth = trackTitleRef.current.parentElement?.clientWidth ?? 0;
@@ -54,14 +56,18 @@ export default function Player() {
 		}
 	}, [displayTrack?.name]);
 
+	// Проверка, лайкнут ли текущий трек
+	const lastCheckedId = useRef<string | null>(null);
 	useEffect(() => {
 		if (!accessToken || !player || !currentTrackUri) return;
 
+		const trackId = currentTrackUri.split(':').pop();
+		if (!trackId || trackId === lastCheckedId.current) return;
+
+		lastCheckedId.current = trackId;
+
 		const checkIfTrackIsLiked = async () => {
 			try {
-				const trackId = currentTrackUri.split(':').pop();
-				if (!trackId) return;
-
 				const response = await checkLikedTracks(accessToken, [trackId]);
 				setIsTrackLiked(response[0]);
 			} catch (error) {
@@ -72,19 +78,23 @@ export default function Player() {
 		checkIfTrackIsLiked();
 	}, [accessToken, player, currentTrackUri]);
 
+	// Получение текущего трека с проверкой на изменение URI
 	const updateCurrentTrack = async () => {
 		try {
 			const res = await axios.get('https://api.spotify.com/v1/me/player/currently-playing', {
 				headers: { Authorization: `Bearer ${accessToken}` }
 			});
-			if (res.data && res.data.item?.uri) {
-				dispatch(setCurrentTrackUri(res.data.item.uri));
+
+			const newUri = res.data?.item?.uri;
+			if (newUri && newUri !== currentTrackUri) {
+				dispatch(setCurrentTrackUri(newUri));
 			}
 		} catch (err) {
 			console.error('Ошибка при получении текущего трека', err);
 		}
 	};
 
+	// Периодическое обновление текущего трека
 	useEffect(() => {
 		if (!accessToken) return;
 
@@ -95,6 +105,7 @@ export default function Player() {
 		return () => clearInterval(interval);
 	}, [accessToken]);
 
+	// Воспроизведение/пауза трека
 	const playTrack = async () => {
 		if (!player || !currentTrackUri) return;
 		const state = await player.getCurrentState();
@@ -107,6 +118,7 @@ export default function Player() {
 		dispatch(setIsPlaying(!isPlaying));
 	}
 
+	// Переход к альбому или артисту по клику
 	const handleAlbum = async () => {
 		const state = await player?.getCurrentState();
 		const albumUri = state?.track_window.current_track.album.uri;
@@ -116,6 +128,7 @@ export default function Player() {
 		navigate(`/album/${albumId}`);
 	};
 
+	// Переход к артисту по клику
 	const handleArtist = async (name: string) => {
 		const state = await player?.getCurrentState();
 		const artists = state?.track_window.current_track.artists;
@@ -130,6 +143,7 @@ export default function Player() {
 		}
 	};
 
+	// Воспроизведение следующего трека
 	const playNext = async () => {
 		if (!player || !currentTrackUri) return;
 		try {
@@ -145,6 +159,7 @@ export default function Player() {
 		}
 	};
 
+	// Воспроизведение предыдущего трека
 	const playPrevious = async () => {
 		if (!player || !currentTrackUri) return;
 		try {
@@ -160,6 +175,7 @@ export default function Player() {
 		}
 	};
 
+	// Обработка понравившегося трека
 	const handleLikedTrack = async () => {
 		if (!player || !currentTrackUri) return;
 
