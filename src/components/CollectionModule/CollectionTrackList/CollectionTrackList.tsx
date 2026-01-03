@@ -81,49 +81,51 @@ export default function CollectionTrackList({ collectionData, isShuffled, filter
 	});
 
 	return (
-		<table className={trackListStyles.tracks}>
-			<colgroup>
-				<col style={isPlaylist ? { width: '5%' } : { width: '4%' }} />
-				<col style={isPlaylist ? { width: '35%' } : { width: '90%' }} />
-				{isPlaylist ? (sortViewMode === 'Compact' && <col style={{ width: '20%' }} />) : null}
-				{isPlaylist ? <col style={sortViewMode === 'List' ? { width: '35%' } : { width: '25%' }} /> : null}
-				{isPlaylist ? <col style={sortViewMode === 'List' ? { width: '20%' } : { width: '15%' }} /> : null}
-				<col style={{ width: '5%' }} />
-			</colgroup>
-			<thead className={trackListStyles.tableHead}>
-				<tr>
-					<th>#</th>
-					<th>TITLE</th>
-					{isPlaylist && sortViewMode === 'Compact' && <th>ARTIST</th>}
-					{isPlaylist && <th>ALBUM</th>}
-					{isPlaylist && <th>DATE ADDED</th>}
-					<th>TIME</th>
-				</tr>
-			</thead>
-			<tbody>
-				{sortedValues.map((track, index) => {
-					if (!track.track) {
-						return null;
-					}
+		<>
+			<table className={trackListStyles.tracks}>
+				<colgroup>
+					<col style={isPlaylist ? { width: '5%' } : { width: '4%' }} />
+					<col style={isPlaylist ? { width: '35%' } : { width: '90%' }} />
+					{isPlaylist ? (sortViewMode === 'Compact' && <col style={{ width: '20%' }} />) : null}
+					{isPlaylist ? <col style={sortViewMode === 'List' ? { width: '35%' } : { width: '25%' }} /> : null}
+					{isPlaylist ? <col style={sortViewMode === 'List' ? { width: '20%' } : { width: '15%' }} /> : null}
+					<col style={{ width: '5%' }} />
+				</colgroup>
+				<thead className={trackListStyles.tableHead}>
+					<tr>
+						<th>#</th>
+						<th>TITLE</th>
+						{isPlaylist && sortViewMode === 'Compact' && <th>ARTIST</th>}
+						{isPlaylist && <th>ALBUM</th>}
+						{isPlaylist && <th>DATE ADDED</th>}
+						<th>TIME</th>
+					</tr>
+				</thead>
+				<tbody>
+					{sortedValues.map((track, index) => {
+						if (!track.track) {
+							return null;
+						}
 
-					const isLiked = likedTracks?.[index] ?? false;
+						const isLiked = likedTracks?.[index] ?? false;
 
-					return (
-						<CollectionTrack
-							key={`${track.track.id}-${track.added_at ?? index}`}
-							playTrack={playTrack}
-							sortViewMode={sortViewMode}
-							track={track}
-							index={index}
-							displayedIn={isPlaylist ? 'playlist' : 'album'}
-							selectedTrackState={selectedTrackState}
-							setSelectedTrackState={setSelectedTrackState}
-							isLiked={isLiked}
-							onToggleLike={() => toggleLike(track.track.id, index)}
-						/>
-					)
-				})}
-			</tbody>
-		</table>
+						return (
+							<CollectionTrack
+								key={`${track.track.id}-${track.added_at ?? index}`}
+								playTrack={playTrack}
+								sortViewMode={sortViewMode}
+								track={track}
+								index={index}
+								displayedIn={isPlaylist ? 'playlist' : 'album'}
+								selectedTrackState={selectedTrackState}
+								setSelectedTrackState={setSelectedTrackState}
+								isLiked={isLiked}
+								onToggleLike={() => toggleLike(track.track.id, index)}
+							/>
+						)
+					})}
+				</tbody>
+			</table>
+		</>
 	)
 }

@@ -4,6 +4,7 @@ import playlistsReducer from "./playlists/playlistsSlice";
 import generalReducer from './general';
 import playerReducer from './playerSlice';
 import userReduces from './userSlice';
+import dropdownReducer from './dropdownSlice';
 
 const store = configureStore({
 	reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
 		general: generalReducer,
 		player: playerReducer,
 		user: userReduces,
+		dropdown: dropdownReducer,
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({
