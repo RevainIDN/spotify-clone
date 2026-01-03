@@ -16,6 +16,7 @@ interface PlaylistSectionProps {
 function PlaylistItem({ playlist }: { playlist: SimplifiedMappedPlaylistItem }) {
 	const navigate = useNavigate();
 	const [isHovered, setIsHovered] = useState(false);
+	const coverUrl = playlist.images?.[0]?.url;
 
 	return (
 		<li
@@ -25,7 +26,7 @@ function PlaylistItem({ playlist }: { playlist: SimplifiedMappedPlaylistItem }) 
 			onMouseLeave={() => setIsHovered(false)}
 		>
 			<div className={playlistSection.playlistImageContainer}>
-				<img className={playlistSection.playlistImage} src={playlist.images[0]?.url ?? "/default-cover.jpg"} alt={playlist.name} />
+				<img className={playlistSection.playlistImage} src={coverUrl ?? "/Collection/default-cover.jpg"} alt={playlist.name} />
 				<PlayButton playlistId={playlist.id} isHovered={isHovered} />
 			</div>
 			<span className={playlistSection.playlistTitle}>{playlist.name}</span>

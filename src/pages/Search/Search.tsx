@@ -76,6 +76,8 @@ export default function Search() {
 	}, [searchResults, searchQuery, token])
 
 	useEffect(() => {
+		if (!token) return;
+
 		const fetchCategories = async () => {
 			const data = await getCategories(token);
 			setCategories(data);

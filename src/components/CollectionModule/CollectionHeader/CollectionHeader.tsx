@@ -20,9 +20,13 @@ export default function CollectionHeader({ collectionData, playlistCount }: Coll
 	const navigate = useNavigate();
 	const [dominantColor, setDominantColor] = useState<number[]>([0, 0, 0]);
 	const bgImgRef = useRef<HTMLImageElement | null>(null);
+	const coverUrl = collectionData?.images?.[0]?.url;
 
 	useEffect(() => {
-		if (!bgImgRef.current) return;
+		if (!bgImgRef.current || !coverUrl) {
+			setDominantColor([18, 18, 18]);
+			return;
+		}
 
 		const img = bgImgRef.current;
 		const colorThief = new ColorThief();
@@ -43,7 +47,7 @@ export default function CollectionHeader({ collectionData, playlistCount }: Coll
 			img.addEventListener('load', handleLoad);
 			return () => img.removeEventListener('load', handleLoad);
 		}
-	}, [collectionData.id, collectionData.images[0].url]);
+	}, [collectionData.id, coverUrl]);
 
 	// Нормализация треков
 	const tracks = isCollectionOfType<Playlist>(collectionData, "playlist") ||
@@ -65,7 +69,7 @@ export default function CollectionHeader({ collectionData, playlistCount }: Coll
 	if (isCollectionOfType<Playlist>(collectionData, "playlist")) {
 		return (
 			<>
-				<img ref={bgImgRef} className={headerStyles.background} src={collectionData?.images[0].url} alt="background" crossOrigin="anonymous" />
+				<img ref={bgImgRef} className={headerStyles.background} src={coverUrl ?? '/Collection/default-cover.jpg'} alt="background" crossOrigin="anonymous" />
 				<div
 					className={headerStyles.headerOverlay}
 					style={{
@@ -74,7 +78,7 @@ export default function CollectionHeader({ collectionData, playlistCount }: Coll
 					}}
 				></div>
 				<div className={headerStyles.header}>
-					<img className={headerStyles.cover} src={collectionData.images[0].url} alt={collectionData.name} />
+					<img className={headerStyles.cover} src={coverUrl ?? '/Collection/default-cover.jpg'} alt={collectionData.name} />
 					<div className={headerStyles.playlistInfo}>
 						<h3 className={headerStyles.type}>
 							{collectionData.public ? "Public Playlist" : "Non-public Playlist"}
@@ -98,9 +102,9 @@ export default function CollectionHeader({ collectionData, playlistCount }: Coll
 	if (isCollectionOfType<Album>(collectionData, "album")) {
 		return (
 			<>
-				<img className={headerStyles.background} src={collectionData.images[0].url} alt="background" />
+				<img className={headerStyles.background} src={coverUrl} alt="background" />
 				<div className={headerStyles.header}>
-					<img className={headerStyles.cover} src={collectionData.images[0].url} alt={collectionData.name} />
+					<img className={headerStyles.cover} src={coverUrl} alt={collectionData.name} />
 					<div className={headerStyles.playlistInfo}>
 						<h3 className={headerStyles.type}>{collectionData.album_type}</h3>
 						<h1 className={headerStyles.name}>{collectionData.name}</h1>
@@ -125,12 +129,12 @@ export default function CollectionHeader({ collectionData, playlistCount }: Coll
 				<img
 					className={headerStyles.background}
 					style={{ height: '300px' }}
-					src={collectionData.images[0].url} alt="background"
+					src={coverUrl} alt="background"
 				/>
 				<div className={headerStyles.header}>
 					<img
 						className={headerStyles.cover}
-						src={collectionData.images[0]?.url ?? collectionData.images[0].url} alt={collectionData.name}
+						src={coverUrl} alt={collectionData.name}
 						style={{ borderRadius: '50%' }}
 					/>
 					<div className={headerStyles.playlistInfo}>
@@ -157,7 +161,7 @@ export default function CollectionHeader({ collectionData, playlistCount }: Coll
 					{collectionData.images?.[0]?.url ? (
 						<img
 							className={headerStyles.cover}
-							src={collectionData.images[0].url}
+							src={coverUrl}
 							alt={collectionData.display_name}
 							style={{ borderRadius: '50%' }}
 						/>

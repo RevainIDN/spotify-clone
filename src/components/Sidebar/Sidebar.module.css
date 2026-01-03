@@ -35,6 +35,10 @@
 }
 
 .menuItem:hover {
+	color: var(--white) !important;
+}
+
+.menuItem:hover {
 	color: var(--white);
 }
 

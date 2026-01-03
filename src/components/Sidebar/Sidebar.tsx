@@ -6,18 +6,20 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { type AppDispatch, type RootState } from '../../store';
 import { setNavigation } from '../../store/general';
+import { setUserPlaylists } from '../../store/userSlice';
 
 import { getUserPlaylists } from '../../services/User/userContent';
-import { type UserPlaylistsResponse } from '../../types/user/userCollectionsTypes';
+import { createPlaylist } from '../../services/Catalog/playlists';
 
 export default function Sidebar() {
-	const [userPlaylists, setUserPlaylists] = useState<UserPlaylistsResponse | null>(null);
 	const [selectedUserPlaylist, setSelectedUserPlaylist] = useState<string | null>(null);
 
 	const dispatch = useDispatch<AppDispatch>();
 	const navigate = useNavigate();
 	const navigation = useSelector((state: RootState) => state.general.navigation);
 	const token = useSelector((state: RootState) => state.auth.accessToken);
+	const userPlaylists = useSelector((state: RootState) => state.user.userPlaylists);
+	const userId = useSelector((state: RootState) => state.user.userPlaylists?.items[0]?.owner.id);
 
 	const handleUserPlaylist = (playlistName: string, playlistId: string) => {
 		setSelectedUserPlaylist(playlistName)
@@ -25,9 +27,11 @@ export default function Sidebar() {
 	}
 
 	useEffect(() => {
+		if (!token) return;
+
 		const fetchUserPlaylists = async () => {
 			const data = await getUserPlaylists(token)
-			setUserPlaylists(data)
+			dispatch(setUserPlaylists(data))
 		}
 		fetchUserPlaylists();
 	}, [token])
@@ -35,6 +39,19 @@ export default function Sidebar() {
 	useEffect(() => {
 		navigation !== 'playlist' && setSelectedUserPlaylist(null);
 	}, [navigation])
+
+	const handleCreatePlaylist = async () => {
+		if (userId && token) {
+			const result = await createPlaylist(token, userId, `My playlist №${(userPlaylists?.items?.length ?? 0) + 1}`, 'Description');
+			if (result) {
+				const updatedPlaylists = await getUserPlaylists(token);
+				dispatch(setUserPlaylists(updatedPlaylists));
+				setSelectedUserPlaylist(result.name);
+				navigate(`/playlist/${result.id}`);
+				dispatch(setNavigation('playlist'));
+			}
+		}
+	}
 
 	return (
 		<div className={sidebar.sidebar}>
@@ -86,7 +103,7 @@ export default function Sidebar() {
 				<ul className={sidebar.menuList}>
 					<li
 						className={sidebar.menuItem}
-						onClick={() => dispatch(setNavigation('create-playlist'))}
+						onClick={handleCreatePlaylist}
 						style={navigation === 'create-playlist' ? { color: 'var(--white)' } : { color: 'var(--gray-light)' }}
 					>
 						<img
