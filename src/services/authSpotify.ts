@@ -16,7 +16,8 @@ const SCOPES = [
 	'user-follow-modify',
 	'playlist-modify-public',
 	'playlist-modify-private',
-	'user-read-recently-played'
+	'user-read-recently-played',
+	'ugc-image-upload',
 ].join(' ');
 
 export const getSpotifyAccessToken = async () => {
