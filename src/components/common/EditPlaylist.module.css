@@ -1,0 +1,86 @@
+.edit {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 320px;
+	max-width: 90vw;
+	padding: 20px;
+	background: #282828;
+	border-radius: 8px;
+	z-index: 1001;
+}
+
+.editTitle {
+	font-size: 1.25rem;
+	margin-bottom: 12px;
+}
+
+.editContent {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.coverContent {
+	position: relative;
+}
+
+.cover {
+	width: 100%;
+	min-width: 280px;
+	max-width: 280px;
+	min-height: 280px;
+	max-height: 280px;
+	height: auto;
+	object-fit: cover;
+}
+
+.coverEdit {
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.6);
+}
+
+.coverEditIcon {
+	width: 50px;
+	height: 50px;
+}
+
+.input {
+	width: 100%;
+	padding: 8px;
+	border: none;
+	border-radius: 4px;
+	background-color: #3a3a3a;
+	color: white;
+	margin-top: 5px;
+}
+
+.input:focus {
+	outline: 1px solid #7e7e7e;
+}
+
+.buttonGroup {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 5px;
+}
+
+.button {
+	background-color: #fff;
+	color: black;
+	border-radius: 20px;
+	padding: 8px 18px;
+}
+
+.button:hover {
+	background-color: #e6e6e6;
+	transform: scale(1.05);
+}

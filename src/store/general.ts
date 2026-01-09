@@ -3,11 +3,13 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 interface GeneralState {
 	navigation: string;
 	notification: string | null;
+	editMode?: boolean;
 }
 
 const initialState: GeneralState = {
 	navigation: '',
 	notification: null,
+	editMode: false,
 };
 
 const authSlice = createSlice({
@@ -19,9 +21,12 @@ const authSlice = createSlice({
 		},
 		setNotification(state, action: PayloadAction<string | null>) {
 			state.notification = action.payload;
+		},
+		setEditMode(state, action: PayloadAction<boolean>) {
+			state.editMode = action.payload;
 		}
 	},
 });
 
-export const { setNavigation, setNotification } = authSlice.actions;
+export const { setNavigation, setNotification, setEditMode } = authSlice.actions;
 export default authSlice.reducer;

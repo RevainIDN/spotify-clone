@@ -36,9 +36,46 @@ const userSlice = createSlice({
 		},
 		setIsUserSubscribedToArtist(state, action: PayloadAction<boolean[] | null>) {
 			state.isUserSubscribedToArtist = action.payload;
+		},
+		updatePlaylistName: (state, action) => {
+			const { playlistId, newName } = action.payload;
+
+			const playlist = state.userPlaylists?.items.find(
+				p => p.id === playlistId
+			);
+
+			if (playlist) {
+				playlist.name = newName;
+			}
+		},
+		updatePlaylistCover: (
+			state,
+			action: PayloadAction<{ playlistId: string; coverUrl: string }>
+		) => {
+			const playlist = state.userPlaylists?.items.find(
+				p => p.id === action.payload.playlistId
+			);
+
+			if (playlist) {
+				playlist.images = [
+					{
+						url: action.payload.coverUrl,
+						width: null,
+						height: null,
+					},
+				];
+			}
 		}
 	},
 });
 
-export const { setUserProfileData, setUserPlaylists, setIsUserSubscribedToPlaylist, setIsUserSubscribedToAlbum, setIsUserSubscribedToArtist } = userSlice.actions;
+export const {
+	setUserProfileData,
+	setUserPlaylists,
+	setIsUserSubscribedToPlaylist,
+	setIsUserSubscribedToAlbum,
+	setIsUserSubscribedToArtist,
+	updatePlaylistName,
+	updatePlaylistCover
+} = userSlice.actions;
 export default userSlice.reducer;
