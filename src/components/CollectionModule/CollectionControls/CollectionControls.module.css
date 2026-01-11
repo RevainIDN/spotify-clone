@@ -51,6 +51,15 @@
 	transform: scale(1.05);
 }
 
+.deleteBtn {
+	display: flex;
+	align-items: center;
+}
+
+.deleteBtn:hover {
+	transform: scale(1.05);
+}
+
 .followBtn {
 	border: 1px var(--gray-dark) solid;
 	border-radius: 30px;

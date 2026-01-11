@@ -20,7 +20,7 @@ import ColorThief from 'colorthief';
 
 import ModalPortal from '../../../ModalPortal';
 import Overlay from '../../common/Overlay';
-import EditPlaylist from '../../common/EditPlaylist';
+import EditPlaylist from '../../common/Playlist/EditPlaylist';
 
 interface CollectionHeaderProps {
 	collectionData: Playlist | Album | FullArtist | UserProfile | UserPublicProfile;

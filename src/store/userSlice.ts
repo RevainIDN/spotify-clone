@@ -28,6 +28,10 @@ const userSlice = createSlice({
 		setUserPlaylists(state, action: PayloadAction<UserPlaylistsResponse>) {
 			state.userPlaylists = action.payload;
 		},
+		addUserPlaylist(state, action: PayloadAction<UserPlaylistsResponse['items'][number]>) {
+			if (!state.userPlaylists) return;
+			state.userPlaylists.items.unshift(action.payload);
+		},
 		setIsUserSubscribedToPlaylist(state, action: PayloadAction<boolean[] | null>) {
 			state.isUserSubscribedToPlaylist = action.payload;
 		},
@@ -36,6 +40,13 @@ const userSlice = createSlice({
 		},
 		setIsUserSubscribedToArtist(state, action: PayloadAction<boolean[] | null>) {
 			state.isUserSubscribedToArtist = action.payload;
+		},
+		removeUserPlaylist(state, action: PayloadAction<string>) {
+			if (!state.userPlaylists) return;
+
+			state.userPlaylists.items = state.userPlaylists.items.filter(
+				playlist => playlist.id !== action.payload
+			);
 		},
 		updatePlaylistName: (state, action) => {
 			const { playlistId, newName } = action.payload;
@@ -48,10 +59,7 @@ const userSlice = createSlice({
 				playlist.name = newName;
 			}
 		},
-		updatePlaylistCover: (
-			state,
-			action: PayloadAction<{ playlistId: string; coverUrl: string }>
-		) => {
+		updatePlaylistCover: (state, action: PayloadAction<{ playlistId: string; coverUrl: string }>) => {
 			const playlist = state.userPlaylists?.items.find(
 				p => p.id === action.payload.playlistId
 			);
@@ -72,9 +80,11 @@ const userSlice = createSlice({
 export const {
 	setUserProfileData,
 	setUserPlaylists,
+	addUserPlaylist,
 	setIsUserSubscribedToPlaylist,
 	setIsUserSubscribedToAlbum,
 	setIsUserSubscribedToArtist,
+	removeUserPlaylist,
 	updatePlaylistName,
 	updatePlaylistCover
 } = userSlice.actions;

@@ -2,13 +2,13 @@ import editPlaylistStyles from './EditPlaylist.module.css';
 import { useState, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { type AppDispatch, type RootState } from '../../store';
-import { setEditMode } from '../../store/general';
-import { updatePlaylistName, updatePlaylistCover } from '../../store/userSlice';
+import { type AppDispatch, type RootState } from '../../../store';
+import { setEditMode } from '../../../store/general';
+import { updatePlaylistName, updatePlaylistCover } from '../../../store/userSlice';
 
-import { type Playlist } from '../../types/collection/playlistTypes';
+import { type Playlist } from '../../../types/collection/playlistTypes';
 
-import { changePlaylistDetails, changePlaylistCoverImage } from '../../services/Catalog/playlists';
+import { changePlaylistDetails, changePlaylistCoverImage } from '../../../services/Catalog/playlists';
 
 interface EditPlaylistProps {
 	collectionData: Playlist;

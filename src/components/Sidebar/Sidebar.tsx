@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { type AppDispatch, type RootState } from '../../store';
 import { setNavigation } from '../../store/general';
-import { setUserPlaylists } from '../../store/userSlice';
+import { setUserPlaylists, addUserPlaylist } from '../../store/userSlice';
 
 import { getUserPlaylists } from '../../services/User/userContent';
 import { createPlaylist } from '../../services/Catalog/playlists';
@@ -19,7 +19,7 @@ export default function Sidebar() {
 	const navigation = useSelector((state: RootState) => state.general.navigation);
 	const token = useSelector((state: RootState) => state.auth.accessToken);
 	const userPlaylists = useSelector((state: RootState) => state.user.userPlaylists);
-	const userId = useSelector((state: RootState) => state.user.userPlaylists?.items[0]?.owner.id);
+	const userId = useSelector((state: RootState) => state.user.userProfileData?.id);
 
 	const handleUserPlaylist = (playlistName: string, playlistId: string) => {
 		setSelectedUserPlaylist(playlistName)
@@ -44,9 +44,7 @@ export default function Sidebar() {
 		if (userId && token) {
 			const result = await createPlaylist(token, userId, `My playlist №${(userPlaylists?.items?.length ?? 0) + 1}`, 'Description');
 			if (result) {
-				const updatedPlaylists = await getUserPlaylists(token);
-				dispatch(setUserPlaylists(updatedPlaylists));
-				setSelectedUserPlaylist(result.name);
+				dispatch(addUserPlaylist(result));
 				navigate(`/playlist/${result.id}`);
 				dispatch(setNavigation('playlist'));
 			}

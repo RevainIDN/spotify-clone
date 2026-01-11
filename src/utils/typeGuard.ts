@@ -17,6 +17,18 @@ export function isCollectionOfType<T extends TypedCollection>(
 	return "type" in collection && collection.type === type;
 }
 
+export function isPlaylistCollection(
+	collection: Collection
+): collection is Playlist {
+	return (
+		typeof collection === "object" &&
+		collection !== null &&
+		"type" in collection &&
+		(collection as any).type === "playlist" &&
+		"owner" in collection
+	);
+}
+
 export function isArtistTracks(collection: unknown): collection is ArtistTracks {
 	return (
 		typeof collection === "object" &&
