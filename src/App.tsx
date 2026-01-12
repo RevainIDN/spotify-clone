@@ -1,5 +1,5 @@
 import './styles/App.css'
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useSpotifyAuth } from './hooks/useSpotifyAuth';
 import { useSpotifyPlayer } from './hooks/useSpotifyPlayer';
@@ -28,7 +28,8 @@ import Notification from './components/common/Notification';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
-  const { token: authToken, loading } = useSpotifyAuth();
+  const navigate = useNavigate();
+  const { token: authToken, loading } = useSpotifyAuth(navigate);
   const navigation = useSelector((state: RootState) => state.general.navigation);
   const notification = useSelector((state: RootState) => state.general.notification);
 
@@ -73,7 +74,6 @@ function App() {
         <Sidebar />
         <Routes>
           <Route path='/' element={<Home token={authToken} />} />
-          <Route path='/callback' element={<p>Авторизация прошла успешно! Теперь ты можешь закрыть эту вкладку.</p>} />
           <Route path='/search' element={<Search />} />
           <Route path='/search/:id' element={<Categories />} />
           <Route path='/library' element={<Library />} />

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
+import { type NavigateFunction } from 'react-router-dom';
 import { getUserSpotifyAccessToken, redirectToSpotifyLogin, refreshSpotifyAccessToken } from '../services/authSpotify';
 
-export const useSpotifyAuth = () => {
+export const useSpotifyAuth = (navigate: NavigateFunction) => {
 	const [token, setToken] = useState<string>('');
 	const [refreshToken, setRefreshToken] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -16,9 +17,16 @@ export const useSpotifyAuth = () => {
 					const data = await getUserSpotifyAccessToken(code);
 					setToken(data.access_token);
 					setRefreshToken(data.refresh_token || null);
-					window.history.replaceState({}, document.title, '/');
+
+					localStorage.setItem('spotify_access_token', data.access_token);
+					if (data.refresh_token) {
+						localStorage.setItem('spotify_refresh_token', data.refresh_token);
+					}
+					navigate('/', { replace: true });
 				} catch (error) {
 					console.error('Ошибка получения токена:', error);
+				} finally {
+					setLoading(false);
 				}
 				return;
 			}
@@ -28,6 +36,7 @@ export const useSpotifyAuth = () => {
 			if (savedToken && savedRefreshToken) {
 				setToken(savedToken);
 				setRefreshToken(savedRefreshToken);
+				setLoading(false);
 			} else {
 				redirectToSpotifyLogin();
 			}
@@ -45,6 +54,11 @@ export const useSpotifyAuth = () => {
 				const { access_token, refresh_token } = await refreshSpotifyAccessToken(refreshToken);
 				setToken(access_token);
 				setRefreshToken(refresh_token);
+
+				localStorage.setItem('spotify_access_token', access_token);
+				if (refresh_token) {
+					localStorage.setItem('spotify_refresh_token', refresh_token);
+				}
 			} catch (error) {
 				console.error('Ошибка при обновлении токена:', error);
 				redirectToSpotifyLogin();

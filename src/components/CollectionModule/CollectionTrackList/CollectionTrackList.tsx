@@ -85,7 +85,7 @@ export default function CollectionTrackList({ collectionData, isShuffled, filter
 			<table className={trackListStyles.tracks}>
 				<colgroup>
 					<col style={isPlaylist ? { width: '5%' } : { width: '4%' }} />
-					<col style={isPlaylist ? { width: '35%' } : { width: '90%' }} />
+					<col style={isPlaylist ? (sortViewMode === 'Compact' ? { width: '20%' } : { width: '35%' }) : { width: '90%' }} />
 					{isPlaylist ? (sortViewMode === 'Compact' && <col style={{ width: '20%' }} />) : null}
 					{isPlaylist ? <col style={sortViewMode === 'List' ? { width: '35%' } : { width: '25%' }} /> : null}
 					{isPlaylist ? <col style={sortViewMode === 'List' ? { width: '20%' } : { width: '15%' }} /> : null}

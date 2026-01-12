@@ -1,6 +1,6 @@
 import trackStyles from './CollectionTrack.module.css'
-import { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { type NormalizedTrack } from '../../../utils/normalize';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -32,8 +32,13 @@ export default function CollectionTrack({ playTrack, sortViewMode, track, index,
 	const [hoveredTrack, setHoveredTrack] = useState<string | null>(null);
 	const dropdownButtonRef = useRef<HTMLButtonElement | null>(null);
 	const navigate = useNavigate();
+	const location = useLocation();
 
 	const isDropdownOpen = openedDropdownUri === track.track.uri;
+
+	useEffect(() => {
+		dispatch(closeDropdown());
+	}, [location.pathname, dispatch]);
 
 	return (
 		<tr

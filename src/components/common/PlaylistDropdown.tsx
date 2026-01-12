@@ -14,6 +14,7 @@ interface PlaylistDropdownProps {
 
 export default function PlaylistDropdown({ trackUri, onClose, anchorRef }: PlaylistDropdownProps) {
 	const token = useSelector((state: RootState) => state.auth.accessToken);
+	const userId = useSelector((state: RootState) => state.user.userProfileData?.id);
 	const userPlaylists = useSelector((state: RootState) => state.user.userPlaylists);
 	const dropdownRef = useRef<HTMLDivElement | null>(null);
 	const dispatch = useDispatch<AppDispatch>();
@@ -25,6 +26,10 @@ export default function PlaylistDropdown({ trackUri, onClose, anchorRef }: Playl
 	const fetchIdRef = useRef(0);
 
 	const [position, setPosition] = useState<'up' | 'down'>('down');
+
+	const ownedPlaylists = userPlaylists?.items.filter(
+		playlist => playlist.owner?.id === userId
+	) ?? [];
 
 	useLayoutEffect(() => {
 		if (!anchorRef?.current || !dropdownRef.current) return;
@@ -79,7 +84,7 @@ export default function PlaylistDropdown({ trackUri, onClose, anchorRef }: Playl
 			try {
 				const stateFromServer: Record<string, boolean> = {};
 
-				for (const playlist of userPlaylists.items) {
+				for (const playlist of ownedPlaylists) {
 					const response = await axios.get(
 						`https://api.spotify.com/v1/playlists/${playlist.id}/tracks?fields=items(track(uri))&limit=100`,
 						{ headers: { Authorization: `Bearer ${token}` } }
@@ -177,7 +182,7 @@ export default function PlaylistDropdown({ trackUri, onClose, anchorRef }: Playl
 		>
 			<h3 className={dropDownStyles.dropdownTitle}>Add to playlist</h3>
 			<ul className={dropDownStyles.dropdownList}>
-				{userPlaylists?.items.map(playlist => (
+				{ownedPlaylists?.map(playlist => (
 					<li className={dropDownStyles.dropdownItem} key={playlist.id}>
 						<div className={dropDownStyles.playlistInfoWrapper}>
 							<img className={dropDownStyles.playlistCover} src={playlist?.images?.[0]?.url ?? '/Collection/default-cover.jpg'} alt="Cover" />
