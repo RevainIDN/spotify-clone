@@ -7,6 +7,9 @@ import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { type RootState, type AppDispatch } from '../../store';
 import { setNavigation } from '../../store/general';
+import { setAccessToken } from '../../store/authSlice';
+import { resetUserState } from '../../store/userSlice';
+import { redirectToSpotifyLogin } from '../../services/authSpotify';
 
 import PlaylistSection from '../../components/SectionModule/PlaylistSection/PlaylistSection';
 import AlbumsSection from '../../components/SectionModule/AlbumsSection/AlbumsSection';
@@ -37,7 +40,10 @@ export default function Library() {
 
 	useEffect(() => {
 		const fetchData = async () => {
+			if (!token) return;
+
 			setLoading(true);
+
 			try {
 				if (selectedFilter === 'Playlist') {
 					const data = await getUserPlaylists(token);
@@ -86,6 +92,16 @@ export default function Library() {
 			.filter(Boolean) as SimplifiedMappedArtistItem[] ?? [];
 	}, [userArtists]);
 
+	const logout = () => {
+		localStorage.removeItem('spotify_access_token');
+		localStorage.removeItem('spotify_refresh_token');
+
+		dispatch(setAccessToken(null));
+		dispatch(resetUserState());
+
+		redirectToSpotifyLogin();
+	};
+
 	return (
 		<div className={`${libraryStyles.library} ${libraryStyles.section}`}>
 			<div className={libraryStyles.filters}>
@@ -122,7 +138,7 @@ export default function Library() {
 						{isDropdownOpen && (
 							<ul className={libraryStyles.dropdown}>
 								<Link className={libraryStyles.dropdownItem} to={'/me'}>Profile</Link>
-								<li className={libraryStyles.dropdownItem}>Exit</li>
+								<li className={libraryStyles.dropdownItem} onClick={logout}>Exit</li>
 							</ul>
 						)}
 					</div>

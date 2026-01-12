@@ -14,7 +14,7 @@ const initialState: GeneralState = {
 	confirmDeletePlaylistMode: false,
 };
 
-const authSlice = createSlice({
+const generalSlice = createSlice({
 	name: "navigation",
 	initialState,
 	reducers: {
@@ -33,5 +33,5 @@ const authSlice = createSlice({
 	},
 });
 
-export const { setNavigation, setNotification, setEditMode, setConfirmDeletePlaylistMode } = authSlice.actions;
-export default authSlice.reducer;
+export const { setNavigation, setNotification, setEditMode, setConfirmDeletePlaylistMode } = generalSlice.actions;
+export default generalSlice.reducer;

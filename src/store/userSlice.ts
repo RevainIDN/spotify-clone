@@ -73,7 +73,10 @@ const userSlice = createSlice({
 					},
 				];
 			}
-		}
+		},
+		resetUserState() {
+			return initialState;
+		},
 	},
 });
 
@@ -86,6 +89,7 @@ export const {
 	setIsUserSubscribedToArtist,
 	removeUserPlaylist,
 	updatePlaylistName,
-	updatePlaylistCover
+	updatePlaylistCover,
+	resetUserState
 } = userSlice.actions;
 export default userSlice.reducer;
