@@ -57,16 +57,23 @@
 	color: var(--gray-light);
 }
 
+.trackOptions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
 .trackTitle:hover,
 .trackArtist:hover {
 	cursor: pointer;
 	text-decoration: underline;
 }
 
-.addToFavorites {
+.addToFavorites,
+.addToPlaylist {
 	cursor: pointer;
 	width: 16px;
-	margin-left: 6px;
+	margin-left: 4px;
 }
 
 .progressContainer {

@@ -9,9 +9,11 @@ import { setIsPlaying, setCurrentTrack, setCurrentTrackUri } from '../../store/p
 import { setNotification } from '../../store/general'
 import { type CurrentTrack } from '../../types/playerTypes'
 import { checkLikedTracks, saveLikedTrack, deleteLikedTrack } from '../../services/User/likedTracks'
+import { toggleDropdown, closeDropdown } from '../../store/dropdownSlice'
 
 import VolumeSlider from './VolumeSlider/VolumeSlider'
 import ProgressBar from './ProgressBar/ProgressBar'
+import PlaylistDropdown from '../common/PlaylistDropdown'
 
 export default function Player() {
 	const navigate = useNavigate();
@@ -28,6 +30,12 @@ export default function Player() {
 	const [shouldAnimate, setShouldAnimate] = useState(false);
 
 	const displayTrack = currentTrack ?? lastTrack;
+
+	const { openedDropdown } = useSelector((state: RootState) => state.dropdown);
+	const dropdownButtonRef = useRef<HTMLButtonElement | null>(null);
+	const isDropdownOpen =
+		openedDropdown?.uri === currentTrackUri &&
+		openedDropdown?.source === 'player';
 
 	// Загрузка последнего трека из localStorage при монтировании
 	useEffect(() => {
@@ -224,12 +232,38 @@ export default function Player() {
 						))}
 					</ul>
 				</div>
-				<img
-					className={playerStyles.addToFavorites}
-					src={isTrackLiked ? '/Player/favorite-active.svg' : '/Player/add-to-favorite.svg'}
-					alt="Favorite"
-					onClick={handleLikedTrack}
-				/>
+				<div className={playerStyles.trackOptions}>
+					<button
+						onClick={handleLikedTrack}
+					>
+						<img
+							className={playerStyles.addToFavorites}
+							src={isTrackLiked ? '/Player/favorite-active.svg' : '/Player/add-to-favorite.svg'}
+							alt="Favorite"
+						/>
+					</button>
+					<button
+						ref={dropdownButtonRef}
+						onClick={(e) => {
+							e.stopPropagation();
+							dispatch(toggleDropdown({ uri: currentTrackUri!, source: 'player' }));
+						}}
+					>
+						<img
+							className={playerStyles.addToPlaylist}
+							src='/Player/add.svg'
+							alt="Add to Playlist"
+						/>
+					</button>
+					{isDropdownOpen &&
+						<PlaylistDropdown
+							trackUri={currentTrackUri!}
+							onClose={() => dispatch(closeDropdown())}
+							anchorRef={dropdownButtonRef}
+							dropdownPositionLeft={'200px'}
+							dropdownPositionUp={'70px'}
+						/>}
+				</div>
 			</div>
 			<div className={playerStyles.progressContainer}>
 				<div className={playerStyles.controls}>

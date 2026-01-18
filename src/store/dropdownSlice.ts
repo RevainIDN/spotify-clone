@@ -1,12 +1,12 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 interface DropdownState {
-	openedDropdownUri: string | null;
+	openedDropdown: { uri: string; source: 'list' | 'player' } | null
 	isOpen: boolean;
 }
 
 const initialState: DropdownState = {
-	openedDropdownUri: null,
+	openedDropdown: null as { uri: string; source: 'list' | 'player' } | null,
 	isOpen: false,
 };
 
@@ -14,21 +14,24 @@ const dropdownSlice = createSlice({
 	name: 'dropdown',
 	initialState,
 	reducers: {
-		openDropdown: (state, action: PayloadAction<string>) => {
-			state.openedDropdownUri = action.payload;
+		openDropdown: (state, action: PayloadAction<{ uri: string; source: 'list' | 'player' }>) => {
+			state.openedDropdown = action.payload;
 			state.isOpen = true;
 		},
 		closeDropdown: (state) => {
-			state.openedDropdownUri = null;
+			state.openedDropdown = null;
 			state.isOpen = false;
 		},
-		toggleDropdown: (state, action: PayloadAction<string>) => {
-			if (state.openedDropdownUri === action.payload) {
-				state.openedDropdownUri = null;
-				state.isOpen = false;
+		toggleDropdown: (state, action) => {
+			const { uri, source } = action.payload;
+			if (
+				state.openedDropdown &&
+				state.openedDropdown.uri === uri &&
+				state.openedDropdown.source === source
+			) {
+				state.openedDropdown = null;
 			} else {
-				state.openedDropdownUri = action.payload;
-				state.isOpen = true;
+				state.openedDropdown = { uri, source };
 			}
 		},
 	},

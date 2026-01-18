@@ -26,7 +26,7 @@ interface CollectionTrackProps {
 
 export default function CollectionTrack({ playTrack, sortViewMode, track, index, displayedIn, selectedTrackState, setSelectedTrackState, isLiked, onToggleLike }: CollectionTrackProps) {
 	const { currentTrackUri, isPlaying } = useSelector((state: RootState) => state.player);
-	const { openedDropdownUri } = useSelector((state: RootState) => state.dropdown);
+	const { openedDropdown } = useSelector((state: RootState) => state.dropdown);
 	const dispatch = useDispatch<AppDispatch>();
 
 	const [hoveredTrack, setHoveredTrack] = useState<string | null>(null);
@@ -34,7 +34,9 @@ export default function CollectionTrack({ playTrack, sortViewMode, track, index,
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	const isDropdownOpen = openedDropdownUri === track.track.uri;
+	const isDropdownOpen =
+		openedDropdown?.uri === track.track.uri &&
+		openedDropdown?.source === 'list'
 
 	useEffect(() => {
 		dispatch(closeDropdown());
@@ -195,7 +197,7 @@ export default function CollectionTrack({ playTrack, sortViewMode, track, index,
 							ref={dropdownButtonRef}
 							onClick={(e) => {
 								e.stopPropagation();
-								dispatch(toggleDropdown(track.track.uri));
+								dispatch(toggleDropdown({ uri: track.track.uri, source: 'list' }));
 							}}
 						>
 							<svg width="16" height="16" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg" >

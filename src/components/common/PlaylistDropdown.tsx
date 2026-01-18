@@ -10,9 +10,11 @@ interface PlaylistDropdownProps {
 	trackUri: string;
 	onClose: () => void;
 	anchorRef?: React.RefObject<HTMLButtonElement | null>;
+	dropdownPositionLeft?: string;
+	dropdownPositionUp?: string;
 }
 
-export default function PlaylistDropdown({ trackUri, onClose, anchorRef }: PlaylistDropdownProps) {
+export default function PlaylistDropdown({ trackUri, onClose, anchorRef, dropdownPositionLeft, dropdownPositionUp }: PlaylistDropdownProps) {
 	const token = useSelector((state: RootState) => state.auth.accessToken);
 	const userId = useSelector((state: RootState) => state.user.userProfileData?.id);
 	const userPlaylists = useSelector((state: RootState) => state.user.userPlaylists);
@@ -179,6 +181,7 @@ export default function PlaylistDropdown({ trackUri, onClose, anchorRef }: Playl
 		<div
 			ref={dropdownRef}
 			className={`${dropDownStyles.dropdown} ${position === 'up' ? dropDownStyles.up : dropDownStyles.down}`}
+			style={{ left: `${dropdownPositionLeft}`, bottom: `${dropdownPositionUp}` }}
 		>
 			<h3 className={dropDownStyles.dropdownTitle}>Add to playlist</h3>
 			<ul className={dropDownStyles.dropdownList}>
