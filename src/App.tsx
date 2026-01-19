@@ -25,6 +25,7 @@ import Artist from './pages/Artist/Artist';
 import User from './pages/User/User';
 import MyProfile from './pages/Profile/MyProfile';
 import Notification from './components/common/Notification';
+import NotFoundPage from './pages/NotFoundPage/NotFoundPage';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -84,6 +85,7 @@ function App() {
           <Route path='/artist/:id' element={<Artist />} />
           <Route path='/user/:id' element={<User />} />
           <Route path='/me' element={<MyProfile />} />
+          <Route path='*' element={<NotFoundPage />} />
         </Routes>
         {notification && <Notification message={notification} />}
       </div>
