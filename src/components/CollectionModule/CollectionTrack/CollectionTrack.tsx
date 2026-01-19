@@ -194,8 +194,10 @@ export default function CollectionTrack({ playTrack, sortViewMode, track, index,
 					<div className={trackStyles.trackOptions}>
 						<button
 							className={trackStyles.addToPlaylist}
+							style={track.track.available_markets.length === 0 ? { opacity: '0', cursor: 'default' } : { opacity: '1' }}
 							ref={dropdownButtonRef}
 							onClick={(e) => {
+								if (track.track.available_markets.length === 0) return;
 								e.stopPropagation();
 								dispatch(toggleDropdown({ uri: track.track.uri, source: 'list' }));
 							}}

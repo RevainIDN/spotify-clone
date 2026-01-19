@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { usePlaybackControls } from '../../../hooks/usePlaybackControls';
 import { useSelector, useDispatch } from 'react-redux';
 import { type RootState, type AppDispatch } from '../../../store';
-import { setIsUserSubscribedToPlaylist, setIsUserSubscribedToAlbum, setIsUserSubscribedToArtist } from '../../../store/userSlice';
+import { setIsUserSubscribedToPlaylist, setIsUserSubscribedToAlbum, setIsUserSubscribedToArtist, addUserPlaylist, removeUserPlaylist } from '../../../store/userSlice';
 import { setConfirmDeletePlaylistMode } from '../../../store/general';
 
 import { type CollectionControlsProps } from './CollectionControls.types';
@@ -96,9 +96,15 @@ export default function CollectionControls(props: CollectionControlsProps) {
 			if (isSubscribed) {
 				setSubscription([false]);
 				await unfollowFn(token, collectionId);
+
+				dispatch(removeUserPlaylist(collectionId));
 			} else {
 				setSubscription([true]);
 				await followFn(token, collectionId);
+
+				if (isPlaylistCollection(collectionData)) {
+					dispatch(addUserPlaylist(collectionData));
+				}
 			}
 		} catch (error) {
 			console.error("Ошибка при изменении подписки:", error);
@@ -171,7 +177,7 @@ export default function CollectionControls(props: CollectionControlsProps) {
 					</button>
 				)}
 
-				{confirmDelete && isOwner && isPlaylist && (
+				{(confirmDelete && isOwner && isPlaylist && token) && (
 					<ModalPortal>
 						<Overlay />
 						<DeletePlaylist token={token} playlistId={playlistId} />
