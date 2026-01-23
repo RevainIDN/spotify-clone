@@ -1,8 +1,8 @@
-import axios from "axios";
 import generatePKCECodes from 'pkce-challenge';
 
 const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
-const REDIRECT_URI = 'http://127.0.0.1:5174/callback';
+const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
+console.log('Redirect URI:', import.meta.env.VITE_REDIRECT_URI);
 const SCOPES = [
 	'user-read-email',
 	'user-read-private',
@@ -20,39 +20,12 @@ const SCOPES = [
 	'ugc-image-upload',
 ].join(' ');
 
-export const getSpotifyAccessToken = async () => {
-	const clientId = import.meta.env.VITE_CLIENT_ID;
-	const clientSecret = import.meta.env.VITE_CLIENT_SECRET;
-
-	const authString = `${clientId}:${clientSecret}`;
-	const authBase64 = btoa(authString);
-
-	try {
-		const response = await axios.post(
-			'https://accounts.spotify.com/api/token',
-			'grant_type=client_credentials',
-			{
-				headers: {
-					Authorization: `Basic ${authBase64}`,
-					'Content-Type': 'application/x-www-form-urlencoded',
-				},
-			}
-		);
-
-		return response.data.access_token;
-	} catch (error) {
-		console.error('Ошибка получения токена Spotify:', error);
-		return null;
-	}
-};
-
 export const redirectToSpotifyLogin = async () => {
 	try {
 		const pkce = await generatePKCECodes();
 		const codeVerifier = pkce.code_verifier;
 		const codeChallenge = pkce.code_challenge;
 
-		console.log('Generated code_verifier:', codeVerifier);
 		localStorage.setItem('spotify_code_verifier', codeVerifier);
 
 		const authUrl =
@@ -101,10 +74,12 @@ export const getUserSpotifyAccessToken = async (code: string) => {
 		}
 
 		const data = await response.json();
+
 		localStorage.setItem('spotify_access_token', data.access_token);
 		if (data.refresh_token) {
 			localStorage.setItem('spotify_refresh_token', data.refresh_token);
 		}
+
 		return data;
 	} catch (error) {
 		console.error('Ошибка в getUserSpotifyAccessToken:', error);
@@ -135,10 +110,12 @@ export const refreshSpotifyAccessToken = async (refreshToken: string) => {
 		}
 
 		const data = await response.json();
+
 		localStorage.setItem('spotify_access_token', data.access_token);
 		if (data.refresh_token) {
 			localStorage.setItem('spotify_refresh_token', data.refresh_token);
 		}
+
 		return {
 			access_token: data.access_token,
 			refresh_token: data.refresh_token || refreshToken,
