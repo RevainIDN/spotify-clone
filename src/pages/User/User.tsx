@@ -25,6 +25,7 @@ export default function User() {
 	const token = useSelector((state: RootState) => state.auth.accessToken);
 
 	useEffect(() => {
+		if (!id || !token) return;
 		const fetchUserData = async () => {
 			try {
 				const [userData, userPlaylistData] = await Promise.all([
