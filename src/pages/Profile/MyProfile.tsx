@@ -44,6 +44,8 @@ export default function MyProfile() {
 	const { likedTracks, toggleLike } = useLikedTracks(trackIds);
 
 	useEffect(() => {
+		if (!token) return;
+
 		const fetchData = async () => {
 			try {
 				const [profileTopArtists, profileTopTracks, profilePlaylists, profileArtists] = await Promise.all([

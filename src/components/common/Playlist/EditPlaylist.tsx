@@ -53,7 +53,7 @@ export default function EditPlaylist({ collectionData }: EditPlaylistProps) {
 			}));
 		}
 
-		if (newName !== collectionData.name) {
+		if (newName !== collectionData.name && token) {
 			await changePlaylistDetails(token, collectionData.id, newName);
 
 			dispatch(updatePlaylistName({

@@ -52,6 +52,8 @@ export default function Search() {
 	const { likedTracks, toggleLike } = useLikedTracks(trackIds);
 
 	useEffect(() => {
+		if (!token) return;
+
 		if (!searchQuery) {
 			setSearchResults(null);
 			setBestResult(null);

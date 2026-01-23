@@ -23,7 +23,6 @@ export default function PlaylistDropdown({ trackUri, onClose, anchorRef, dropdow
 
 	const [trackInPlaylists, setTrackInPlaylists] = useState<Record<string, boolean>>({});
 	const [initialState, setInitialState] = useState<Record<string, boolean>>({});
-	const [isLoaded, setIsLoaded] = useState(false);
 	const userTouchedRef = useRef(false);
 	const fetchIdRef = useRef(0);
 
@@ -76,7 +75,6 @@ export default function PlaylistDropdown({ trackUri, onClose, anchorRef, dropdow
 		const fetchTrackState = async () => {
 			if (!token || !trackUri || !userPlaylists?.items) {
 				if (!cancelled) {
-					setIsLoaded(true);
 					setInitialState({});
 					setTrackInPlaylists(prev => prev ?? {});
 				}
@@ -110,17 +108,12 @@ export default function PlaylistDropdown({ trackUri, onClose, anchorRef, dropdow
 				});
 
 				setInitialState(stateFromServer);
-				setIsLoaded(true);
 			} catch (err) {
 				console.error('Ошибка при получении состояния трека в плейлистах:', err);
-				if (!cancelled) {
-					setIsLoaded(true);
-				}
 			}
 		};
 
 		userTouchedRef.current = false;
-		setIsLoaded(false);
 		setTrackInPlaylists({});
 		setInitialState({});
 
