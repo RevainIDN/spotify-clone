@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// Получает информацию о плейлисте по его ID
 export async function getPlaylist(token: string, id: string | undefined) {
 	try {
 		const response = await axios.get(`https://api.spotify.com/v1/playlists/${id}`, {
@@ -13,6 +14,7 @@ export async function getPlaylist(token: string, id: string | undefined) {
 	}
 }
 
+// Создаёт новый плейлист для текущего пользователя
 export async function createPlaylist(token: string, userId: string | undefined, name: string, description: string) {
 	try {
 		const response = await axios.post(`https://api.spotify.com/v1/users/${userId}/playlists`, {
@@ -29,6 +31,7 @@ export async function createPlaylist(token: string, userId: string | undefined, 
 	}
 }
 
+// Изменяет название плейлиста
 export async function changePlaylistDetails(token: string, playlistId: string | undefined, name: string) {
 	try {
 		await axios.put(`https://api.spotify.com/v1/playlists/${playlistId}`, {
@@ -43,6 +46,7 @@ export async function changePlaylistDetails(token: string, playlistId: string | 
 	}
 }
 
+// Загружает новое изображение (обложку) плейлиста, предварительно конвертируя его в base64
 export async function changePlaylistCoverImage(token: string, playlistId: string, image: File) {
 	const base64Image = await fileToBase64(image);
 
@@ -58,6 +62,7 @@ export async function changePlaylistCoverImage(token: string, playlistId: string
 	);
 }
 
+// Вспомогательная функция для конвертации файла в base64 строку
 function fileToBase64(file: File): Promise<string> {
 	return new Promise((resolve, reject) => {
 		const reader = new FileReader();

@@ -1,3 +1,5 @@
+// Типы для альбомов Spotify API
+
 import { type Image, type Artist, type Track, type TracksBase } from "./generalTypes";
 
 export interface Album {

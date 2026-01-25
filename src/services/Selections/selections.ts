@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// Получает новые релизы текущего года (максимум 20 альбомов)
 export const getNewReleases = async (token: string | null) => {
 	if (!token) {
 		console.error("Token is null, skipping request");
@@ -27,6 +28,7 @@ export const getNewReleases = async (token: string | null) => {
 	}
 }
 
+// Получает популярные треки жанра поп текущего года (максимум 20 альбомов)
 export const getPopularTracks = async (token: string | null) => {
 	if (!token) {
 		console.error("Token is null, skipping request");

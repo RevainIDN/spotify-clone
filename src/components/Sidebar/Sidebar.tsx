@@ -11,7 +11,9 @@ import { setUserPlaylists, addUserPlaylist } from '../../store/userSlice';
 import { getUserPlaylists } from '../../services/User/userContent';
 import { createPlaylist } from '../../services/Catalog/playlists';
 
+// Боковая панель навигации с доступом к основным разделам приложения и пользовательским плейлистам.
 export default function Sidebar() {
+	// Отслеживает, какой плейлист пользователя в данный момент выбран для выделения в UI.
 	const [selectedUserPlaylist, setSelectedUserPlaylist] = useState<string | null>(null);
 
 	const dispatch = useDispatch<AppDispatch>();
@@ -21,11 +23,13 @@ export default function Sidebar() {
 	const userPlaylists = useSelector((state: RootState) => state.user.userPlaylists);
 	const userId = useSelector((state: RootState) => state.user.userProfileData?.id);
 
+	// Обновляет выбранный плейлист и навигирует на его страницу.
 	const handleUserPlaylist = (playlistName: string, playlistId: string) => {
 		setSelectedUserPlaylist(playlistName)
 		navigate(`/playlist/${playlistId}`)
 	}
 
+	// Загружает список плейлистов пользователя при доступности токена авторизации.
 	useEffect(() => {
 		if (!token) return;
 
@@ -36,10 +40,12 @@ export default function Sidebar() {
 		fetchUserPlaylists();
 	}, [token])
 
+	// Очищает выделение плейлиста при переходе на другие разделы приложения.
 	useEffect(() => {
 		navigation !== 'playlist' && setSelectedUserPlaylist(null);
 	}, [navigation])
 
+	// Создаёт новый плейлист и навигирует на его страницу с автоматическим добавлением в Redux.
 	const handleCreatePlaylist = async () => {
 		if (userId && token) {
 			const result = await createPlaylist(token, userId, `My playlist №${(userPlaylists?.items?.length ?? 0) + 1}`, 'Description');

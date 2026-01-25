@@ -4,6 +4,8 @@ import { useDispatch } from 'react-redux';
 import { setCurrentTrack, setCurrentTrackUri, setIsPlaying, setDeviceId, setPlayer, setIsReady } from '../store/playerSlice';
 import { refreshSpotifyAccessToken } from '../services/authSpotify';
 
+// Инициализирует и управляет Spotify Web Playback SDK
+// Создает плеер, слушает события состояния и синхронизирует их с Redux
 export const useSpotifyPlayer = (token: string) => {
 	const dispatch = useDispatch();
 	const playerRef = useRef<Spotify.Player | null>(null);
@@ -14,6 +16,7 @@ export const useSpotifyPlayer = (token: string) => {
 			return;
 		}
 
+		// Загружаем Spotify SDK скрипт, если его еще нет
 		if (!window.Spotify) {
 			const script = document.createElement('script');
 			script.id = 'spotify-sdk';
@@ -22,6 +25,7 @@ export const useSpotifyPlayer = (token: string) => {
 			document.body.appendChild(script);
 		}
 
+		// Инициализируем плеер после загрузки SDK
 		window.onSpotifyWebPlaybackSDKReady = () => {
 			if (!token) {
 				console.warn('Токен отсутствует при инициализации Spotify Player');
@@ -35,6 +39,7 @@ export const useSpotifyPlayer = (token: string) => {
 					volume: 0.1,
 				});
 
+				// При готовности плеера регистрируем устройство в Spotify
 				player.addListener('ready', async ({ device_id }) => {
 					console.log('Player готов с device_id:', device_id);
 					dispatch(setDeviceId(device_id));
@@ -60,6 +65,7 @@ export const useSpotifyPlayer = (token: string) => {
 					dispatch(setIsReady(false));
 				});
 
+				// При истечении токена пытаемся его обновить и пересоздаём плеер
 				player.addListener('authentication_error', async ({ message }) => {
 					console.error('Ошибка авторизации:', message);
 					dispatch(setIsReady(false));
@@ -91,6 +97,7 @@ export const useSpotifyPlayer = (token: string) => {
 					dispatch(setIsReady(false));
 				});
 
+				// При изменении трека обновляем его данные в store и localStorage
 				player.addListener('player_state_changed', (state) => {
 					if (state?.track_window?.current_track) {
 						const item = state.track_window.current_track;
@@ -126,6 +133,7 @@ export const useSpotifyPlayer = (token: string) => {
 			}
 		};
 
+		// Очищаем плеер при демонтировании компонента
 		return () => {
 			if (playerRef.current) {
 				playerRef.current.disconnect();

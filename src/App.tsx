@@ -27,20 +27,28 @@ import MyProfile from './pages/Profile/MyProfile';
 import Notification from './components/common/Notification';
 import NotFoundPage from './pages/NotFoundPage/NotFoundPage';
 
+// Главный компонент приложения Spotify Clone
+// Управляет аутентификацией, маршрутизацией и глобальным состоянием
 function App() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+
+  // Хук управляет полным OAuth-потоком: получает code из URL, обменивает на токен, сохраняет и обновляет его
   const { token: authToken, loading } = useSpotifyAuth(navigate);
+
   const navigation = useSelector((state: RootState) => state.general.navigation);
   const notification = useSelector((state: RootState) => state.general.notification);
 
+  // Регистрирует приложение как плеер в системе Spotify
   useSpotifyPlayer(authToken);
 
+  // При получении токена сохраняем его в store и загружаем данные профиля пользователя
   useEffect(() => {
     if (!authToken) return;
 
     dispatch(setAccessToken(authToken));
 
+    // Загружаем информацию о профиле текущего пользователя
     const fetchUserProfileData = async () => {
       try {
         const data = await getUserProfileData(authToken);
@@ -51,11 +59,12 @@ function App() {
     }
     fetchUserProfileData();
   }, [authToken, dispatch]);
-
+  // Синхронизация текущего пути в Redux store для отслеживания активной страницы
   useEffect(() => {
     dispatch(setNavigation(navigation));
   }, [navigation])
 
+  // Автоматически скрывает уведомление через 3 секунды после появления
   useEffect(() => {
     if (!notification) return;
 
@@ -73,6 +82,7 @@ function App() {
     <div className="spotify-clone">
       <div className='main'>
         <Sidebar />
+        {/* Маршруты приложения */}
         <Routes>
           <Route path='/' element={<Home token={authToken} />} />
           <Route path='/search' element={<Search />} />
@@ -87,8 +97,10 @@ function App() {
           <Route path='/me' element={<MyProfile />} />
           <Route path='*' element={<NotFoundPage />} />
         </Routes>
+        {/* Уведомление пользователю */}
         {notification && <Notification message={notification} />}
       </div>
+      {/* Плеер для воспроизведения музыки */}
       <Player />
     </div>
   )

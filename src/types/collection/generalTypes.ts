@@ -1,3 +1,5 @@
+// Базовые и общие типы для коллекций (треки, исполнители, изображения и т.д.)
+
 import { type Playlist } from './categoriesPlaylistsTypes';
 import { type Album } from './albumTypes';
 import { type FullArtist } from './artistTypes';

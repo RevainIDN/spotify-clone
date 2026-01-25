@@ -26,10 +26,15 @@ import BestResult from '../../components/CollectionModule/CollectionCommon/BestR
 import Loader from '../../components/common/Loader';
 
 export default function Search() {
+	// Категории для отображения при пустом поиске
 	const [categories, setCategories] = useState<CategoriesResponse | null>(null);
+	// Текущий поисковый запрос
 	const [searchQuery, setSearchQuery] = useState<string>('');
+	// Результаты поиска (треки, плейлисты, альбомы, артисты)
 	const [searchResults, setSearchResults] = useState<RawCombinedResults | null>(null);
+	// Лучший результат поиска (для отображения в отдельной карточке)
 	const [bestResult, setBestResult] = useState<BestResultItem | null>(null);
+	// Отслеживает выбранный трек в результатах
 	const [selectedTrackState, setSelectedTrackState] = useState<string | null>(null);
 
 	const dispatch = useDispatch<AppDispatch>();
@@ -42,6 +47,7 @@ export default function Search() {
 	});
 
 	const trackIds = useMemo(() => {
+		// Собираем ID всех найденных треков для проверки статуса лайков
 		return searchResults && searchResults.tracks
 			? searchResults.tracks.items
 				.filter((t): t is Track => t !== null)
@@ -54,6 +60,7 @@ export default function Search() {
 	useEffect(() => {
 		if (!token) return;
 
+		// При каждом изменении поиска загружаем результаты с задержкой в 1 секунду для оптимизации
 		if (!searchQuery) {
 			setSearchResults(null);
 			setBestResult(null);
@@ -63,6 +70,7 @@ export default function Search() {
 		const timer = setTimeout(async () => {
 			const data = await getSearchResult(token, searchQuery.trim());
 			setSearchResults(data);
+			// Выбираем лучший результат из всех найденных элементов
 			const res = pickBestResult(data, searchQuery);
 			setBestResult(res);
 		}, 1000);
@@ -71,6 +79,7 @@ export default function Search() {
 	}, [searchQuery, token]);
 
 	useEffect(() => {
+		// Сохраняем результаты поиска в localStorage для восстановления при возврате на страницу
 		if (searchResults) {
 			localStorage.setItem('searchResults', JSON.stringify(searchResults))
 			localStorage.setItem('searchQuery', JSON.stringify(searchQuery))
@@ -80,6 +89,7 @@ export default function Search() {
 	useEffect(() => {
 		if (!token) return;
 
+		// Загружает категории и восстанавливает предыдущие результаты поиска из localStorage
 		const fetchCategories = async () => {
 			const data = await getCategories(token);
 			setCategories(data);
@@ -129,6 +139,7 @@ export default function Search() {
 								bestResult={bestResult}
 							/>
 						</div>
+						{/* Найденные треки из результатов поиска */}
 						<div className={searchStyles.searchedTracks}>
 							<h1 className={searchStyles.resultTitle}>Tracks</h1>
 							<table className={searchStyles.tracks}>

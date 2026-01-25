@@ -1,5 +1,6 @@
 import { type RawCombinedResults } from "../types/collection/generalTypes";
 
+// Результат поиска с рассчитанным скором релевантности
 export type BestResultItem = {
 	id: string;
 	name: string;
@@ -15,6 +16,7 @@ export type BestResultItem = {
 	available_markets?: string[];
 };
 
+// Рассчитывает релевантность названия к запросу (от 0.2 до 1.0)
 function calcRelevance(name: string, query: string): number {
 	const n = name.toLowerCase();
 	const q = query.toLowerCase();
@@ -25,6 +27,7 @@ function calcRelevance(name: string, query: string): number {
 	return 0.2;
 }
 
+// Выбирает лучший результат из всех типов поиска (треки, артисты, альбомы, плейлисты) на основе релевантности и популярности
 export function pickBestResult(results: RawCombinedResults, query: string): BestResultItem | null {
 	if (!results) return null;
 

@@ -10,9 +10,11 @@ interface ArtistSectionProps {
 	items: SimplifiedMappedArtistItem[];
 }
 
+// Отдельный элемент артиста с навигацией на его страницу при клике.
 function ArtistItem({ artist }: { artist: SimplifiedMappedArtistItem }) {
 	const navigate = useNavigate();
 
+	// Навигирует на страницу артиста если тип элемента - артист.
 	const handleClick = () => {
 		if (artist.type === 'artist') {
 			navigate(`/artist/${artist.id}`);
@@ -29,10 +31,12 @@ function ArtistItem({ artist }: { artist: SimplifiedMappedArtistItem }) {
 	);
 }
 
+// Секция с артистами, отображающая ограниченный список на главной странице или полный список в библиотеке.
 export default function ArtistSection({ title, sectionKey, items }: ArtistSectionProps) {
 	const navigation = useSelector((state: RootState) => state.general.navigation);
 	const navigate = useNavigate();
 
+	// На главной странице показывает первых 5 артистов с кнопкой "Show all", в библиотеке показывает всех.
 	return (
 		<div className={artistSectionStyles.artistSection}>
 			{navigation !== 'library' && (

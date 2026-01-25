@@ -1,3 +1,5 @@
+// Типы для плейлистов Spotify API
+
 import { type Track, type Image, type TracksBase } from "./generalTypes";
 
 export interface Playlist {

@@ -8,12 +8,15 @@ interface VolumeSliderProps {
 
 const MAX_VOLUME = 0.2;
 
+// Компонент для управления громкостью воспроизведения с поддержкой отключения и восстановления громкости.
 export default function VolumeSlider({ player, setHoveredButton }: VolumeSliderProps) {
 	const [volume, setVolume] = useState(0.5);
+	// Сохранённая громкость для восстановления при повторном включении звука.
 	const [savedVolume, setSavedVolume] = useState(0);
 	const sliderRef = useRef<HTMLDivElement>(null);
 	const dragging = useRef(false);
 
+	// Устанавливает громкость на основе позиции курсора по полосе громкости.
 	const setVolumeFromEvent = (e: MouseEvent | TouchEvent) => {
 		if (!sliderRef.current || !player) return;
 
@@ -36,6 +39,7 @@ export default function VolumeSlider({ player, setHoveredButton }: VolumeSliderP
 		player.setVolume(actualVolume).catch(console.error);
 	};
 
+	// Переключает звук: если громкость > 0, сохраняет текущее значение и отключает звук, иначе восстанавливает сохранённую громкость.
 	const volumeToggle = () => {
 		if (!player) return;
 
@@ -49,6 +53,7 @@ export default function VolumeSlider({ player, setHoveredButton }: VolumeSliderP
 		}
 	}
 
+	// Инициирует перетаскивание полосы громкости при нажатии мыши.
 	const onMouseDown = (e: React.MouseEvent) => {
 		dragging.current = true;
 		setVolumeFromEvent(e.nativeEvent);
@@ -56,17 +61,20 @@ export default function VolumeSlider({ player, setHoveredButton }: VolumeSliderP
 		window.addEventListener('mouseup', onMouseUp);
 	};
 
+	// Обновляет громкость при движении мыши во время перетаскивания.
 	const onMouseMove = (e: MouseEvent) => {
 		if (!dragging.current) return;
 		setVolumeFromEvent(e);
 	};
 
+	// Завершает перетаскивание при отпускании кнопки мыши.
 	const onMouseUp = () => {
 		dragging.current = false;
 		window.removeEventListener('mousemove', onMouseMove);
 		window.removeEventListener('mouseup', onMouseUp);
 	};
 
+	// Очищает обработчики событий при размонтировании компонента.
 	useEffect(() => {
 		return () => {
 			window.removeEventListener('mousemove', onMouseMove);

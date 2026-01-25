@@ -26,12 +26,16 @@ const filterValues = [
 ]
 
 export default function Library() {
+	// Текущий выбранный фильтр для отображения (Playlist/Album/Artist)
 	const [selectedFilter, setSelectedFilter] = useState<string>('Playlist');
+	// Плейлисты, альбомы и артисты текущего пользователя
 	const [userPlaylists, setUserPlaylists] = useState<UserPlaylistsResponse | null>(null);
 	const [userAlbums, setUserAlbums] = useState<UserAlbumsResponse | null>(null);
 	const [userArtists, setUserArtists] = useState<UserFollowedArtistsResponse | null>(null);
+	// Флаги для управления состоянием загрузки
 	const [loading, setLoading] = useState<boolean>(false);
 	const [initialLoading, setInitialLoading] = useState(true);
+	// Управление видимостью выпадающего меню профиля
 	const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
 	const dispatch = useDispatch<AppDispatch>();
@@ -39,22 +43,26 @@ export default function Library() {
 	const userProfileData = useSelector((state: RootState) => state.user.userProfileData);
 
 	useEffect(() => {
+		// Загружает соответствующие данные в зависимости от выбранного фильтра
 		const fetchData = async () => {
 			if (!token) return;
 
 			setLoading(true);
 
 			try {
+				// Загружает плейлисты пользователя при выборе фильтра Playlist
 				if (selectedFilter === 'Playlist') {
 					const data = await getUserPlaylists(token);
 					setUserPlaylists(data);
 				}
 
+				// Загружает сохранённые альбомы при выборе фильтра Album
 				if (selectedFilter === 'Album') {
 					const data = await getUserFollowingAlbums(token);
 					setUserAlbums(data);
 				}
 
+				// Загружает подписанных артистов при выборе фильтра Artist
 				if (selectedFilter === 'Artist') {
 					const data = await getUserFollowingArtists(token);
 					setUserArtists(data);

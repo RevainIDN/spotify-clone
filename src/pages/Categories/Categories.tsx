@@ -14,12 +14,14 @@ import ArtistSection from '../../components/SectionModule/ArtistSection/ArtistSe
 import Loader from '../../components/common/Loader';
 
 export default function Categories() {
+	// Данные категории с плейлистами, альбомами и артистами
 	const [categoryData, setCategoryData] = useState<any>(null);
 
 	const { id } = useParams();
 	const token = useSelector((state: RootState) => state.auth.accessToken);
 
 	useEffect(() => {
+		// Загружает данные категории по ID
 		const fetchCategory = async () => {
 			if (!id || !token) return;
 
@@ -44,6 +46,7 @@ export default function Categories() {
 	return (
 		<div className='content'>
 			<h1 className={categoriesStyles.title}>{id}</h1>
+			{/* Лучшие плейлисты в категории */}
 			<PlaylistSection
 				title="Best Playlists"
 				sectionKey='playlists'
@@ -55,6 +58,7 @@ export default function Categories() {
 						: []
 				}
 			/>
+			{/* Лучшие альбомы в категории */}
 			<AlbumsSection
 				title='Best Albums'
 				sectionKey='albums'
@@ -67,6 +71,7 @@ export default function Categories() {
 						: []
 				}
 			/>
+			{/* Лучшие артисты в категории */}
 			<ArtistSection
 				title='Top Artists'
 				sectionKey='artists'

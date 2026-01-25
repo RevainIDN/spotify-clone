@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// Проверяет, подписан ли пользователь на плейлист
 export async function getIsUserSubscribedToPlaylist(token: string, id: string) {
 	try {
 		const response = await axios.get(`https://api.spotify.com/v1/playlists/${id}/followers/contains`, {
@@ -13,6 +14,7 @@ export async function getIsUserSubscribedToPlaylist(token: string, id: string) {
 	}
 }
 
+// Подписывает пользователя на плейлист
 export async function followPlaylist(token: string, id: string | undefined) {
 	try {
 		const response = await axios.put(
@@ -31,6 +33,7 @@ export async function followPlaylist(token: string, id: string | undefined) {
 	}
 }
 
+// Отписывает пользователя от плейлиста
 export async function unfollowPlaylist(token: string, id: string | undefined) {
 	try {
 		const response = await axios.delete(
@@ -47,6 +50,7 @@ export async function unfollowPlaylist(token: string, id: string | undefined) {
 	}
 }
 
+// Проверяет, сохранил ли пользователь указанные альбомы в библиотеку
 export async function getIsUserSubscribedToAlbums(token: string, ids: string[]) {
 	try {
 		const response = await axios.get(`https://api.spotify.com/v1/me/albums/contains`, {
@@ -63,6 +67,7 @@ export async function getIsUserSubscribedToAlbums(token: string, ids: string[]) 
 	}
 }
 
+// Добавляет альбом в библиотеку пользователя
 export async function followAlbum(token: string, id: string | undefined) {
 	if (!token || !id) {
 		console.warn("followAlbum: отсутствует token или id");
@@ -89,6 +94,7 @@ export async function followAlbum(token: string, id: string | undefined) {
 	}
 }
 
+// Удаляет альбом из библиотеки пользователя
 export async function unfollowAlbum(token: string, id: string | undefined) {
 	if (!token || !id) {
 		console.warn("unfollowAlbum: отсутствует token или id");
@@ -114,6 +120,7 @@ export async function unfollowAlbum(token: string, id: string | undefined) {
 	}
 }
 
+// Проверяет, подписан ли пользователь на указанных исполнителей
 export async function getIsUserSubscribedToArtist(token: string, ids: string[]) {
 	try {
 		const response = await axios.get(`https://api.spotify.com/v1/me/following/contains`, {
@@ -131,6 +138,7 @@ export async function getIsUserSubscribedToArtist(token: string, ids: string[]) 
 	}
 }
 
+// Подписывает пользователя на исполнителя
 export async function followArtist(token: string, id?: string) {
 	if (!token || !id) return;
 	try {
@@ -148,6 +156,7 @@ export async function followArtist(token: string, id?: string) {
 	}
 }
 
+// Отписывает пользователя от исполнителя
 export async function unfollowArtist(token: string, id?: string) {
 	if (!token || !id) return;
 	try {

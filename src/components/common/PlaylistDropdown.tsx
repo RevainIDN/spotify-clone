@@ -14,6 +14,7 @@ interface PlaylistDropdownProps {
 	dropdownPositionUp?: string;
 }
 
+// Выпадающее меню для добавления трека в пользовательские плейлисты с автоматической проверкой текущего состояния.
 export default function PlaylistDropdown({ trackUri, onClose, anchorRef, dropdownPositionLeft, dropdownPositionUp }: PlaylistDropdownProps) {
 	const token = useSelector((state: RootState) => state.auth.accessToken);
 	const userId = useSelector((state: RootState) => state.user.userProfileData?.id);
@@ -21,17 +22,22 @@ export default function PlaylistDropdown({ trackUri, onClose, anchorRef, dropdow
 	const dropdownRef = useRef<HTMLDivElement | null>(null);
 	const dispatch = useDispatch<AppDispatch>();
 
+	// Отслеживает, в каких плейлистах находится текущий трек.
 	const [trackInPlaylists, setTrackInPlaylists] = useState<Record<string, boolean>>({});
+	// Сохраняет исходное состояние для определения изменений.
 	const [initialState, setInitialState] = useState<Record<string, boolean>>({});
 	const userTouchedRef = useRef(false);
 	const fetchIdRef = useRef(0);
 
+	// Позиция дропдауна относительно якорного элемента (вверх или вниз).
 	const [position, setPosition] = useState<'up' | 'down'>('down');
 
+	// Фильтрует только плейлисты, принадлежащие текущему пользователю.
 	const ownedPlaylists = userPlaylists?.items.filter(
 		playlist => playlist.owner?.id === userId
 	) ?? [];
 
+	// Определяет оптимальную позицию дропдауна на основе доступного места на экране.
 	useLayoutEffect(() => {
 		if (!anchorRef?.current || !dropdownRef.current) return;
 
@@ -47,6 +53,7 @@ export default function PlaylistDropdown({ trackUri, onClose, anchorRef, dropdow
 		}
 	}, [anchorRef]);
 
+	// Закрывает дропдаун при клике вне его области.
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
 			const target = event.target as Node;
@@ -68,6 +75,7 @@ export default function PlaylistDropdown({ trackUri, onClose, anchorRef, dropdow
 		};
 	}, [dispatch, onClose, anchorRef]);
 
+	// Загружает исходное состояние трека во всех пользовательских плейлистах при монтировании компонента.
 	useEffect(() => {
 		let cancelled = false;
 		const myFetchId = ++fetchIdRef.current;
@@ -124,6 +132,7 @@ export default function PlaylistDropdown({ trackUri, onClose, anchorRef, dropdow
 		};
 	}, [token, trackUri, userPlaylists]);
 
+	// Обновляет локальное состояние при переключении плейлиста пользователем.
 	const handlePlaylistToggle = (playlistId: string) => {
 		userTouchedRef.current = true;
 		setTrackInPlaylists(prev => {
@@ -132,12 +141,12 @@ export default function PlaylistDropdown({ trackUri, onClose, anchorRef, dropdow
 		});
 	};
 
-	// Ready видна, если хотя бы одна галочка выбрана
+	// Проверяет, есть ли какие-либо изменения в состоянии плейлистов.
 	const hasChanges = Object.keys(trackInPlaylists).some(
 		key => trackInPlaylists[key] !== (initialState[key] ?? false)
 	);
 
-	// Сохраняем изменения на сервер
+	// Синхронизирует изменения состояния плейлистов с сервером Spotify.
 	const handleReady = async () => {
 		if (!token) return;
 

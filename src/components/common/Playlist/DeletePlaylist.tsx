@@ -14,10 +14,12 @@ interface DeletePlaylistProps {
 	playlistId: string | undefined;
 }
 
+// Модальное окно для подтверждения удаления плейлиста с навигацией на главную страницу.
 export default function DeletePlaylist({ token, playlistId }: DeletePlaylistProps) {
 	const dispatch = useDispatch<AppDispatch>();
 	const navigate = useNavigate();
 
+	// Удаляет плейлист из локального хранилища, закрывает модальное окно, перенаправляет на главную и отписывается от плейлиста на сервере.
 	const handleDelete = async () => {
 		if (!playlistId) return;
 

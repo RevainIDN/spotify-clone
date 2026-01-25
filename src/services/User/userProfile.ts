@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// Получает информацию о текущем авторизованном пользователе
 export async function getUserProfileData(token: string) {
 	try {
 		const response = await axios.get(`https://api.spotify.com/v1/me`, {
@@ -13,6 +14,7 @@ export async function getUserProfileData(token: string) {
 	}
 }
 
+// Получает топ-треки или топ-исполнителей текущего пользователя
 export async function getUserTopItems(token: string, type: 'artists' | 'tracks') {
 	try {
 		const response = await axios.get(`https://api.spotify.com/v1/me/top/${type}`, {
@@ -26,6 +28,7 @@ export async function getUserTopItems(token: string, type: 'artists' | 'tracks')
 	}
 }
 
+// Получает публичную информацию об указанном пользователе
 export async function getPublicUserProfileData(token: string, type: string | undefined) {
 	try {
 		const response = await axios.get(`https://api.spotify.com/v1/users/${type}`, {
@@ -39,6 +42,7 @@ export async function getPublicUserProfileData(token: string, type: string | und
 	}
 }
 
+// Получает все плейлисты указанного пользователя
 export async function getPublicUserPlaylistsData(token: string, type: string | undefined) {
 	try {
 		const response = await axios.get(`https://api.spotify.com/v1/users/${type}/playlists`, {

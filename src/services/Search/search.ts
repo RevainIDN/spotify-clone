@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// Получает список категорий браузера Spotify (максимум 20)
 export async function getCategories(token: string) {
 	try {
 		const response = await axios.get(`https://api.spotify.com/v1/browse/categories`, {
@@ -17,6 +18,7 @@ export async function getCategories(token: string) {
 	}
 }
 
+// Осуществляет поиск по запросу: треки, альбомы, исполнители, плейлисты (максимум 50 результатов)
 export async function getSearchResult(token: string, query: string) {
 	try {
 		const response = await axios.get(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}`, {

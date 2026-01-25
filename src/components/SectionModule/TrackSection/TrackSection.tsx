@@ -11,10 +11,12 @@ interface TracksSectionProps {
 	items: SimplifiedMappedTrackItem[];
 }
 
+// Отдельный элемент трека с отслеживанием состояния наведения мыши и кнопкой воспроизведения.
 function TrackItem({ track }: { track: SimplifiedMappedTrackItem }) {
 	const [isHovered, setIsHovered] = useState(false);
 	const navigate = useNavigate();
 
+	// При клике на трек навигирует на страницу его альбома.
 	return (
 		<li
 			onClick={() => { navigate(`/album/${track.album?.id}`) }}
@@ -34,6 +36,7 @@ function TrackItem({ track }: { track: SimplifiedMappedTrackItem }) {
 	);
 }
 
+// Секция с треками, отображающая все переданные треки с поддержкой воспроизведения.
 export default function TrackSection({ title, items }: TracksSectionProps) {
 	return (
 		<div className={trackSectionStyles.trackSection}>

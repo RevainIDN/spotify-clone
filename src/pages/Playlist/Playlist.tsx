@@ -19,25 +19,26 @@ import CollectionTrackList from '../../components/CollectionModule/CollectionTra
 import Loader from '../../components/common/Loader';
 
 export default function Playlist() {
-	// Данные плейлиста
+	// Данные плейлиста загруженные из API Spotify
 	const [playlistData, setPlaylistData] = useState<Playlist>();
+	// Флаг для перемешивания треков при воспроизведении
 	const [isShuffled, setIsShuffled] = useState<boolean>(false);
 
-	// Состояние фильтрации
+	// Значение поиска по названию трека, артисту или альбому в плейлисте
 	const [filterValue, setFilterValue] = useState<string>('');
 
-	// Состояние выпадающего списка
+	// Состояние сортировки: тип, направление и режим отображения
 	const [sortType, setSortType] = useState<string>('Custom order');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 	const [sortViewMode, setSortViewMode] = useState<'List' | 'Compact'>('List');
 
-	// Состояние авторизации
+	// Получение токена и ID плейлиста из URL параметров
 	const token = useSelector((state: RootState) => state.auth.accessToken)
 	const { id } = useParams();
 
 	const dispatch = useDispatch<AppDispatch>();
 
-	// Получение данных плейлиста
+	// Загружает данные плейлиста по ID и проверяет статус подписки пользователя
 	useEffect(() => {
 		if (!token || !id) {
 			console.warn('Token или ID отсутствует');
@@ -49,6 +50,7 @@ export default function Playlist() {
 				const playlistData = await getPlaylist(token, id) as Playlist;
 				setPlaylistData(playlistData);
 				if (playlistData) {
+					// Проверяем подписан ли пользователь на этот плейлист
 					const isUserSubscribed = await getIsUserSubscribedToPlaylist(token, id);
 					dispatch(setIsUserSubscribedToPlaylist(isUserSubscribed));
 				}

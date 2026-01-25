@@ -7,10 +7,12 @@ import { extractYear } from '../../utils/extractYear';
 
 import PlayButton from '../../components/common/PlayButton';
 
+// Компонент для отображения одного элемента (плейлист, альбом или артист)
 function Item({ data }: { data: SimplifiedMappedItem }) {
 	const [isHovered, setIsHovered] = useState(false);
 	const navigate = useNavigate();
 
+	// Навигация на соответствующую страницу в зависимости от типа элемента
 	const handleClick = () => {
 		switch (data.type) {
 			case 'playlist':
@@ -27,6 +29,7 @@ function Item({ data }: { data: SimplifiedMappedItem }) {
 
 	return (
 		<>
+			{/* Отображение плейлиста */}
 			{data.type === 'playlist' && (
 				<li key={data.id} className={section.item} onClick={handleClick}>
 					<img className={section.playlistImage} src={data.images[0]?.url} alt={data.name} />
@@ -36,6 +39,7 @@ function Item({ data }: { data: SimplifiedMappedItem }) {
 					</ul>
 				</li>
 			)}
+			{/* Отображение альбома с кнопкой воспроизведения */}
 			{data.type === 'album' && (
 				<li
 					onClick={handleClick}
@@ -60,6 +64,7 @@ function Item({ data }: { data: SimplifiedMappedItem }) {
 					</ul>
 				</li>
 			)}
+			{/* Отображение артиста */}
 			{data.type === 'artist' && (
 				<li onClick={handleClick} className={section.artistItem}>
 					<img className={section.artistImage} src={data.images[0]?.url} alt={data.name} />
@@ -77,6 +82,7 @@ export default function Section() {
 	return (
 		<div className='content'>
 			<h1 className={section.title}>{state.title}</h1>
+			{/* Список всех элементов в разделе */}
 			<ul className={section.list}>
 				{state.items.map((playlist: SimplifiedMappedItem) => (
 					<Item key={playlist.id} data={playlist} />

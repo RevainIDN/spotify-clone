@@ -1,6 +1,7 @@
 import { type SavedAlbumObject } from "../types/user/userCollectionsTypes";
 import { type SimplifiedMappedAlbumItem } from "../types/collection/generalTypes";
 
+// Преобразует сохранённый альбом (из библиотеки пользователя) в упрощённый формат
 export const mapSavedAlbumToSimplified = (saved: SavedAlbumObject | null): SimplifiedMappedAlbumItem | null => {
 	if (!saved) return null;
 	const album = saved.album;

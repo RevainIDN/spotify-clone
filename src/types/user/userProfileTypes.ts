@@ -1,3 +1,5 @@
+// Типы для профиля текущего авторизованного пользователя
+
 import { type Image, type Track, type TracksBase } from "../collection/generalTypes";
 import { type FullArtist } from "../collection/artistTypes";
 

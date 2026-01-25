@@ -1,26 +1,23 @@
 import progressBarStyles from './ProgressBar.module.css';
 import { useState, useEffect, useRef } from 'react';
+import { formatTime } from '../../../utils/formatTime';
 
 interface ProgressBarProps {
 	player: Spotify.Player | null;
 }
 
+// Компонент для отображения прогресса воспроизведения и управления позицией трека.
 export default function ProgressBar({ player }: ProgressBarProps) {
 	const [position, setPosition] = useState(0);
 	const [duration, setDuration] = useState(0);
+	// Флаг, указывающий, находится ли пользователь в процессе перетаскивания полосы прогресса.
 	const [dragging, setDragging] = useState(false);
 	const [paused, setPaused] = useState(true);
 
 	const progressBarRef = useRef<HTMLDivElement>(null);
 	const intervalRef = useRef<number | null>(null);
 
-	const formatTime = (ms: number) => {
-		const totalSeconds = Math.floor(ms / 1000);
-		const minutes = Math.floor(totalSeconds / 60);
-		const seconds = totalSeconds % 60;
-		return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-	};
-
+	// Подписывается на события Spotify SDK для отслеживания изменений состояния воспроизведения.
 	useEffect(() => {
 		if (!player) return;
 
@@ -44,6 +41,7 @@ export default function ProgressBar({ player }: ProgressBarProps) {
 		};
 	}, [player, dragging]);
 
+	// Обновляет текущую позицию трека при воспроизведении, если пользователь не перетаскивает полосу.
 	useEffect(() => {
 		if (!paused && !dragging) {
 			intervalRef.current = window.setInterval(() => {
@@ -70,6 +68,7 @@ export default function ProgressBar({ player }: ProgressBarProps) {
 		};
 	}, [paused, dragging, duration]);
 
+	// Устанавливает позицию воспроизведения на основе позиции клика по полосе прогресса.
 	const seekToPosition = (clientX: number) => {
 		if (!progressBarRef.current || !player || duration === 0) return;
 
@@ -82,6 +81,7 @@ export default function ProgressBar({ player }: ProgressBarProps) {
 		player.seek(seekMs).catch(console.error);
 	};
 
+	// Инициирует перетаскивание полосы прогресса при нажатии мыши.
 	const onMouseDown = (e: React.MouseEvent) => {
 		setDragging(true);
 		seekToPosition(e.clientX);
@@ -90,11 +90,13 @@ export default function ProgressBar({ player }: ProgressBarProps) {
 		window.addEventListener('mouseup', onMouseUp);
 	};
 
+	// Обновляет позицию трека при движении мыши во время перетаскивания.
 	const onMouseMove = (e: MouseEvent) => {
 		if (!dragging) return;
 		seekToPosition(e.clientX);
 	};
 
+	// Завершает перетаскивание при отпускании кнопки мыши.
 	const onMouseUp = () => {
 		setDragging(false);
 		window.removeEventListener('mousemove', onMouseMove);

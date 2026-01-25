@@ -13,9 +13,11 @@ interface PlaylistSectionProps {
 	items: SimplifiedMappedPlaylistItem[];
 }
 
+// Отдельный элемент плейлиста с изображением обложки и информацией владельца.
 function PlaylistItem({ playlist }: { playlist: SimplifiedMappedPlaylistItem }) {
 	const navigate = useNavigate();
 	const [isHovered, setIsHovered] = useState(false);
+	// Использует изображение из плейлиста или показывает дефолтное изображение, если оно отсутствует.
 	const coverUrl = playlist.images?.[0]?.url;
 
 	return (
@@ -37,9 +39,11 @@ function PlaylistItem({ playlist }: { playlist: SimplifiedMappedPlaylistItem }) 
 	);
 }
 
+// Секция с плейлистами, отображающая ограниченный список на главной странице или полный список в библиотеке.
 export default function PlaylistSection({ title, sectionKey, items }: PlaylistSectionProps) {
 	const navigation = useSelector((state: RootState) => state.general.navigation);
 	const navigate = useNavigate();
+	// На главной странице показывает первых 5 плейлистов, кнопка "Show all" отображается только если элементов больше 5.
 	return (
 		<div className={playlistSection.playlistSection}>
 			{navigation !== 'library' && (

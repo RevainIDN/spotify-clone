@@ -5,6 +5,7 @@ import playerReducer from './playerSlice';
 import userReduces from './userSlice';
 import dropdownReducer from './dropdownSlice';
 
+// Конфигурация Redux store с подключением всех редьюсеров
 const store = configureStore({
 	reducer: {
 		auth: authReducer,
@@ -13,6 +14,7 @@ const store = configureStore({
 		user: userReduces,
 		dropdown: dropdownReducer,
 	},
+	// Игнорируем сериализацию для player объекта Spotify, так как он содержит функции
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({
 			serializableCheck: {
@@ -23,5 +25,7 @@ const store = configureStore({
 });
 
 export default store;
+// Тип для получения RootState из store
 export type RootState = ReturnType<typeof store.getState>;
+// Тип для dispatch с поддержкой async actions
 export type AppDispatch = typeof store.dispatch;

@@ -4,11 +4,13 @@ import { type Album } from "../types/collection/albumTypes";
 import { type Track } from "../types/collection/generalTypes";
 import { type LikedSongsCollection } from "../types/collection/likedSongsTypes";
 
+// Нормализованный трек с информацией о дате добавления
 export interface NormalizedTrack {
 	track: Track;
 	added_at: string | null;
 }
 
+// Приводит треки из разных типов коллекций к единому формату (плейлист, альбом, лайки, треки артиста)
 export function normalizeTracks(collection: Collection): NormalizedTrack[] {
 	if (isCollectionOfType<Playlist>(collection, "playlist")) {
 		return collection.tracks.items.map((item: PlaylistTrack) => ({
@@ -40,6 +42,7 @@ export function normalizeTracks(collection: Collection): NormalizedTrack[] {
 	return [];
 }
 
+// Преобразует отдельный трек в нормализованный формат
 export function normalizeSingleTrack(track: Track): NormalizedTrack {
 	return {
 		track,

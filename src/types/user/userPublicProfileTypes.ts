@@ -1,3 +1,5 @@
+// Типы для публичного профиля других пользователей
+
 import { type Playlist } from '../collection/playlistTypes'
 
 export interface UserPublicProfile {

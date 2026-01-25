@@ -18,6 +18,7 @@ import DeletePlaylist from '../../common/Playlist/DeletePlaylist';
 import Overlay from '../../common/Overlay';
 import ModalPortal from '../../../ModalPortal';
 
+// Компонент управления коллекцией с опциями воспроизведения, фильтрации, сортировки и подписки.
 export default function CollectionControls(props: CollectionControlsProps) {
 	const { collectionData, isShuffled, setIsShuffled } = props;
 	const { playlistId, albumId, artistId } = (props as TrackCollectionControlsProps);
@@ -35,17 +36,19 @@ export default function CollectionControls(props: CollectionControlsProps) {
 
 	const { playCollection } = usePlaybackControls({ collectionData, isShuffled });
 
+	// Определяет тип коллекции на основе данных.
 	const isPlaylist = !isArtistTracks(collectionData) && collectionData.type === 'playlist';
 	const isAlbum = !isArtistTracks(collectionData) && collectionData.type === 'album';
 	const isArtist = isArtistTracks(collectionData);
 
+	// Проверяет, является ли текущий пользователь владельцем плейлиста.
 	const isOwner =
 		isPlaylistCollection(collectionData) &&
 		collectionData.owner.id === userId;
 
 	const dispatch = useDispatch<AppDispatch>();
 
-	// Обработка изменения сортировки
+	// Изменяет порядок сортировки или переключает критерий сортировки треков.
 	const handleSortChange = (value: string) => {
 		if (isPlaylist || isAlbum) {
 			const trackProps = props as TrackCollectionControlsProps;
@@ -59,6 +62,7 @@ export default function CollectionControls(props: CollectionControlsProps) {
 		};
 	}
 
+	// Переключает подписку пользователя на коллекцию (плейлист, альбом или артиста) синхронизируя с сервером.
 	const handleCollectionSubscription = async () => {
 		if (!token) return;
 
@@ -111,7 +115,7 @@ export default function CollectionControls(props: CollectionControlsProps) {
 		}
 	};
 
-	// Значения сортировки
+	// Варианты сортировки треков по разным критериям.
 	const sortValues = [
 		{ title: 'Sorting', type: 'Category' },
 		{ title: 'Custom order', type: 'Default' },
@@ -125,6 +129,7 @@ export default function CollectionControls(props: CollectionControlsProps) {
 		{ title: 'List', type: 'View mode' }
 	];
 
+	// Нормализует треки для получения информации о текущем воспроизводящемся треке.
 	const tracks =
 		isPlaylist || isAlbum || isArtist
 			? normalizeTracks(collectionData)
@@ -153,8 +158,9 @@ export default function CollectionControls(props: CollectionControlsProps) {
 					</svg>
 				</button>
 
+				{/* Кнопка подписки/отписки только для плейлистов (не владельца) и альбомов, кроме раздела "Лайкнутые песни" */}
 				{(isPlaylist && !isOwner || isAlbum) && nav !== 'liked-songs' && (
-					<button className={controlsStyles.addBtn} onClick={handleCollectionSubscription}>
+					<button className={controlsStyles.addBtn} onClick={handleCollectionSubscription}>{/* Зелёная галочка если пользователь уже подписан, иначе плюс */}
 						{(isPlaylist ? isUserSubscribedToPlaylist?.[0] : isUserSubscribedToAlbum?.[0]) ? (
 							<svg width="42" height="42" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<ellipse cx="11" cy="10.5" rx="11" ry="10.5" fill="#1ED760" />
@@ -171,12 +177,14 @@ export default function CollectionControls(props: CollectionControlsProps) {
 					</button>
 				)}
 
+				{/* Кнопка удаления плейлиста видна только если пользователь является владельцем */}
 				{(isOwner && isPlaylist) && (
 					<button className={controlsStyles.deleteBtn} onClick={() => dispatch(setConfirmDeletePlaylistMode(true))}>
 						<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110.61 122.88" width={40} height={40} fill={hoveredOption === 'delete' ? '#FFFFFF' : '#FFFFFFB2'} onMouseEnter={() => setHoveredOption('delete')} onMouseLeave={() => setHoveredOption(null)}><title>trash</title><path d="M39.27,58.64a4.74,4.74,0,1,1,9.47,0V93.72a4.74,4.74,0,1,1-9.47,0V58.64Zm63.6-19.86L98,103a22.29,22.29,0,0,1-6.33,14.1,19.41,19.41,0,0,1-13.88,5.78h-45a19.4,19.4,0,0,1-13.86-5.78l0,0A22.31,22.31,0,0,1,12.59,103L7.74,38.78H0V25c0-3.32,1.63-4.58,4.84-4.58H27.58V10.79A10.82,10.82,0,0,1,38.37,0H72.24A10.82,10.82,0,0,1,83,10.79v9.62h23.35a6.19,6.19,0,0,1,1,.06A3.86,3.86,0,0,1,110.59,24c0,.2,0,.38,0,.57V38.78Zm-9.5.17H17.24L22,102.3a12.82,12.82,0,0,0,3.57,8.1l0,0a10,10,0,0,0,7.19,3h45a10.06,10.06,0,0,0,7.19-3,12.8,12.8,0,0,0,3.59-8.1L93.37,39ZM71,20.41V12.05H39.64v8.36ZM61.87,58.64a4.74,4.74,0,1,1,9.47,0V93.72a4.74,4.74,0,1,1-9.47,0V58.64Z" /></svg>
 					</button>
 				)}
 
+				{/* Модальное окно подтверждения удаления плейлиста появляется только если пользователь кликнул кнопку и владеет плейлистом */}
 				{(confirmDelete && isOwner && isPlaylist && token) && (
 					<ModalPortal>
 						<Overlay />
@@ -195,6 +203,7 @@ export default function CollectionControls(props: CollectionControlsProps) {
 			{/* Фильтры и сортировка только для плейлиста/альбома */}
 			{(isPlaylist || isAlbum) && (
 				<div className={controlsStyles.filters}>
+					{/* Поле поиска отображается только для плейлистов */}
 					{isPlaylist && (
 						<div className={controlsStyles.findInputWrapper}>
 							<input
@@ -219,7 +228,7 @@ export default function CollectionControls(props: CollectionControlsProps) {
 					</button>
 					{isDropdownOpen &&
 						<ul className={controlsStyles.dropdownList}>
-
+							{/* Фильтруем опции в зависимости от типа коллекции: альбом показывает только режимы отображения, плейлист показывает все опции (сортировка + режимы) */}
 							{sortValues.filter(value => collectionData.type === 'album' ? value.type === 'View mode' : value.type).map((value) => (
 								<li
 									key={value.title}
@@ -227,15 +236,18 @@ export default function CollectionControls(props: CollectionControlsProps) {
 									onClick={() => {
 										if (value.type === 'Category') return;
 
+										/* Если элемент - режим отображения (List/Compact), то переключаем режим просмотра */
 										if (value.type === 'View mode') {
 											(props as TrackCollectionControlsProps).setSortViewMode(value.title === 'List' ? 'List' : 'Compact');
 										}
 
+										/* Если элемент - тип сортировки, то обновляем сортировку */
 										if (value.type === 'Sorting' || value.type === 'Default') {
 											handleSortChange(value.title);
 										}
 									}}
 									style={{
+										/* Текущая опция выбранного типа сортировки или режима отображения окрашивается зелёным цветом Spotify */
 										color:
 											(value.type === 'Sorting' && (props as TrackCollectionControlsProps).sortType === value.title) ||
 												(value.type === 'Default' && (props as TrackCollectionControlsProps).sortType === value.title) ||
@@ -245,6 +257,7 @@ export default function CollectionControls(props: CollectionControlsProps) {
 									}}
 								>
 									{value.title}
+									{/* Иконка стрелки (вверх/вниз) показывается для текущего типа сортировки и отражает направление (asc/desc) */}
 									{value.type === 'Sorting' && (props as TrackCollectionControlsProps).sortType === value.title && (
 										<img
 											src={(props as TrackCollectionControlsProps).sortOrder === 'asc' ? "/Options/arrow-down.svg" : "/Options/arrow-up.svg"}
@@ -252,6 +265,7 @@ export default function CollectionControls(props: CollectionControlsProps) {
 										/>
 									)}
 
+									{/* Иконка галочки показывается для текущего типа сортировки по умолчанию и для текущего режима отображения */}
 									{value.type === 'Default' && (props as TrackCollectionControlsProps).sortType === value.title && (
 										<img src="/Options/check.svg" alt="Check" />
 									)}

@@ -1,3 +1,5 @@
+// Определения типов для Spotify Web Playback SDK (расширение глобального объекта Window)
+
 export { };
 
 declare global {

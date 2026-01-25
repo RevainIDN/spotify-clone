@@ -1,3 +1,5 @@
+// Типы для исполнителей Spotify API
+
 import { type Image, type Artist, type Track } from "./generalTypes";
 
 export interface FullArtist extends Artist {

@@ -6,10 +6,12 @@ import { type UserProfile } from "../types/user/userProfileTypes";
 import { type UserPublicProfile } from "../types/user/userPublicProfileTypes";
 import { type LikedSongsCollection } from "../types/collection/likedSongsTypes";
 
+// Объединённый тип всех возможных коллекций (плейлист, альбом, артист, профиль и т.д.)
 export type Collection = Playlist | Album | FullArtist | ArtistTracks | UserProfile | UserPublicProfile | LikedSongsCollection;
 
 type TypedCollection = Playlist | Album | FullArtist | LikedSongsCollection;
 
+// Типобезопасная проверка типа коллекции
 export function isCollectionOfType<T extends TypedCollection>(
 	collection: Collection,
 	type: T["type"]
@@ -17,6 +19,7 @@ export function isCollectionOfType<T extends TypedCollection>(
 	return "type" in collection && collection.type === type;
 }
 
+// Проверяет, является ли коллекция плейлистом (по наличию поля owner)
 export function isPlaylistCollection(
 	collection: Collection
 ): collection is Playlist {
@@ -29,6 +32,7 @@ export function isPlaylistCollection(
 	);
 }
 
+// Проверяет, содержит ли коллекция массив треков (для артистов)
 export function isArtistTracks(collection: unknown): collection is ArtistTracks {
 	return (
 		typeof collection === "object" &&
@@ -38,6 +42,7 @@ export function isArtistTracks(collection: unknown): collection is ArtistTracks 
 	);
 }
 
+// Проверяет, является ли объект профилем текущего пользователя
 export function isUserProfile(collection: unknown): collection is UserProfile {
 	return (
 		typeof collection === "object" &&
@@ -47,6 +52,7 @@ export function isUserProfile(collection: unknown): collection is UserProfile {
 	);
 }
 
+// Проверяет, является ли объект публичным профилем другого пользователя
 export function isUserPublicProfile(collection: unknown): collection is UserPublicProfile {
 	return (
 		typeof collection === "object" &&
@@ -58,6 +64,7 @@ export function isUserPublicProfile(collection: unknown): collection is UserPubl
 	);
 }
 
+// Проверяет, является ли коллекция специальной коллекцией "Лайкнутые песни"
 export function isLikedSongsCollection(collection: unknown): collection is LikedSongsCollection {
 	return (
 		typeof collection === "object" &&

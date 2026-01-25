@@ -15,6 +15,7 @@ interface AlbumsSectionProps {
 	items: SimplifiedMappedAlbumItem[];
 }
 
+// Варианты фильтрации альбомов по типам для отображения в интерфейсе.
 const filterValues = [
 	{ title: 'Show All', type: 'all' },
 	{ title: 'Albums', type: 'album' },
@@ -22,6 +23,7 @@ const filterValues = [
 	{ title: 'Compilations', type: 'compilation' }
 ]
 
+// Отдельный элемент альбома с отслеживанием состояния при наведении мыши и кнопкой воспроизведения.
 function AlbumItem({ album }: { album: SimplifiedMappedAlbumItem }) {
 	const navigate = useNavigate();
 	const [isHovered, setIsHovered] = useState(false);
@@ -52,6 +54,7 @@ function AlbumItem({ album }: { album: SimplifiedMappedAlbumItem }) {
 	);
 }
 
+// Компонент для отображения фильтров альбомов, показывающий только доступные типы.
 function AlbumFilters({ activeFilter, setActiveFilter, items }: {
 	activeFilter: string;
 	setActiveFilter: React.Dispatch<React.SetStateAction<string>>;
@@ -78,10 +81,12 @@ function AlbumFilters({ activeFilter, setActiveFilter, items }: {
 	)
 }
 
+// Секция с альбомами, поддерживающая фильтрацию по типам и отображение полной коллекции при клике на "Show all".
 export default function AlbumsSection({ title, sectionKey, isFiltered, items }: AlbumsSectionProps) {
 	const navigation = useSelector((state: RootState) => state.general.navigation);
 	const [activeFilter, setActiveFilter] = useState<string>('all');
 
+	// Фильтрует альбомы на основе активного выбранного типа.
 	const filteredAlbums = activeFilter === 'all'
 		? items
 		: items.filter(item => item.album_type === activeFilter);

@@ -1,3 +1,5 @@
+// Типы для коллекций пользователя (плейлисты, альбомы, артисты)
+
 import { type Image } from "../collection/generalTypes";
 import { type Playlist } from "../collection/playlistTypes";
 import { type Album } from "../collection/albumTypes";

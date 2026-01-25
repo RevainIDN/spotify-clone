@@ -9,6 +9,7 @@ interface BestResultProps {
 	bestResult: BestResultItem | null;
 }
 
+// Компонент для отображения лучшего результата поиска с поддержкой навигации по типам (трек, альбом, плейлист, артист, пользователь).
 export default function BestResult({ bestResult }: BestResultProps) {
 	const navigate = useNavigate();
 	const [isHovered, setIsHovered] = useState(false);
@@ -19,6 +20,7 @@ export default function BestResult({ bestResult }: BestResultProps) {
 	const title = bestResult.name;
 	const type = bestResult.type;
 
+	// Навигирует к странице артиста альбома или владельца плейлиста при клике на имя.
 	const handleArtist = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		if (type === 'album') {
@@ -28,6 +30,7 @@ export default function BestResult({ bestResult }: BestResultProps) {
 		}
 	}
 
+	// Навигирует к соответствующей странице результата или игнорирует для треков.
 	const handleNavigate = () => {
 		if (type === 'track') {
 			return;

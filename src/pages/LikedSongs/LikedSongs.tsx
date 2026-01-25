@@ -13,9 +13,13 @@ import CollectionTrackList from '../../components/CollectionModule/CollectionTra
 import Loader from '../../components/common/Loader';
 
 export default function LikedSongs() {
+	// Все понравившиеся треки пользователя
 	const [likedTracks, setLikedTracks] = useState<SavedTrack[]>();
+	// Флаг для перемешивания треков при воспроизведении
 	const [isShuffled, setIsShuffled] = useState(false);
+	// Значение поиска по названию трека, артисту или альбому
 	const [filterValue, setFilterValue] = useState('');
+	// Состояние сортировки: тип, направление и режим отображения
 	const [sortType, setSortType] = useState('Custom order');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 	const [sortViewMode, setSortViewMode] = useState<'List' | 'Compact'>('List');
@@ -27,6 +31,7 @@ export default function LikedSongs() {
 	const navigate = useNavigate();
 
 	useEffect(() => {
+		// Загружает все понравившиеся треки пользователя
 		const fetchLikedTracks = async () => {
 			if (!token) return;
 
@@ -35,11 +40,13 @@ export default function LikedSongs() {
 		};
 
 		fetchLikedTracks();
+		// Уведомляем Redux о текущей странице
 		dispatch(setNavigation('liked-songs'))
 	}, [token]);
 
 	const likedSongsCollection: LikedSongsCollection = useMemo(
 		() => ({
+			// Создаём виртуальную коллекцию "Лайкнутые песни" с форматом плейлиста для унификации компонентов
 			type: 'playlist',
 			id: 'liked-songs',
 			name: 'Liked Songs',

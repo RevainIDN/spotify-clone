@@ -1,6 +1,7 @@
 import { type Track } from "../types/collection/generalTypes";
 import { type SimplifiedMappedTrackItem } from "../types/collection/generalTypes";
 
+// Преобразует полные данные трека в упрощённый формат для отображения
 export const mapTrackToSimplified = (track: Track | null): SimplifiedMappedTrackItem | null => {
 	if (!track) return null;
 	return {

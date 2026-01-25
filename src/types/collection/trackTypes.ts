@@ -1,3 +1,5 @@
+// Типы для треков и недавно прослушанных треков
+
 import { type Track } from './generalTypes';
 
 interface RecentlyPlayedContext {

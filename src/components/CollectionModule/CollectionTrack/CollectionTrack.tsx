@@ -24,6 +24,7 @@ interface CollectionTrackProps {
 	onToggleLike?: () => void;
 }
 
+// Отдельная строка трека в таблице коллекции с поддержкой разных режимов отображения и функциями лайка и добавления в плейлист.
 export default function CollectionTrack({ playTrack, sortViewMode, track, index, displayedIn, selectedTrackState, setSelectedTrackState, isLiked, onToggleLike }: CollectionTrackProps) {
 	const { currentTrackUri, isPlaying } = useSelector((state: RootState) => state.player);
 	const { openedDropdown } = useSelector((state: RootState) => state.dropdown);
@@ -34,10 +35,12 @@ export default function CollectionTrack({ playTrack, sortViewMode, track, index,
 	const navigate = useNavigate();
 	const location = useLocation();
 
+	// Проверяет, открыт ли дропдаун добавления в плейлист для данного трека.
 	const isDropdownOpen =
 		openedDropdown?.uri === track.track.uri &&
 		openedDropdown?.source === 'list'
 
+	// Закрывает дропдаун при изменении маршрута.
 	useEffect(() => {
 		dispatch(closeDropdown());
 	}, [location.pathname, dispatch]);
@@ -56,10 +59,12 @@ export default function CollectionTrack({ playTrack, sortViewMode, track, index,
 			onMouseLeave={() => setHoveredTrack(null)}
 			style={sortViewMode === 'Compact' ? { height: '30px' } : {}}
 		>
+			{/* Столбец с номером трека или обложкой (в зависимости от контекста) */}
 			<th
 				className={trackStyles.trackNumber}
 				onClick={() => playTrack(track.track.uri, track.track.available_markets)}
 			>
+				{/* В поиске показываем обложку трека вместо номера */}
 				{displayedIn === 'search' ? (
 					<div className={trackStyles.coverWrapper}>
 						<img
@@ -74,6 +79,7 @@ export default function CollectionTrack({ playTrack, sortViewMode, track, index,
 						{(currentTrackUri === track.track.uri && track.track.available_markets.length > 0) ||
 							(hoveredTrack === track.track.id && track.track.available_markets.length > 0) ||
 							(selectedTrackState === track.track.id && track.track.available_markets.length > 0) ? (
+							/* Показываем кнопку Play/Pause поверх обложки при наведении/выборе трека */
 							<button className={trackStyles.playOverlay}>
 								<img
 									src={
@@ -88,6 +94,7 @@ export default function CollectionTrack({ playTrack, sortViewMode, track, index,
 					</div>
 				) : (
 					<>
+						{/* При наведении/выборе трека показываем кнопку Play/Pause, иначе показываем номер трека с разным стилем в зависимости от состояния */}
 						{(currentTrackUri === track.track.uri && track.track.available_markets.length > 0) ||
 							(hoveredTrack === track.track.id && track.track.available_markets.length > 0) ||
 							(selectedTrackState === track.track.id && track.track.available_markets.length > 0) ? (
@@ -102,6 +109,7 @@ export default function CollectionTrack({ playTrack, sortViewMode, track, index,
 								/>
 							</button>
 						) : (
+							/* Номер трека меняет цвет: зелёный если это текущий трек, определённый цвет если это выбранный трек, иначе стандартный */
 							<span
 								className={
 									currentTrackUri === track.track.uri
@@ -118,8 +126,10 @@ export default function CollectionTrack({ playTrack, sortViewMode, track, index,
 				)}
 			</th>
 			{/* Track Info */}
+			{/* В режиме Compact показываем только название трека с динамическим стилем */}
 			{sortViewMode === 'Compact' && (
 				<th className={trackStyles.trackInfoCompact}><span className={
+					/* Текущий трек зелёный, выбранный трек имеет определённый стиль, иначе обычный */
 					currentTrackUri === track.track.uri
 						? trackStyles.trackActive
 						: selectedTrackState === track.track.id
@@ -130,9 +140,10 @@ export default function CollectionTrack({ playTrack, sortViewMode, track, index,
 				</span></th>
 			)}
 			{/* Track Information */}
+			{/* В режиме List показываем подробную информацию: обложка, название, артист и другие детали */}
 			{sortViewMode === 'List' && (
 				<th className={trackStyles.trackImg}>
-					{/* Track Cover */}
+					{/* Track Cover - скрывается для альбомов и поиска, так как обложка там одна для всех треков */}
 					{displayedIn !== 'album' && displayedIn !== 'search' && (
 						<img
 							className={trackStyles.trackCover}
@@ -145,6 +156,7 @@ export default function CollectionTrack({ playTrack, sortViewMode, track, index,
 					{/* Track Info */}
 					<div className={trackStyles.trackInfo}>
 						{/* Track Name */}
+						{/* Название трека меняет цвет в зависимости от состояния: зелёный если текущий, определённый цвет если выбранный */}
 						<span className={
 							currentTrackUri === track.track.uri
 								? trackStyles.trackActive
@@ -155,6 +167,7 @@ export default function CollectionTrack({ playTrack, sortViewMode, track, index,
 							{track.track.name}
 						</span>
 						{/* Track Artists */}
+						{/* Артисты показываются только если это не страница артиста (чтобы избежать дублирования) */}
 						{displayedIn !== 'artist' && (
 							<div className={trackStyles.trackArtistsContainer}>
 								<ul className={trackStyles.trackArtistList}>
@@ -171,6 +184,7 @@ export default function CollectionTrack({ playTrack, sortViewMode, track, index,
 				</th>
 			)}
 			{/* Track Artist */}
+			{/* Артисты показываются в отдельной колонке в режиме Compact только для плейлистов */}
 			{displayedIn === 'playlist' && sortViewMode === 'Compact' && (
 				<th className={trackStyles.trackInfoCompact}>
 					<ul className={trackStyles.trackArtistList}>
@@ -184,8 +198,10 @@ export default function CollectionTrack({ playTrack, sortViewMode, track, index,
 				</th>
 			)}
 			{/* Track Album */}
+			{/* Колонка с альбомом показывается только для плейлистов и профиля, так как в альбоме все треки принадлежат одному альбому */}
 			{(displayedIn === 'playlist' || displayedIn === 'my-profile') && <th className={trackStyles.trackAlbum}><span onClick={() => navigate(`/album/${track.track.album?.id}`)}>{track.track.album?.name ?? 'Unknown Album'}</span></th>}
 			{/* Track Date */}
+			{/* Дата добавления показывается только для плейлистов */}
 			{displayedIn === 'playlist' && <th className={trackStyles.trackDate}><span>{track.added_at ? formatDate(track.added_at) : '-'}</span></th>}
 			{/* Track Duration */}
 			<th className={trackStyles.trackDuration}>

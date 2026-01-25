@@ -1,6 +1,7 @@
 import { type ArtistAlbumItems } from "../types/collection/artistTypes";
 import { type SimplifiedMappedAlbumItem } from "../types/collection/generalTypes";
 
+// Преобразует полные данные альбома в упрощённый формат для отображения
 export const mapAlbumToSimplified = (album: ArtistAlbumItems | null): SimplifiedMappedAlbumItem | null => {
 	if (!album) return null;
 	return {

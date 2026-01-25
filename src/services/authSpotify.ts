@@ -2,7 +2,6 @@ import generatePKCECodes from 'pkce-challenge';
 
 const CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
-console.log('Redirect URI:', import.meta.env.VITE_REDIRECT_URI);
 const SCOPES = [
 	'user-read-email',
 	'user-read-private',
@@ -20,6 +19,8 @@ const SCOPES = [
 	'ugc-image-upload',
 ].join(' ');
 
+// Перенаправляет пользователя на страницу авторизации Spotify с PKCE потоком
+// Генерирует code_verifier и code_challenge для безопасной авторизации
 export const redirectToSpotifyLogin = async () => {
 	try {
 		const pkce = await generatePKCECodes();
@@ -43,6 +44,8 @@ export const redirectToSpotifyLogin = async () => {
 	}
 };
 
+// Обменивает authorization code на access и refresh токены через Spotify API
+// Использует code_verifier из localStorage для верификации в PKCE потоке
 export const getUserSpotifyAccessToken = async (code: string) => {
 	const codeVerifier = localStorage.getItem('spotify_code_verifier');
 	if (!codeVerifier) {
@@ -87,6 +90,8 @@ export const getUserSpotifyAccessToken = async (code: string) => {
 	}
 };
 
+// Обновляет access токен используя refresh токен
+// Вызывается при истечении времени жизни текущего токена
 export const refreshSpotifyAccessToken = async (refreshToken: string) => {
 	const body = new URLSearchParams({
 		grant_type: 'refresh_token',

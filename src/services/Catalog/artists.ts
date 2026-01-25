@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// Получает информацию об исполнителе по его ID
 export async function getArtist(token: string, id: string | undefined) {
 	try {
 		const response = await axios.get(`https://api.spotify.com/v1/artists/${id}`, {
@@ -13,6 +14,7 @@ export async function getArtist(token: string, id: string | undefined) {
 	}
 }
 
+// Получает топ-треки исполнителя
 export async function getArtistTopTracks(token: string, id: string | undefined) {
 	try {
 		const response = await axios.get(`https://api.spotify.com/v1/artists/${id}/top-tracks`, {
@@ -26,6 +28,7 @@ export async function getArtistTopTracks(token: string, id: string | undefined) 
 	}
 }
 
+// Получает все альбомы исполнителя (максимум 50)
 export async function getArtistAlbums(token: string, id: string | undefined) {
 	try {
 		const response = await axios.get(`https://api.spotify.com/v1/artists/${id}/albums`, {

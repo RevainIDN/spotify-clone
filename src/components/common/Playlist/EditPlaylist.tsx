@@ -14,6 +14,7 @@ interface EditPlaylistProps {
 	collectionData: Playlist;
 }
 
+// Модальное окно для редактирования названия плейлиста и загрузки новой обложки с предпросмотром.
 export default function EditPlaylist({ collectionData }: EditPlaylistProps) {
 	const dispatch = useDispatch<AppDispatch>();
 	const token = useSelector((state: RootState) => state.auth.accessToken);
@@ -22,23 +23,28 @@ export default function EditPlaylist({ collectionData }: EditPlaylistProps) {
 	const [newCover, setNewCover] = useState<File | null>(null);
 	const [preview, setPreview] = useState<string | null>(null);
 
+	// Получает плейлист из Redux для синхронизации с актуальными данными хранилища.
 	const playlistFromStore = useSelector((state: RootState) =>
 		state.user.userPlaylists?.items.find(
 			p => p.id === collectionData.id
 		)
 	);
 
+	// Использует обложку из Redux, если доступна, иначе из переданных данных коллекции, иначе дефолтное изображение.
 	const coverUrl =
 		playlistFromStore?.images?.[0]?.url ??
 		collectionData.images?.[0]?.url ??
 		'/Collection/default-cover.jpg';
 
+	// Использует название из Redux, если доступно, иначе из переданных данных коллекции.
 	const playlistName = playlistFromStore?.name ?? collectionData.name;
 
+	// Синхронизирует поле ввода с текущим названием плейлиста при изменении.
 	useEffect(() => {
 		setNewName(playlistName);
 	}, [playlistName])
 
+	// Отправляет изменения на сервер и обновляет Redux при сохранении.
 	const handleSave = async () => {
 		if (newCover && preview) {
 			await changePlaylistCoverImage(

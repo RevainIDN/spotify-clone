@@ -1,3 +1,5 @@
+// Типы для коллекции "Лайкнутые песни"
+
 import { type Track } from "./generalTypes";
 
 export interface SavedTrack {

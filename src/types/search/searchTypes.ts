@@ -1,3 +1,5 @@
+// Типы для результатов поиска и категорий браузера
+
 export interface CategoriesResponse {
 	categories: Categories;
 }

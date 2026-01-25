@@ -17,6 +17,7 @@ interface PlayButtonProps {
 	isHovered?: boolean;
 }
 
+// Кнопка воспроизведения для альбомов, плейлистов или отдельных треков с автоматической загрузкой коллекции при необходимости.
 export default function PlayButton({ albumId, playlistId, trackUri, availableMarkets = [], isHovered }: PlayButtonProps) {
 	const { currentTrackUri, isPlaying } = useSelector((state: RootState) => state.player);
 	const [collectionData, setCollectionData] = useState<Album | Playlist | undefined>();
@@ -30,8 +31,10 @@ export default function PlayButton({ albumId, playlistId, trackUri, availableMar
 		playCollectionRef.current = playCollection;
 	}, [playCollection]);
 
+	// Определяет, находимся ли в режиме одного трека или полной коллекции.
 	const isTrackMode = !!trackUri;
 
+	// Проверяет, является ли текущий воспроизводимый трек частью данной коллекции.
 	const isCurrentFromCollection = useMemo(() => {
 		if (!collectionData || !currentTrackUri) return false;
 		const tracks = normalizeTracks(collectionData);
@@ -41,8 +44,10 @@ export default function PlayButton({ albumId, playlistId, trackUri, availableMar
 		return uris.includes(currentTrackUri);
 	}, [collectionData, currentTrackUri]);
 
+	// Определяет, активна ли в данный момент кнопка (равно ли это текущему воспроизводящемуся треку/коллекции).
 	const isActivePlaying = isPlaying && (isTrackMode ? (trackUri === currentTrackUri) : isCurrentFromCollection);
 
+	// Запускает воспроизведение коллекции после её загрузки.
 	useEffect(() => {
 		if (collectionData && shouldPlay && (albumId || playlistId)) {
 			playCollectionRef.current();
@@ -50,6 +55,7 @@ export default function PlayButton({ albumId, playlistId, trackUri, availableMar
 		}
 	}, [collectionData, shouldPlay, albumId, playlistId]);
 
+	// Получает данные альбома или плейлиста с сервера Spotify по ID.
 	const fetchCollectionData = async (): Promise<Album | Playlist | null> => {
 		if (!token) return null;
 		if (albumId) {
@@ -76,6 +82,7 @@ export default function PlayButton({ albumId, playlistId, trackUri, availableMar
 		return null;
 	};
 
+	// Загружает данные коллекции при наличии активного воспроизведения для проверки содержимого.
 	useEffect(() => {
 		const loadCollectionIfPlaying = async () => {
 			if (isPlaying && !collectionData && (albumId || playlistId)) {
@@ -89,11 +96,11 @@ export default function PlayButton({ albumId, playlistId, trackUri, availableMar
 		loadCollectionIfPlaying();
 	}, [isPlaying, collectionData, albumId, playlistId, token]);
 
+	// Обрабатывает клик по кнопке: воспроизводит трек или загружает коллекцию и инициирует воспроизведение.
 	const handleClick = async (e: React.MouseEvent) => {
 		e.stopPropagation();
 
 		if (isTrackMode && trackUri) {
-			console.log(trackUri);
 			await playTrack(trackUri, availableMarkets);
 		} else if (albumId || playlistId) {
 			const data = await fetchCollectionData();

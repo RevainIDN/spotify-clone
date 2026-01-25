@@ -17,7 +17,9 @@ import PlaylistSection from '../../components/SectionModule/PlaylistSection/Play
 import Loader from '../../components/common/Loader';
 
 export default function User() {
+	// Данные профиля пользователя
 	const [userData, setUserData] = useState<UserPublicProfile | null>(null);
+	// Плейлисты пользователя
 	const [userPlaylists, setUserPlaylists] = useState<UserPublicPlaylists | null>(null);
 	const { id } = useParams();
 
@@ -26,6 +28,7 @@ export default function User() {
 
 	useEffect(() => {
 		if (!id || !token) return;
+		// Загружает данные профиля пользователя и его плейлисты параллельно
 		const fetchUserData = async () => {
 			try {
 				const [userData, userPlaylistData] = await Promise.all([
@@ -50,8 +53,10 @@ export default function User() {
 
 	return (
 		<div className='content'>
+			{/* Заголовок профиля пользователя */}
 			<CollectionHeader collectionData={userData} playlistCount={userPlaylists?.items.length} />
 			<div className={userStyles.main}>
+				{/* Открытые плейлисты пользователя */}
 				<PlaylistSection
 					title='Open playlists'
 					sectionKey='open-playlists'

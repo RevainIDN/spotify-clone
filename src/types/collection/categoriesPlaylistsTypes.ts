@@ -1,3 +1,5 @@
+// Типы для плейлистов из категорий браузера
+
 import { type Image } from "./generalTypes";
 
 export interface SearchPlaylistsResponse {

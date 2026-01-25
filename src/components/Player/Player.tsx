@@ -15,6 +15,7 @@ import VolumeSlider from './VolumeSlider/VolumeSlider'
 import ProgressBar from './ProgressBar/ProgressBar'
 import PlaylistDropdown from '../common/PlaylistDropdown'
 
+// Основной компонент плеера, управляющий воспроизведением музыки и отображением информации о текущем треке.
 export default function Player() {
 	const navigate = useNavigate();
 	const dispatch = useDispatch<AppDispatch>();
@@ -26,7 +27,9 @@ export default function Player() {
 	const [hoveredButton, setHoveredButton] = useState<string | null>(null);
 
 	const trackTitleRef = useRef<HTMLHeadingElement>(null);
+	// Расстояние, на которое нужно сдвинуть название трека для анимации прокрутки.
 	const [animationDistance, setAnimationDistance] = useState(0);
+	// Флаг, указывающий, превышает ли длина названия трека ширину контейнера.
 	const [shouldAnimate, setShouldAnimate] = useState(false);
 
 	const displayTrack = currentTrack ?? lastTrack;
@@ -37,7 +40,7 @@ export default function Player() {
 		openedDropdown?.uri === currentTrackUri &&
 		openedDropdown?.source === 'player';
 
-	// Загрузка последнего трека из localStorage при монтировании
+	// Загрузка последнего трека из localStorage при монтировании компонента для восстановления состояния.
 	useEffect(() => {
 		const saved = localStorage.getItem('lastTrack');
 		if (saved) {
@@ -48,7 +51,7 @@ export default function Player() {
 		}
 	}, [dispatch]);
 
-	// Сохранение текущего трека в localStorage при изменении
+	// Вычисление расстояния для анимации прокрутки названия трека, если оно не помещается в контейнер.
 	useEffect(() => {
 		if (trackTitleRef.current) {
 			const containerWidth = trackTitleRef.current.parentElement?.clientWidth ?? 0;
@@ -64,7 +67,7 @@ export default function Player() {
 		}
 	}, [displayTrack?.name]);
 
-	// Проверка, лайкнут ли текущий трек
+	// Проверка статуса лайка текущего трека при изменении трека или авторизации.
 	const lastCheckedId = useRef<string | null>(null);
 	useEffect(() => {
 		if (!accessToken || !player || !currentTrackUri) return;
@@ -86,7 +89,7 @@ export default function Player() {
 		checkIfTrackIsLiked();
 	}, [accessToken, player, currentTrackUri]);
 
-	// Получение текущего трека с проверкой на изменение URI
+	// Запрос информации о текущем треке к Spotify API и обновление URI при необходимости.
 	const updateCurrentTrack = async () => {
 		try {
 			const res = await axios.get('https://api.spotify.com/v1/me/player/currently-playing', {
@@ -102,7 +105,7 @@ export default function Player() {
 		}
 	};
 
-	// Периодическое обновление текущего трека
+	// Периодическое обновление информации о текущем треке каждые 5 секунд.
 	useEffect(() => {
 		if (!accessToken) return;
 
@@ -113,7 +116,7 @@ export default function Player() {
 		return () => clearInterval(interval);
 	}, [accessToken]);
 
-	// Воспроизведение/пауза трека
+	// Переключение воспроизведения/паузы текущего трека через Spotify SDK.
 	const playTrack = async () => {
 		if (!player || !currentTrackUri) return;
 		const state = await player.getCurrentState();
@@ -126,7 +129,7 @@ export default function Player() {
 		dispatch(setIsPlaying(!isPlaying));
 	}
 
-	// Переход к альбому или артисту по клику
+	// Навигация на страницу альбома при клике на название трека.
 	const handleAlbum = async () => {
 		const state = await player?.getCurrentState();
 		const albumUri = state?.track_window.current_track.album.uri;
@@ -136,7 +139,7 @@ export default function Player() {
 		navigate(`/album/${albumId}`);
 	};
 
-	// Переход к артисту по клику
+	// Навигация на страницу артиста при клике на его имя.
 	const handleArtist = async (name: string) => {
 		const state = await player?.getCurrentState();
 		const artists = state?.track_window.current_track.artists;
@@ -151,7 +154,7 @@ export default function Player() {
 		}
 	};
 
-	// Воспроизведение следующего трека
+	// Переход к следующему треку через Spotify API и обновление информации о текущем треке.
 	const playNext = async () => {
 		if (!player || !currentTrackUri) return;
 		try {
@@ -167,7 +170,7 @@ export default function Player() {
 		}
 	};
 
-	// Воспроизведение предыдущего трека
+	// Переход к предыдущему треку через Spotify API и обновление информации о текущем треке.
 	const playPrevious = async () => {
 		if (!player || !currentTrackUri) return;
 		try {
@@ -183,7 +186,7 @@ export default function Player() {
 		}
 	};
 
-	// Обработка понравившегося трека
+	// Добавление или удаление текущего трека из плейлиста лайкнутых треков с уведомлением пользователю.
 	const handleLikedTrack = async () => {
 		if (!player || !currentTrackUri || !accessToken) return;
 

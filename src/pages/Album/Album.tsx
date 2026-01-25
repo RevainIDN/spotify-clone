@@ -19,14 +19,15 @@ import CollectionTrackList from '../../components/CollectionModule/CollectionTra
 import Loader from '../../components/common/Loader';
 
 export default function Album() {
-	// Данные альбома
+	// Данные альбома загруженные из API Spotify
 	const [albumData, setAlbumData] = useState<Album | null>(null);
+	// Флаг включения перемешивания при воспроизведении
 	const [isShuffled, setIsShuffled] = useState<boolean>(false);
 
-	// Состояние фильтрации
+	// Значение поиска по названию трека, артисту или альбому
 	const [filterValue, setFilterValue] = useState<string>('');
 
-	// Состояние выпадающего списка
+	// Состояние сортировки: тип (Title/Artist/Album/Date/Duration/Custom order), направление (asc/desc) и режим отображения (List/Compact)
 	const [sortType, setSortType] = useState<string>('Custom order');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 	const [sortViewMode, setSortViewMode] = useState<'List' | 'Compact'>('List');
@@ -36,7 +37,7 @@ export default function Album() {
 
 	const dispatch = useDispatch<AppDispatch>();
 
-	// Получение данных альбома
+	// Загружает данные альбома по ID и проверяет, подписан ли пользователь на этот альбом
 	useEffect(() => {
 		if (!token || !id) {
 			console.warn('Token или ID отсутствует');
@@ -48,6 +49,7 @@ export default function Album() {
 				const albumData = await getAlbum(token, id) as Album;
 				setAlbumData(albumData);
 				if (albumData) {
+					// Проверяем статус подписки пользователя на альбом
 					const setIsUserSubscribed = await getIsUserSubscribedToAlbums(token, [id]);
 					dispatch(setIsUserSubscribedToAlbum(setIsUserSubscribed));
 				}
@@ -57,6 +59,7 @@ export default function Album() {
 		};
 
 		fetchData();
+		// Уведомляем Redux что текущая страница - альбом
 		dispatch(setNavigation('album'));
 	}, [token, id])
 

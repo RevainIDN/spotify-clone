@@ -1,3 +1,4 @@
+// Конвертирует миллисекунды в строку формата mm:ss или h:mm:ss
 export function formatDuration(ms: number): string {
 	const totalSeconds = Math.floor(ms / 1000);
 

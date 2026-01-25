@@ -24,11 +24,15 @@ interface HomeProps {
 
 export default function Home({ token }: HomeProps) {
 	const dispatch = useDispatch<AppDispatch>();
+	// Недавно проигрываемые треки пользователя
 	const [recentlyPlayedTracks, setRecentlyPlayedTracks] = useState<RecentlyPlayedResponse | null>(null);
+	// Новые релизы (новые альбомы и синглы)
 	const [newReleases, setNewReleases] = useState<RawCombinedResults>();
 	const userName = useSelector((state: RootState) => state.user.userProfileData?.display_name);
+	// Определяем время суток для приветствия
 	const timeNow = new Date().getHours();
 	useEffect(() => {
+		// Загружает недавно проигрываемые треки пользователя
 		const fetchRecentlyPlayed = async () => {
 			if (token) {
 				const data = await getUserRecentlyPlayedTracks(token);
@@ -37,6 +41,7 @@ export default function Home({ token }: HomeProps) {
 		};
 		fetchRecentlyPlayed();
 
+		// Загружает новые релизы на Spotify
 		const fetchNewReleases = async () => {
 			if (token) {
 				const data = await getNewReleases(token);
@@ -45,16 +50,19 @@ export default function Home({ token }: HomeProps) {
 		};
 		fetchNewReleases();
 
+		// Уведомляем Redux о текущей странице
 		dispatch(setNavigation('home'));
 	}, [])
 
 	const simplifiedTracks = useMemo(() => {
 		if (!recentlyPlayedTracks?.items) return [];
 
+		// Преобразуем треки в упрощённый формат и удаляем дубликаты
 		const mapped = recentlyPlayedTracks.items
 			.map(item => mapTrackToSimplified(item.track))
 			.filter((t): t is SimplifiedMappedTrackItem => t !== null);
 
+		// Оставляем только уникальные треки по ID
 		const unique = mapped.filter(
 			(track, index, self) =>
 				index === self.findIndex(t => t.id === track.id)

@@ -24,11 +24,14 @@ import AlbumsSection from '../../components/SectionModule/AlbumsSection/AlbumsSe
 import Loader from '../../components/common/Loader';
 
 export default function Artist() {
+	// Данные артиста, его лучшие треки и альбомы
 	const [artistData, setArtistData] = useState<FullArtist | null>(null);
 	const [topTracks, setTopTracks] = useState<ArtistTracks | null>(null);
 	const [artistMusic, setArtistMusic] = useState<ArtistAlbums | null>(null);
+	// Флаг для перемешивания треков при воспроизведении
 	const [isShuffled, setIsShuffled] = useState<boolean>(false);
 
+	// Отслеживает выбранный трек в таблице лучших треков
 	const [selectedTrackState, setSelectedTrackState] = useState<string | null>(null);
 
 	const token = useSelector((state: RootState) => state.auth.accessToken);
@@ -36,6 +39,7 @@ export default function Artist() {
 
 	const dispatch = useDispatch<AppDispatch>();
 
+	// Собираем ID всех лучших треков артиста для проверки статуса лайков
 	const trackIds = useMemo(() => {
 		return topTracks ? topTracks.tracks.map(track => track.id) : [];
 	}, [topTracks]);
@@ -47,6 +51,7 @@ export default function Artist() {
 		isShuffled
 	});
 
+	// Загружает данные артиста, его лучшие треки, альбомы и проверяет статус подписки
 	useEffect(() => {
 		if (!token || !id) {
 			console.warn('Token или ID отсутствует');
@@ -63,6 +68,7 @@ export default function Artist() {
 				setArtistMusic(artistMusic);
 
 				if (data) {
+					// Проверяем подписан ли пользователь на этого артиста
 					const isUserSubscribed = await getIsUserSubscribedToArtist(token, [id]);
 					dispatch(setIsUserSubscribedToArtist(isUserSubscribed));
 				}
@@ -72,6 +78,7 @@ export default function Artist() {
 		};
 
 		fetchData();
+		// Уведомляем Redux о текущей странице
 		dispatch(setNavigation('album'));
 	}, [token, id])
 
@@ -109,6 +116,7 @@ export default function Artist() {
 								return null;
 							}
 
+							// Получаем статус лайка для текущего трека
 							const isLiked = likedTracks[index] ?? false;
 
 							return (
@@ -130,6 +138,7 @@ export default function Artist() {
 				</table>
 			</div>
 			<div className={artistStyles.artistMusic}>
+				{/* Раздел со всеми альбомами и синглами артиста */}
 				<AlbumsSection
 					title='Music'
 					sectionKey='artist-music'

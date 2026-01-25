@@ -17,6 +17,7 @@ interface CollectionTrackListProps {
 	sortViewMode: 'List' | 'Compact';
 }
 
+// Таблица треков коллекции с поддержкой фильтрации, сортировки, лайков и воспроизведения.
 export default function CollectionTrackList({ collectionData, isShuffled, filterValue, sortType, sortOrder, sortViewMode }: CollectionTrackListProps) {
 	const [selectedTrackState, setSelectedTrackState] = useState<string | null>(null);
 
@@ -25,20 +26,20 @@ export default function CollectionTrackList({ collectionData, isShuffled, filter
 		isShuffled
 	});
 
-	// Нормализация треков
+	// Нормализует треки для унификации структуры данных из разных типов коллекций.
 	const tracks = useMemo(() => {
 		return collectionData ? normalizeTracks(collectionData) : [];
 	}, [collectionData]);
 
-	// Определение типа коллекции
+	// Определяет, является ли коллекция плейлистом для отображения дополнительной информации (альбом, дата добавления).
 	const isPlaylist = !isArtistTracks(collectionData) && collectionData.type === 'playlist';
 
-	// Получение статусов лайков треков
+	// Получение статусов лайков для всех треков коллекции по их индексам.
 	const trackIds = useMemo(() => tracks.map(track => track.track.id), [tracks]);
 
 	const { likedTracks, toggleLike } = useLikedTracks(trackIds);
 
-	// Фильтрация треков
+	// Фильтрует треки по названию, артисту или альбому в соответствии с поисковым запросом (игнорируя регистр).
 	const filteredValues = tracks.filter(track => {
 		if (
 			!track.track ||
@@ -57,7 +58,7 @@ export default function CollectionTrackList({ collectionData, isShuffled, filter
 		);
 	});
 
-	// Сортировка треков
+	// Сортирует отфильтрованные треки по выбранному критерию (Title/Artist/Album/Date added/Duration/Custom order) и направлению.
 	const sortedValues = [...filteredValues].sort((a, b) => {
 		const direction = sortOrder === 'asc' ? 1 : -1;
 
@@ -84,10 +85,14 @@ export default function CollectionTrackList({ collectionData, isShuffled, filter
 		<>
 			<table className={trackListStyles.tracks}>
 				<colgroup>
+					{/* Колонки таблицы имеют разную ширину в зависимости от типа коллекции и режима отображения */}
 					<col style={isPlaylist ? { width: '5%' } : { width: '4%' }} />
 					<col style={isPlaylist ? (sortViewMode === 'Compact' ? { width: '20%' } : { width: '35%' }) : { width: '90%' }} />
+					{/* Колонка артиста показывается только в режиме Compact для плейлистов */}
 					{isPlaylist ? (sortViewMode === 'Compact' && <col style={{ width: '20%' }} />) : null}
+					{/* Колонка альбома показывается для плейлистов */}
 					{isPlaylist ? <col style={sortViewMode === 'List' ? { width: '35%' } : { width: '25%' }} /> : null}
+					{/* Колонка даты добавления показывается для плейлистов */}
 					{isPlaylist ? <col style={sortViewMode === 'List' ? { width: '20%' } : { width: '15%' }} /> : null}
 					<col style={{ width: '5%' }} />
 				</colgroup>
@@ -95,6 +100,7 @@ export default function CollectionTrackList({ collectionData, isShuffled, filter
 					<tr>
 						<th>#</th>
 						<th>TITLE</th>
+						{/* Заголовки колонок появляются только если они нужны для текущего режима */}
 						{isPlaylist && sortViewMode === 'Compact' && <th>ARTIST</th>}
 						{isPlaylist && <th>ALBUM</th>}
 						{isPlaylist && <th>DATE ADDED</th>}
@@ -107,6 +113,7 @@ export default function CollectionTrackList({ collectionData, isShuffled, filter
 							return null;
 						}
 
+						// Получаем статус лайка для текущего трека по индексу в массиве
 						const isLiked = likedTracks?.[index] ?? false;
 
 						return (
@@ -116,6 +123,7 @@ export default function CollectionTrackList({ collectionData, isShuffled, filter
 								sortViewMode={sortViewMode}
 								track={track}
 								index={index}
+								// Передаём информацию о контексте отображения (плейлист или альбом) для условного рендера
 								displayedIn={isPlaylist ? 'playlist' : 'album'}
 								selectedTrackState={selectedTrackState}
 								setSelectedTrackState={setSelectedTrackState}

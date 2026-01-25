@@ -1,3 +1,5 @@
+// Типы для новых релизов Spotify
+
 import { type Image, type Artist } from "./generalTypes";
 
 export interface NewReleasesResponse {

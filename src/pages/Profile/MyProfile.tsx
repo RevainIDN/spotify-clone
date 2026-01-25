@@ -24,11 +24,14 @@ import ArtistSection from '../../components/SectionModule/ArtistSection/ArtistSe
 import Loader from '../../components/common/Loader';
 
 export default function MyProfile() {
+	// Лучшие артисты и треки текущего пользователя
 	const [userTopArtists, setUserTopArtists] = useState<UserTopArtists | null>(null);
 	const [userTopTracks, setUserTopTracks] = useState<UserTopTracks | null>(null);
+	// Плейлисты и подписанные артисты пользователя
 	const [userPlaylists, setUserPlaylists] = useState<UserPlaylistsResponse | null>(null);
 	const [userArtists, setUserArtists] = useState<UserFollowedArtistsResponse | null>(null);
 
+	// Отслеживает выбранный трек в таблице лучших треков
 	const [selectedTrackState, setSelectedTrackState] = useState<string | null>(null);
 
 	const dispatch = useDispatch<AppDispatch>();
@@ -46,6 +49,7 @@ export default function MyProfile() {
 	useEffect(() => {
 		if (!token) return;
 
+		// Загружает лучшие артисты, лучшие треки, плейлисты и подписанных артистов параллельно
 		const fetchData = async () => {
 			try {
 				const [profileTopArtists, profileTopTracks, profilePlaylists, profileArtists] = await Promise.all([
@@ -77,6 +81,7 @@ export default function MyProfile() {
 
 	return (
 		<div className='content'>
+			{/* Заголовок профиля с информацией пользователя */}
 			<CollectionHeader collectionData={userProfileData} playlistCount={userPlaylists?.items.length} />
 			<div className={myProfileStyles.main}>
 				<ArtistSection

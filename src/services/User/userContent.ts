@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// Получает все плейлисты текущего пользователя
 export async function getUserPlaylists(token: string) {
 	try {
 		const response = await axios.get(`https://api.spotify.com/v1/me/playlists`, {
@@ -13,6 +14,7 @@ export async function getUserPlaylists(token: string) {
 	}
 }
 
+// Получает все сохраненные альбомы в библиотеке пользователя
 export async function getUserFollowingAlbums(token: string) {
 	try {
 		const response = await axios.get('https://api.spotify.com/v1/me/albums', {
@@ -26,6 +28,7 @@ export async function getUserFollowingAlbums(token: string) {
 	}
 }
 
+// Получает всех исполнителей, на которых подписан пользователь
 export async function getUserFollowingArtists(token: string) {
 	try {
 		const response = await axios.get('https://api.spotify.com/v1/me/following?type=artist', {
@@ -39,6 +42,7 @@ export async function getUserFollowingArtists(token: string) {
 	}
 }
 
+// Получает 30 последних треков, которые пользователь слушал
 export async function getUserRecentlyPlayedTracks(token: string) {
 	try {
 		const response = await axios.get('https://api.spotify.com/v1/me/player/recently-played', {

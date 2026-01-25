@@ -1,5 +1,6 @@
 import notFoundPageStyles from './NotFoundPage.module.css';
 
+// Страница 404 для отображения при ошибке "страница не найдена"
 export default function NotFoundPage() {
 	return (
 		<div className='content'>
